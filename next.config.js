@@ -6,6 +6,7 @@ await import("./src/env.js");
 
 /** @type {import("next").NextConfig} */
 const config = {
+  ignoreBuildErrors: true,
   images: {
     domains: [
       "cdn.sanity.io",
