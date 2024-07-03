@@ -2,7 +2,6 @@
 const config = {
   parser: "@typescript-eslint/parser",
   parserOptions: {
-    "@typescript-eslint/no-explicit-any": ["off"],
     project: true,
   },
   plugins: ["@typescript-eslint", "drizzle"],
@@ -12,6 +11,7 @@ const config = {
     "plugin:@typescript-eslint/stylistic-type-checked",
   ],
   rules: {
+    "@typescript-eslint/no-unsafe-assignment": "off",
     "@typescript-eslint/array-type": "off",
     "@typescript-eslint/consistent-type-definitions": "off",
     "@typescript-eslint/consistent-type-imports": [
