@@ -13,7 +13,21 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Bold, Italic, Smile, Sparkles } from "lucide-react";
 import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { DatePicker } from "./date-picker";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
+import ContentViewer from "./content-viewer";
 import PrimaryButton from "@/components/ui/primary-button";
+import { getDraft, saveDraft, scheduleDraft } from "@/app/actions/draft";
+import { toast } from "sonner";
 
 export type ParagraphElement = {
   type: "paragraph";
@@ -87,6 +101,7 @@ const initialValue: Descendant[] = [
 
 interface EditorSectionProps {
   value: Descendant[];
+  id: string;
   setValue: (value: Descendant[]) => void;
   editor: CustomEditor;
   handleSave: () => void;
@@ -94,6 +109,7 @@ interface EditorSectionProps {
 
 function EditorSection({
   value,
+  id,
   setValue,
   editor,
   handleSave,
@@ -183,12 +199,7 @@ function EditorSection({
           Save Draft
         </PrimaryButton>
         <div className="flex space-x-2">
-          <PrimaryButton
-            className="bg-custom-gray px-[1rem] text-sm hover:bg-slate-500"
-            onClick={handleSave}
-          >
-            Schedule
-          </PrimaryButton>
+          <ScheduleDialog id={id} content={value} />
           <PrimaryButton
             className="bg-darker-blue px-[1rem] text-sm"
             onClick={handleSave}
@@ -203,6 +214,7 @@ function EditorSection({
 
 const ToolbarButton = ({
   format,
+
   icon,
 }: {
   format: string;
@@ -224,6 +236,125 @@ const ToolbarButton = ({
     >
       {icon}
     </Button>
+  );
+};
+
+const ScheduleDialog = ({ content, id }: { content: any; id: string }) => {
+  const [scheduleDate, setScheduleDate] = useState<Date | undefined>(undefined);
+  const [postName, setPostName] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSchedule = async () => {
+    if (!scheduleDate) {
+      console.error("Please select both date and time");
+      return;
+    }
+
+    const postContent = content[0]?.children[0].text || "";
+    setIsLoading(true);
+
+    try {
+      const draftId = await getDraft(id);
+
+      if (!draftId) {
+        await saveDraft(id, postContent);
+      }
+
+      const response = await scheduleDraft(id, postContent, scheduleDate);
+
+      if (response.success) {
+        toast.success("Draft scheduled successfully");
+      } else {
+        toast.error(response.message);
+      }
+    } catch (error) {
+      console.error("Error scheduling draft:", error);
+    } finally {
+      setIsLoading(true);
+    }
+  };
+
+  const handleDateChange = (date: Date | undefined) => {
+    if (date) {
+      const newDate = new Date(date);
+      if (scheduleDate) {
+        newDate.setHours(scheduleDate.getHours());
+        newDate.setMinutes(scheduleDate.getMinutes());
+      }
+      setScheduleDate(newDate);
+    } else {
+      setScheduleDate(undefined);
+    }
+  };
+
+  const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const [hours, minutes] = e.target.value.split(":").map(Number);
+    if (scheduleDate) {
+      const newDate = new Date(scheduleDate);
+      newDate.setHours(hours || 0);
+      newDate.setMinutes(minutes || 0);
+      setScheduleDate(newDate);
+    } else {
+      const newDate = new Date();
+      newDate.setHours(hours || 0);
+      newDate.setMinutes(minutes || 0);
+      setScheduleDate(newDate);
+    }
+  };
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button className="rounded-full bg-custom-gray px-[1rem] text-sm font-normal hover:bg-slate-500">
+          Schedule
+        </Button>
+      </DialogTrigger>
+      <DialogContent aria-description="schedule" aria-describedby={undefined}>
+        <DialogHeader>
+          <DialogTitle>Schedule Post</DialogTitle>
+        </DialogHeader>
+        <div className="grid w-fit gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="postName" className="text-right">
+              Post Name
+            </Label>
+            <Input
+              id="postName"
+              value={postName}
+              onChange={(e) => setPostName(e.target.value)}
+              className="col-span-3"
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="date" className="text-right">
+              Date
+            </Label>
+            <DatePicker selected={scheduleDate} onSelect={handleDateChange} />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="time" className="text-right">
+              Time
+            </Label>
+            <Input
+              id="time"
+              type="time"
+              value={
+                scheduleDate ? scheduleDate.toTimeString().slice(0, 5) : ""
+              }
+              onChange={handleTimeChange}
+              className="col-span-3"
+            />
+          </div>
+        </div>
+        <Button
+          className="rounded-full bg-custom-gray hover:bg-gray-400"
+          disabled={isLoading}
+          onClick={handleSchedule}
+        >
+          Schedule Post
+        </Button>
+      </DialogContent>
+    </Dialog>
   );
 };
 

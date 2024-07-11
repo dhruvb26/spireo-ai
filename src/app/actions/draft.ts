@@ -137,6 +137,85 @@ export async function getDrafts(): Promise<GetDraftsResult> {
   }
 }
 
+export async function scheduleDraft(
+  id: string,
+  content: string,
+  scheduledTime: Date,
+) {
+  try {
+    const userId = await getUserId();
+
+    if (!userId) {
+      return {
+        success: false,
+        message: "User not authenticated",
+      };
+    }
+
+    const draft = await db
+      .select()
+      .from(drafts)
+      .where(
+        and(
+          eq(drafts.id, id),
+          eq(drafts.userId, userId),
+          eq(drafts.status, "saved"),
+        ),
+      )
+      .limit(1);
+
+    if (draft.length === 0) {
+      return {
+        success: false,
+        message: "Draft not found or already scheduled",
+      };
+    }
+
+    const updatedDraft = await db
+      .update(drafts)
+      .set({
+        status: "scheduled",
+        content: content,
+        scheduledFor: scheduledTime,
+        updatedAt: new Date(),
+      })
+      .where(eq(drafts.id, id))
+      .returning();
+
+    if (updatedDraft.length === 0) {
+      return {
+        success: false,
+        message: "Failed to schedule draft",
+      };
+    }
+
+    // Send the draft to the scheduler API
+    fetch("http://localhost:3000/api/schedule", {
+      method: "POST",
+      body: JSON.stringify({
+        userId: userId,
+        postId: id,
+        content: content,
+        scheduledTime: scheduledTime,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    return {
+      success: true,
+      message: "Draft scheduled successfully",
+    };
+  } catch (error) {
+    console.error("Error scheduling draft:", error);
+    return {
+      success: false,
+      message: "Failed to schedule draft",
+    };
+  }
+}
+
 export async function deleteDraft(draftId: string): Promise<DeleteDraftResult> {
   try {
     const userId = await getUserId();
@@ -211,6 +290,84 @@ export async function getDraft(id: string) {
     return {
       success: false,
       message: "Failed to fetch draft",
+    };
+  }
+}
+
+export async function getScheduledDrafts() {
+  try {
+    const userId = await getUserId();
+
+    if (!userId) {
+      return {
+        success: false,
+        message: "User not authenticated",
+        data: [],
+      };
+    }
+
+    const scheduledDrafts = await db
+      .select()
+      .from(drafts)
+      .where(and(eq(drafts.userId, userId), eq(drafts.status, "scheduled")));
+
+    return {
+      success: true,
+      message: "Scheduled drafts fetched successfully",
+      data: scheduledDrafts as Draft[],
+    };
+  } catch (error) {
+    console.error("Error fetching scheduled drafts:", error);
+    return {
+      success: false,
+      message: "Failed to fetch scheduled drafts",
+      data: [],
+    };
+  }
+}
+
+export async function updateDraftStatus(id: string): Promise<Result> {
+  try {
+    const userId = await getUserId();
+
+    if (!userId) {
+      return {
+        success: false,
+        message: "User not authenticated",
+      };
+    }
+
+    const updatedDraft = await db
+      .update(drafts)
+      .set({
+        status: "published",
+        updatedAt: new Date(),
+      })
+      .where(
+        and(
+          eq(drafts.id, id),
+          eq(drafts.userId, userId),
+          eq(drafts.status, "scheduled"),
+        ),
+      )
+      .returning();
+
+    if (updatedDraft.length === 0) {
+      return {
+        success: false,
+        message: "Draft not found or not in scheduled status",
+      };
+    }
+
+    return {
+      success: true,
+      message: "Draft status updated to published successfully",
+    };
+  } catch (error) {
+    console.error("Error updating draft status:", error);
+    return {
+      success: false,
+      message: "Failed to update draft status",
     };
   }
 }

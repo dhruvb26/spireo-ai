@@ -1,10 +1,12 @@
+"use client";
 import { ArrowUpRight } from "lucide-react";
 import React from "react";
+import { CoolMode } from "../ui/cool-mode";
 
 const CTASection = () => {
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-2xl text-left sm:text-center">
+      <div className="text-left sm:text-center">
         <div className="mx-auto mb-4 inline-flex rounded-full bg-gradient-to-r from-primary-blue to-darker-blue px-4 py-1.5">
           <p className="text-xs font-semibold uppercase tracking-widest text-white">
             GET SPIREO
@@ -13,10 +15,10 @@ const CTASection = () => {
         <h2 className="text-3xl font-bold leading-tight text-black sm:text-4xl lg:text-5xl">
           Write your first post with Spireo and never look back
         </h2>
-        <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-gray-600">
-          Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet
-          sint. Velit officia consequat duis enim velit mollit. Exercitation
-          veniam consequat sunt nostrud amet.
+        <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-gray-600">
+          Transform your LinkedIn presence with Spireo's AI-powered tools.
+          Create engaging, professional content in minutes, boost your
+          visibility, and grow your network effortlessly.
         </p>
       </div>
 
@@ -80,10 +82,16 @@ const CTASection = () => {
       </div>
 
       <div className="flex w-full items-center justify-center py-6">
-        <button className="rounded-full bg-gradient-to-b from-primary-blue to-darker-blue px-6 py-2 text-lg text-white transition duration-200 hover:shadow-xl focus:ring-2 focus:ring-sky-400">
-          Get Started - It's Free
-          <ArrowUpRight className="ml-2 inline-block h-4 w-4" />
-        </button>
+        <CoolMode
+          duration={1000}
+          particleCount={10}
+          colors={["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff"]}
+        >
+          <button className="rounded-full bg-gradient-to-b from-primary-blue to-darker-blue px-6 py-2 text-lg text-white transition duration-200 hover:shadow-xl focus:ring-2 focus:ring-sky-400">
+            Get Started for Free
+            <ArrowUpRight className="ml-2 inline-block h-4 w-4" />
+          </button>
+        </CoolMode>
       </div>
 
       <div className="mt-8 flex items-center justify-start sm:justify-center sm:px-0">

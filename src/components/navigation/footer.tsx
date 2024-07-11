@@ -1,137 +1,119 @@
+"use client";
 import React from "react";
-import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
+
 const Footer = () => {
+  const pathname = usePathname();
+  if (pathname.startsWith("/dashboard")) {
+    return null;
+  }
   return (
     <section className="bg-black py-10 sm:pt-16 lg:pt-24">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 gap-x-5 gap-y-12 md:grid-cols-4 md:gap-x-12">
+      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        {" "}
+        {/* Reduced max-width */}
+        <div className="grid grid-cols-1 gap-y-12 sm:grid-cols-2 md:grid-cols-3 md:gap-x-8">
           <div>
-            <p className="text-primary-blue text-base">Company</p>
-
+            <p className="text-base text-primary-blue">Company</p>
             <ul className="mt-8 space-y-4">
               <li>
                 <a
                   href="#"
-                  title=""
                   className="text-base text-white transition-all duration-200 hover:text-opacity-80 focus:text-opacity-80"
                 >
-                  {" "}
-                  About{" "}
+                  About
                 </a>
               </li>
               <li>
                 <a
                   href="#"
-                  title=""
                   className="text-base text-white transition-all duration-200 hover:text-opacity-80 focus:text-opacity-80"
                 >
-                  {" "}
-                  Features{" "}
+                  Features
                 </a>
               </li>
               <li>
                 <a
                   href="#"
-                  title=""
                   className="text-base text-white transition-all duration-200 hover:text-opacity-80 focus:text-opacity-80"
                 >
-                  {" "}
-                  Pricing{" "}
+                  Pricing
                 </a>
               </li>
             </ul>
           </div>
 
           <div>
-            <p className="text-primary-blue text-base">Help</p>
-
+            <p className="text-base text-primary-blue">Help</p>
             <ul className="mt-8 space-y-4">
               <li>
                 <a
                   href="#"
-                  title=""
                   className="text-base text-white transition-all duration-200 hover:text-opacity-80 focus:text-opacity-80"
                 >
-                  {" "}
-                  Customer Support{" "}
-                </a>
-              </li>
-
-              <li>
-                <a
-                  href="#"
-                  title=""
-                  className="text-base text-white transition-all duration-200 hover:text-opacity-80 focus:text-opacity-80"
-                >
-                  {" "}
-                  Terms & Conditions{" "}
+                  Customer Support
                 </a>
               </li>
               <li>
                 <a
                   href="#"
-                  title=""
                   className="text-base text-white transition-all duration-200 hover:text-opacity-80 focus:text-opacity-80"
                 >
-                  {" "}
-                  Privacy Policy{" "}
+                  Terms & Conditions
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  className="text-base text-white transition-all duration-200 hover:text-opacity-80 focus:text-opacity-80"
+                >
+                  Privacy Policy
                 </a>
               </li>
             </ul>
           </div>
 
           <div>
-            <p className="text-primary-blue text-base">Extra Links</p>
-
+            <p className="text-base text-primary-blue">Extra Links</p>
             <ul className="mt-8 space-y-4">
               <li>
                 <a
                   href="#"
-                  title=""
                   className="text-base text-white transition-all duration-200 hover:text-opacity-80 focus:text-opacity-80"
                 >
-                  {" "}
-                  Customer Support{" "}
+                  Customer Support
                 </a>
               </li>
               <li>
                 <a
                   href="#"
-                  title=""
                   className="text-base text-white transition-all duration-200 hover:text-opacity-80 focus:text-opacity-80"
                 >
-                  {" "}
-                  Delivery Details{" "}
+                  Delivery Details
                 </a>
               </li>
               <li>
                 <a
                   href="#"
-                  title=""
                   className="text-base text-white transition-all duration-200 hover:text-opacity-80 focus:text-opacity-80"
                 >
-                  {" "}
-                  Terms & Conditions{" "}
+                  Terms & Conditions
                 </a>
               </li>
               <li>
                 <a
                   href="#"
-                  title=""
                   className="text-base text-white transition-all duration-200 hover:text-opacity-80 focus:text-opacity-80"
                 >
-                  {" "}
-                  Privacy Policy{" "}
+                  Privacy Policy
                 </a>
               </li>
             </ul>
           </div>
         </div>
-
-        <hr className="border-darker-blue mb-10 mt-16" />
-
-        <div className="flex flex-wrap items-center justify-between">
+        <hr className="mb-10 mt-16 border-darker-blue" />
+        <div className="flex flex-col items-center justify-between">
           <Image
             src="/inverted-logo.png"
             alt="inverted-logo"
@@ -139,7 +121,7 @@ const Footer = () => {
             height={150}
           />
 
-          <p className="mt-8 w-full text-center text-sm text-gray-100 md:order-2 md:mt-0 md:w-auto">
+          <p className="mt-8 text-sm text-gray-100">
             © Copyright 2024, All Rights Reserved by Spireo
           </p>
         </div>

@@ -5,6 +5,7 @@ import { sql, relations } from "drizzle-orm";
 
 import {
   index,
+  boolean,
   integer,
   pgTableCreator,
   timestamp,
@@ -29,6 +30,7 @@ export const drafts = createTable(
   "draft",
   {
     id: varchar("id", { length: 256 }).primaryKey().notNull(),
+    name: varchar("name", { length: 256 }),
     status: statusEnum("status"),
     userId: varchar("user_id", { length: 256 }),
     scheduledFor: timestamp("scheduled_for", { withTimezone: true }),
@@ -54,6 +56,7 @@ export const ideas = createTable("idea", {
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
+
   updatedAt: timestamp("updated_at", {
     mode: "date",
     precision: 3,
@@ -61,21 +64,22 @@ export const ideas = createTable("idea", {
 });
 
 export const users = createTable("user", {
-  id: varchar("id", { length: 255 })
-    .notNull()
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
+  id: varchar("id", { length: 255 }).notNull().primaryKey(),
   name: varchar("name", { length: 255 }),
   email: varchar("email", { length: 255 }).notNull(),
-  emailVerified: timestamp("emailVerified", {
-    mode: "date",
-    withTimezone: true,
-  }).default(sql`CURRENT_TIMESTAMP`),
+  emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: varchar("image", { length: 255 }),
+  hasAccess: boolean("hasAccess").default(true),
+  priceId: varchar("price_id", { length: 255 }),
+  stripeCustomerId: varchar("stripe_customer_id", { length: 255 }),
+  trialEndsAt: timestamp("trial_ends_at").default(
+    sql`CURRENT_TIMESTAMP + INTERVAL '7 days'`,
+  ),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
+  contentStyles: many(contentStyles),
 }));
 
 export const accounts = createTable(
@@ -109,40 +113,22 @@ export const accountsRelations = relations(accounts, ({ one }) => ({
   user: one(users, { fields: [accounts.userId], references: [users.id] }),
 }));
 
-export const sessions = createTable(
-  "session",
-  {
-    sessionToken: varchar("sessionToken", { length: 255 })
-      .notNull()
-      .primaryKey(),
-    userId: varchar("userId", { length: 255 })
-      .notNull()
-      .references(() => users.id),
-    expires: timestamp("expires", {
-      mode: "date",
-      withTimezone: true,
-    }).notNull(),
-  },
-  (session) => ({
-    userIdIdx: index("session_userId_idx").on(session.userId),
-  }),
-);
+export const contentStyles = createTable("content_style", {
+  id: varchar("id", { length: 256 }).primaryKey().notNull(),
+  userId: varchar("user_id", { length: 256 })
+    .notNull()
+    .references(() => users.id),
+  name: varchar("name", { length: 256 }).notNull(),
+  examples: text("examples").notNull(), // This will store JSON array of LinkedIn post texts
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at", {
+    mode: "date",
+    precision: 3,
+  }).$onUpdate(() => new Date()),
+});
 
-export const sessionsRelations = relations(sessions, ({ one }) => ({
-  user: one(users, { fields: [sessions.userId], references: [users.id] }),
+export const contentStyleRelations = relations(contentStyles, ({ one }) => ({
+  user: one(users, { fields: [contentStyles.userId], references: [users.id] }),
 }));
-
-export const verificationTokens = createTable(
-  "verificationToken",
-  {
-    identifier: varchar("identifier", { length: 255 }).notNull(),
-    token: varchar("token", { length: 255 }).notNull(),
-    expires: timestamp("expires", {
-      mode: "date",
-      withTimezone: true,
-    }).notNull(),
-  },
-  (vt) => ({
-    compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
-  }),
-);

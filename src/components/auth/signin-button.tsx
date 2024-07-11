@@ -2,7 +2,9 @@
 import { signIn } from "next-auth/react";
 import GradientButton from "../ui/rounded-border-button";
 import { ArrowRight } from "lucide-react";
-
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
 export function SignIn() {
   return (
     <GradientButton
@@ -12,9 +14,9 @@ export function SignIn() {
         "via-primary-blue",
         "to-darker-blue",
       ]}
-      className="mt-4 w-fit transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/30"
+      className="mt-4 w-fit py-8 text-xl transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/30"
     >
-      Get Started
+      Get Started for Free
       <span className="ml-2 flex-shrink-0 rounded-full bg-white p-[0.5rem]">
         <ArrowRight className="h-4 w-4 text-primary-blue" />
       </span>

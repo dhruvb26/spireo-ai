@@ -1,7 +1,10 @@
+"use client";
 import React from "react";
 import Image from "next/image";
 import { Home } from "lucide-react";
 import Link from "next/link";
+import PrimaryButton from "./ui/primary-button";
+import { signOut } from "next-auth/react";
 
 const SecondaryNavbar = () => {
   return (

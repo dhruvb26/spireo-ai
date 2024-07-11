@@ -43,8 +43,33 @@ const components: { title: string; href: string; description: string }[] = [
 
 export function NavigationMenuDemo() {
   return (
-    <NavigationMenu className="z-50">
+    <NavigationMenu className="z-50  ">
       <NavigationMenuList>
+        <NavigationMenuItem>
+          <NavigationMenuTrigger className="text-md ">
+            Features
+          </NavigationMenuTrigger>
+          <NavigationMenuContent>
+            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+              {components.map((component) => (
+                <ListItem
+                  key={component.title}
+                  title={component.title}
+                  href={component.href}
+                >
+                  {component.description}
+                </ListItem>
+              ))}
+            </ul>
+          </NavigationMenuContent>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <Link href="/pricing" legacyBehavior passHref>
+            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+              Pricing
+            </NavigationMenuLink>
+          </Link>
+        </NavigationMenuItem>
         <NavigationMenuItem>
           <NavigationMenuTrigger className="text-md">
             Resources
@@ -55,10 +80,10 @@ export function NavigationMenuDemo() {
                 <li className="row-span-3">
                   <NavigationMenuLink asChild>
                     <a
-                      className=" flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-primary-blue to-darker-blue p-6 text-white no-underline outline-none focus:shadow-md"
+                      className=" flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-primary-blue to-blue-200 p-6 text-white no-underline outline-none focus:shadow-md"
                       href="/"
                     >
-                      <div className="mb-2 mt-4  text-lg font-medium text-custom-gray ">
+                      <div className="mb-2 mt-4  text-lg font-medium  ">
                         Spireo AI
                       </div>
                       <p className="text-sm leading-tight ">
@@ -82,31 +107,6 @@ export function NavigationMenuDemo() {
               </ul>
             </NavigationMenuContent>
           </div>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <NavigationMenuTrigger className="text-md">
-            Features
-          </NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-              {components.map((component) => (
-                <ListItem
-                  key={component.title}
-                  title={component.title}
-                  href={component.href}
-                >
-                  {component.description}
-                </ListItem>
-              ))}
-            </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <Link href="/pricing" legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Pricing
-            </NavigationMenuLink>
-          </Link>
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>

@@ -3,7 +3,7 @@ import React from "react";
 const TestimonialSection = () => {
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-2xl space-y-6 text-center">
+      <div className=" space-y-6 text-center">
         <div className="mx-auto inline-flex rounded-full bg-gradient-to-r from-primary-blue to-darker-blue px-4 py-1.5">
           <p className="text-xs font-semibold uppercase tracking-widest text-white">
             CUSTOMER LOVE
@@ -38,9 +38,10 @@ const TestimonialSection = () => {
             </div>
             <blockquote className="mt-7">
               <p className="text-lg text-black">
-                “Amet minim mollit non deserunt ullam co est sit aliqua dolor do
-                amet sint. Velit officia consequat duis enim velit mollit.
-                Exercitation veniam consequat”
+                "Spireo has revolutionized my LinkedIn strategy. The AI-powered
+                content suggestions are spot-on, and I've seen a 50% increase in
+                engagement since I started using it. It's a game-changer for
+                busy professionals!"
               </p>
             </blockquote>
             <p className="tex-tblack mt-9 text-base font-semibold">
@@ -73,9 +74,10 @@ const TestimonialSection = () => {
             </div>
             <blockquote className="mt-7">
               <p className="text-lg text-black">
-                “Amet minim mollit non deserunt ullam co est sit aliqua dolor do
-                amet sint. Velit officia consequat duis enim velit mollit.
-                Exercitation veniam consequat”
+                "As a startup founder, time is precious. Spireo has saved me
+                hours each week on content creation. The AI understands my
+                industry and audience, consistently generating posts that
+                resonate. My network growth has been exponential!"
               </p>
             </blockquote>
             <p className="tex-tblack mt-9 text-base font-semibold">
@@ -106,9 +108,10 @@ const TestimonialSection = () => {
             </div>
             <blockquote className="mt-7">
               <p className="text-lg text-black">
-                “Amet minim mollit non deserunt ullam co est sit aliqua dolor do
-                amet sint. Velit officia consequat duis enim velit mollit.
-                Exercitation veniam consequat”
+                "Spireo's intuitive interface and powerful AI have transformed
+                my LinkedIn presence. I'm now posting consistently, and the
+                engagement analytics help me refine my strategy. It's like
+                having a personal social media manager!"
               </p>
             </blockquote>
             <p className="tex-tblack mt-9 text-base font-semibold">

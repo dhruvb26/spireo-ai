@@ -51,8 +51,8 @@ const VariablePricing = () => {
           Pricing & Plans
         </h2>
         <p className="mx-auto mt-4 max-w-md text-base leading-relaxed text-gray-600">
-          Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet
-          sint. Velit officia consequat duis.
+          Choose the plan that works best for you. Or enter a guest code if you
+          have one.
         </p>
       </div>
 

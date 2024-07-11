@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import { usePostStore } from "@/store/postStore";
 import {
   WandSparklesIcon,
@@ -17,24 +16,28 @@ import {
   X,
   Pin,
 } from "lucide-react";
+import { LogOut } from "lucide-react";
+import { signOut } from "next-auth/react";
 import { v4 as uuidv4 } from "uuid";
 import GradientButton from "./ui/rounded-border-button";
 import { cn } from "@/lib/utils";
 import { GearIcon } from "@radix-ui/react-icons";
-import { saveDraft } from "@/app/actions/draft";
 
 const Sidebar = () => {
-  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
 
   const router = useRouter();
   const toggleSidebar = () => setIsOpen(!isOpen);
-  const { addPost, updatePost } = usePostStore();
+  const { addPost } = usePostStore();
 
   const handleCreateDraft = async () => {
     const id = uuidv4();
     addPost("", id);
     router.push(`/dashboard/draft/${id}`);
+  };
+
+  const handleSignOut = async () => {
+    await signOut({ callbackUrl: "/" });
   };
 
   return (
@@ -156,7 +159,7 @@ const Sidebar = () => {
                     </li>
                     <li>
                       <Link
-                        href="#"
+                        href="/dashboard/scheduler"
                         className="relative flex h-11 flex-row items-center border-l-4 border-transparent pr-6 text-gray-600 hover:border-primary-blue hover:bg-gray-50 hover:text-gray-800 focus:outline-none"
                       >
                         <span className="ml-4 inline-flex items-center justify-center">
@@ -204,6 +207,15 @@ const Sidebar = () => {
                       </Link>
                     </li>
                   </ul>
+                </div>
+                <div className="mt-auto p-4">
+                  <button
+                    onClick={handleSignOut}
+                    className="flex w-full items-center justify-start rounded-md bg-red-500 px-4 py-2 text-white transition-colors duration-300 hover:bg-red-600"
+                  >
+                    <LogOut className="mr-2 h-5 w-5" />
+                    <span className="text-sm">Sign Out</span>
+                  </button>
                 </div>
               </nav>
             </div>

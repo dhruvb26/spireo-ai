@@ -6,15 +6,29 @@ await import("./src/env.js");
 
 /** @type {import("next").NextConfig} */
 const config = {
-  ignoreBuildErrors: true,
   images: {
-    domains: [
-      "cdn.sanity.io",
-      "images.unsplash.com",
-      "res.cloudinary.com",
-      "cdn.pixabay.com",
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "cdn.sanity.io",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.pixabay.com",
+      },
     ],
   },
+  // serverRuntimeConfig: {
+  //   PROJECT_ROOT: __dirname,
+  // },
 };
 
 export default config;

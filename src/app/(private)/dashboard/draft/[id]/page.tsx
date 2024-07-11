@@ -95,6 +95,7 @@ export default function EditDraft() {
         <>
           <div className="h-fit w-1/2 rounded-lg border border-gray-200 shadow-sm">
             <EditorSection
+              id={id}
               value={value}
               setValue={setValue}
               editor={editor}
