@@ -26,6 +26,9 @@ const config = {
       },
     ],
   },
+  experimental: {
+    missingSuspenseWithCSRBailout: false,
+  },
   // serverRuntimeConfig: {
   //   PROJECT_ROOT: __dirname,
   // },
