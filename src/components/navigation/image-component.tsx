@@ -2,6 +2,7 @@
 import React, { useEffect } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+import Image from "next/image";
 
 const ImageComponent = () => {
   const controls = useAnimation();
@@ -50,9 +51,10 @@ const ImageComponent = () => {
           animate={controls}
           style={{ transformStyle: "preserve-3d" }}
         >
-          <img
-            className="w-full rounded-lg shadow-xl"
-            src="https://cdn.rareblocks.xyz/collection/celebration/images/features/7/dashboard-screenshot.png"
+          <Image
+            width={1270}
+            height={720}
+            src="/Screenshot 2024-07-12 at 12.51.15 PM.png"
             alt="Dashboard screenshot"
           />
         </motion.div>

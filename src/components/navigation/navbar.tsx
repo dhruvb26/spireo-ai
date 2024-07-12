@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Menu } from "lucide-react";
@@ -49,8 +49,11 @@ const Navbar = () => {
             <SheetContent side="right">
               <div className="flex flex-col space-y-6 py-8">
                 <NavigationMenuDemo />
-                <button className="whitespace-nowrap rounded-full bg-gradient-to-b from-primary-blue to-darker-blue px-6 py-2 text-sm text-white transition duration-200 hover:shadow-xl focus:ring-2 focus:ring-sky-400">
-                  Get Started - It's Free
+                <button
+                  className="whitespace-nowrap rounded-full bg-gradient-to-b from-primary-blue to-darker-blue px-6 py-2 text-sm text-white transition duration-200 hover:shadow-xl focus:ring-2 focus:ring-sky-400"
+                  onClick={() => signIn()}
+                >
+                  Get Started for Free
                 </button>
               </div>
             </SheetContent>

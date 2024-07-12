@@ -3,9 +3,7 @@
 import { db } from "@/server/db";
 import { drafts } from "@/server/db/schema";
 import { getUserId } from "./user";
-import { eq, and } from "drizzle-orm";
-import { v4 as uuidv4 } from "uuid";
-
+import { eq, and, or } from "drizzle-orm";
 // Define the Draft type
 export type Draft = {
   id: string;
@@ -120,7 +118,12 @@ export async function getDrafts(): Promise<GetDraftsResult> {
     const userDrafts = await db
       .select()
       .from(drafts)
-      .where(and(eq(drafts.userId, userId), eq(drafts.status, "saved")));
+      .where(
+        and(
+          eq(drafts.userId, userId),
+          or(eq(drafts.status, "saved"), eq(drafts.status, "scheduled")),
+        ),
+      );
 
     return {
       success: true,
@@ -150,6 +153,12 @@ export async function scheduleDraft(
         success: false,
         message: "User not authenticated",
       };
+    }
+
+    const savedDraft = await getDraft(id);
+
+    if (!savedDraft.success) {
+      await saveDraft(id, content);
     }
 
     const draft = await db
@@ -190,7 +199,7 @@ export async function scheduleDraft(
     }
 
     // Send the draft to the scheduler API
-    fetch("http://localhost:3000/api/schedule", {
+    await fetch("http://localhost:3000/api/schedule", {
       method: "POST",
       body: JSON.stringify({
         userId: userId,

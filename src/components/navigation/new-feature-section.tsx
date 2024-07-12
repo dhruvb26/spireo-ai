@@ -1,5 +1,6 @@
 import React from "react";
 import { CheckIcon } from "lucide-react";
+import FadeSeparator from "../ui/fade-separator";
 
 interface FeatureSectionProps {
   spanText: string;
@@ -81,7 +82,7 @@ const NewFeatureSection: React.FC = () => {
         "Industry-specific templates at your fingertips",
         "Multiple formats to suit your message",
       ],
-      imageUrl: "/placeholder.svg",
+      imageUrl: "/Screenshot 2024-07-12 at 12.49.40 PM.png",
       quote:
         "This tool has revolutionized our content strategy. We're now able to consistently produce high-quality LinkedIn posts in a fraction of the time it used to take us.",
       authorName: "Emily Chen",
@@ -96,7 +97,7 @@ const NewFeatureSection: React.FC = () => {
         "Adapt successful pieces for fresh engagement",
         "Efficiently reuse your top-performing content",
       ],
-      imageUrl: "/placeholder.svg",
+      imageUrl: "/Screenshot 2024-07-12 at 12.50.09 PM.png",
       reversed: true,
       quote:
         "The content repurposing feature has been a game-changer for our team. We're getting more mileage out of our best ideas and seeing increased engagement across the board.",
@@ -112,7 +113,7 @@ const NewFeatureSection: React.FC = () => {
         "Create posts directly from ideas",
         "Save concepts for future use",
       ],
-      imageUrl: "/placeholder.svg",
+      imageUrl: "/Screenshot 2024-07-12 at 12.50.25 PM.png",
     },
     {
       spanText: "Stand Out Visually",
@@ -138,7 +139,7 @@ const NewFeatureSection: React.FC = () => {
         "Schedule posts and comments together",
         "Visualize and optimize your posting strategy",
       ],
-      imageUrl: "/placeholder.svg",
+      imageUrl: "/Screenshot 2024-07-12 at 12.50.56 PM.png",
     },
     {
       spanText: "Stay Ahead of Trends",
@@ -164,9 +165,7 @@ const NewFeatureSection: React.FC = () => {
         {features.map((feature, index) => (
           <React.Fragment key={index}>
             <FeatureSection {...feature} />
-            {index < features.length - 1 && (
-              <hr className="my-16 border-gray-200" />
-            )}
+            {index < features.length - 1 && <FadeSeparator />}
           </React.Fragment>
         ))}
       </div>

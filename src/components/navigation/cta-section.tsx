@@ -2,6 +2,7 @@
 import { ArrowUpRight } from "lucide-react";
 import React from "react";
 import { CoolMode } from "../ui/cool-mode";
+import { signIn } from "next-auth/react";
 
 const CTASection = () => {
   return (
@@ -87,7 +88,10 @@ const CTASection = () => {
           particleCount={10}
           colors={["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff"]}
         >
-          <button className="rounded-full bg-gradient-to-b from-primary-blue to-darker-blue px-6 py-2 text-lg text-white transition duration-200 hover:shadow-xl focus:ring-2 focus:ring-sky-400">
+          <button
+            onClick={() => signIn()}
+            className="rounded-full bg-gradient-to-b from-primary-blue to-darker-blue px-6 py-2 text-lg text-white transition duration-200 hover:shadow-xl focus:ring-2 focus:ring-sky-400"
+          >
             Get Started for Free
             <ArrowUpRight className="ml-2 inline-block h-4 w-4" />
           </button>

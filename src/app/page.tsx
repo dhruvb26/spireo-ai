@@ -6,7 +6,6 @@ import TestimonialSection from "@/components/navigation/testimonial-section";
 import CTASection from "@/components/navigation/cta-section";
 import BeforeAfterSection from "@/components/navigation/before-after-section";
 import FixedPricing from "@/components/navigation/fixed-pricing";
-import FAQComponent from "@/components/navigation/faq";
 
 export default function HomePage() {
   return (

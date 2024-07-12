@@ -28,6 +28,7 @@ import ContentViewer from "./content-viewer";
 import PrimaryButton from "@/components/ui/primary-button";
 import { getDraft, saveDraft, scheduleDraft } from "@/app/actions/draft";
 import { toast } from "sonner";
+import { getUserId } from "@/app/actions/user";
 
 export type ParagraphElement = {
   type: "paragraph";
@@ -90,6 +91,14 @@ const CustomEditor = {
       { match: (n) => Text.isText(n), split: true },
     );
   },
+};
+
+const extractContent = (value: Descendant[]): string => {
+  return value
+    .map((n) =>
+      SlateElement.isElement(n) ? n.children.map((c) => c.text).join("") : "",
+    )
+    .join("\n");
 };
 
 const initialValue: Descendant[] = [
@@ -159,6 +168,44 @@ function EditorSection({
     }
   };
 
+  const handlePublish = async () => {
+    try {
+      const userId = await getUserId();
+      if (!userId) {
+        toast.error("User not authenticated");
+        return;
+      }
+
+      const postContent = extractContent(value);
+
+      const response = await fetch("http://localhost:3000/api/publish", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: userId,
+          postId: id,
+          content: postContent,
+          scheduledTime: new Date(),
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to publish post");
+      }
+
+      // const result = await response.json();
+      // toast.success("Post published successfully");
+    } catch (error) {
+      console.error("Error publishing post:", error);
+      toast.error(
+        error instanceof Error ? error.message : "Failed to publish post",
+      );
+    }
+  };
+
   return (
     <>
       <div className="p-4">
@@ -202,7 +249,7 @@ function EditorSection({
           <ScheduleDialog id={id} content={value} />
           <PrimaryButton
             className="bg-darker-blue px-[1rem] text-sm"
-            onClick={handleSave}
+            onClick={handlePublish}
           >
             Publish
           </PrimaryButton>
@@ -250,16 +297,11 @@ const ScheduleDialog = ({ content, id }: { content: any; id: string }) => {
       return;
     }
 
-    const postContent = content[0]?.children[0].text || "";
+    const postContent = extractContent(content);
+
     setIsLoading(true);
 
     try {
-      const draftId = await getDraft(id);
-
-      if (!draftId) {
-        await saveDraft(id, postContent);
-      }
-
       const response = await scheduleDraft(id, postContent, scheduleDate);
 
       if (response.success) {

@@ -195,7 +195,7 @@ const Sidebar = () => {
                     </li>
                     <li>
                       <Link
-                        href="#"
+                        href="/dashboard/setup"
                         className="relative flex h-11 flex-row items-center border-l-4 border-transparent pr-6 text-gray-600 hover:border-primary-blue hover:bg-gray-50 hover:text-gray-800 focus:outline-none"
                       >
                         <span className="ml-4 inline-flex items-center justify-center">
