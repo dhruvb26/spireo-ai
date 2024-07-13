@@ -8,7 +8,11 @@ import { Separator } from "@/components/ui/separator";
 
 export default function SignIn() {
   const handleLinkedInSignIn = () => {
-    signIn("linkedin", { callbackUrl: "/dashboard" });
+    try {
+      signIn("linkedin", { callbackUrl: "/dashboard" });
+    } catch (error) {
+      console.error("Error signing in with LinkedIn", error);
+    }
   };
 
   const avatarUrls = [

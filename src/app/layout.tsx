@@ -7,7 +7,7 @@ import { GeistSans } from "geist/font/sans";
 export const metadata = {
   title: "Spireo - LinkedIn Growth Made Easy",
   description: "Growing on LinkedIn made easy.",
-  icons: [{ rel: "icon", url: "/symbol.png" }],
+  icons: [{ rel: "icon", url: "/spireo.png" }],
 };
 
 const poppins = Poppins({

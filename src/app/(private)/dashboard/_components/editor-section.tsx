@@ -178,7 +178,7 @@ function EditorSection({
 
       const postContent = extractContent(value);
 
-      const response = await fetch("http://localhost:3000/api/publish", {
+      const response = await fetch("api/publish", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

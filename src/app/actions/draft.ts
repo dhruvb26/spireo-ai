@@ -199,7 +199,7 @@ export async function scheduleDraft(
     }
 
     // Send the draft to the scheduler API
-    await fetch("http://localhost:3000/api/schedule", {
+    await fetch("/api/schedule", {
       method: "POST",
       body: JSON.stringify({
         userId: userId,

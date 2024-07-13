@@ -69,7 +69,7 @@ export const users = createTable("user", {
   email: varchar("email", { length: 255 }).notNull(),
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: varchar("image", { length: 255 }),
-  hasAccess: boolean("hasAccess").default(true),
+  hasAccess: boolean("hasAccess").default(false),
   priceId: varchar("price_id", { length: 255 }),
   stripeCustomerId: varchar("stripe_customer_id", { length: 255 }),
   trialEndsAt: timestamp("trial_ends_at").default(
