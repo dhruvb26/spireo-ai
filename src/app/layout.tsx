@@ -3,7 +3,6 @@ import "@/styles/globals.css";
 import { Toaster } from "sonner";
 import { Poppins } from "next/font/google";
 import { GeistSans } from "geist/font/sans";
-import { SessionProvider } from "next-auth/react";
 
 export const metadata = {
   title: "Spireo - LinkedIn Growth Made Easy",
