@@ -48,8 +48,6 @@ export const authOptions: NextAuthOptions = {
       user: {
         ...session.user,
         id: token.id,
-        hasAccess: token.hasAccess,
-        trialEndsAt: token.trialEndsAt,
       },
     }),
     jwt: ({ token, user }) => {
