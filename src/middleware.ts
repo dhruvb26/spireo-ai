@@ -7,6 +7,7 @@ export default withAuth(
 
     // Redirect unauthenticated users to signin page
     if (!token) {
+      console.log("Token: ", token);
       return NextResponse.redirect(new URL("/signin", req.url));
     }
 

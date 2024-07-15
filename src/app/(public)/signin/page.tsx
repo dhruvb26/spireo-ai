@@ -9,7 +9,9 @@ import { Separator } from "@/components/ui/separator";
 export default function SignIn() {
   const handleLinkedInSignIn = () => {
     try {
-      signIn("linkedin", { callbackUrl: "/dashboard/subscribe" });
+      signIn("linkedin", {
+        callbackUrl: `${process.env.VERCEL_URL}/dashboard/subscribe`,
+      });
     } catch (error) {
       console.error("Error signing in with LinkedIn", error);
     }
