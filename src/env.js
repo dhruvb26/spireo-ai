@@ -15,6 +15,7 @@ export const env = createEnv({
     LINKEDIN_CLIENT_SECRET: z.string(),
     SPIREO_SECRET_KEY: z.string(),
     NEXTAUTH_SECRET: z.string(),
+    VERCEL_URL: z.string().url(),
     NEXTAUTH_URL: z.string().url(),
     REDIS_CLOUD_PASSWORD: z.string(),
     STRIPE_SECRET_KEY: z.string(),
@@ -38,6 +39,7 @@ export const env = createEnv({
    */
   runtimeEnv: {
     DATABASE_URL: process.env.DATABASE_URL,
+    VERCEL_URL: process.env.VERCEL_URL,
     NODE_ENV: process.env.NODE_ENV,
     SPIREO_SECRET_KEY: process.env.SPIREO_SECRET_KEY,
     LINKEDIN_CLIENT_ID: process.env.LINKEDIN_CLIENT_ID,
