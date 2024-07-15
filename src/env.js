@@ -7,7 +7,7 @@ export const env = createEnv({
    * isn't built with invalid env vars.
    */
   server: {
-    DATABASE_URL: z.string().url(),
+    DATABASE_URL: z.string(),
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
@@ -15,8 +15,8 @@ export const env = createEnv({
     LINKEDIN_CLIENT_SECRET: z.string(),
     SPIREO_SECRET_KEY: z.string(),
     NEXTAUTH_SECRET: z.string(),
-    VERCEL_URL: z.string().url(),
-    NEXTAUTH_URL: z.string().url(),
+    VERCEL_URL: z.string(),
+    NEXTAUTH_URL: z.string(),
     REDIS_CLOUD_PASSWORD: z.string(),
     STRIPE_SECRET_KEY: z.string(),
     STRIPE_WEBHOOK_SECRET: z.string(),
