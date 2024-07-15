@@ -15,7 +15,7 @@ export const env = createEnv({
     LINKEDIN_CLIENT_SECRET: z.string(),
     SPIREO_SECRET_KEY: z.string(),
     NEXTAUTH_SECRET: z.string(),
-    NEXTAUTH_URL: z.string(),
+    NEXTAUTH_URL: z.string().url(),
     REDIS_CLOUD_PASSWORD: z.string(),
     STRIPE_SECRET_KEY: z.string(),
     STRIPE_WEBHOOK_SECRET: z.string(),
