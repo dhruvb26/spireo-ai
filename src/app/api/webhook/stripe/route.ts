@@ -91,9 +91,13 @@ export async function POST(req: Request) {
             );
           }
 
+          const now = new Date();
+          const trialEndsAt = new Date(now.setDate(now.getDate() + 7)); // 7 days trial
+
           await db
             .update(users)
             .set({
+              trialEndsAt: trialEndsAt,
               stripeCustomerId: customerId,
               priceId: priceId,
               hasAccess: true,

@@ -26,7 +26,7 @@ import { Label } from "@/components/ui/label";
 
 import ContentViewer from "./content-viewer";
 import PrimaryButton from "@/components/ui/primary-button";
-import { getDraft, saveDraft, scheduleDraft } from "@/app/actions/draft";
+import { getDraft, saveDraft } from "@/app/actions/draft";
 import { toast } from "sonner";
 import { getUserId } from "@/app/actions/user";
 
@@ -178,7 +178,7 @@ function EditorSection({
 
       const postContent = extractContent(value);
 
-      const response = await fetch("api/publish", {
+      const response = await fetch("/api/publish", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -187,7 +187,6 @@ function EditorSection({
           userId: userId,
           postId: id,
           content: postContent,
-          scheduledTime: new Date(),
         }),
       });
 
@@ -196,8 +195,8 @@ function EditorSection({
         throw new Error(errorData.message || "Failed to publish post");
       }
 
-      // const result = await response.json();
-      // toast.success("Post published successfully");
+      const result = await response.json();
+      toast.success("Post published successfully");
     } catch (error) {
       console.error("Error publishing post:", error);
       toast.error(
@@ -294,25 +293,41 @@ const ScheduleDialog = ({ content, id }: { content: any; id: string }) => {
   const handleSchedule = async () => {
     if (!scheduleDate) {
       console.error("Please select both date and time");
+      toast.error("Please select both date and time");
       return;
     }
 
     const postContent = extractContent(content);
 
     setIsLoading(true);
+    const userId = await getUserId();
 
     try {
-      const response = await scheduleDraft(id, postContent, scheduleDate);
+      const response = await fetch(`/api/schedule`, {
+        method: "POST",
+        body: JSON.stringify({
+          userId: userId,
+          postId: id,
+          content: postContent,
+          scheduledTime: scheduleDate.toISOString(),
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-      if (response.success) {
-        toast.success("Draft scheduled successfully");
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success(data.message || "Draft scheduled successfully");
       } else {
-        toast.error(response.message);
+        toast.error(data.error || "Failed to schedule draft");
       }
     } catch (error) {
       console.error("Error scheduling draft:", error);
+      toast.error("An error occurred while scheduling the draft");
     } finally {
-      setIsLoading(true);
+      setIsLoading(false); // Changed from true to false
     }
   };
 

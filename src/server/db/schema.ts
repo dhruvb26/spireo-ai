@@ -72,9 +72,7 @@ export const users = createTable("user", {
   hasAccess: boolean("hasAccess").default(false),
   priceId: varchar("price_id", { length: 255 }),
   stripeCustomerId: varchar("stripe_customer_id", { length: 255 }),
-  trialEndsAt: timestamp("trial_ends_at").default(
-    sql`CURRENT_TIMESTAMP + INTERVAL '7 days'`,
-  ),
+  trialEndsAt: timestamp("trial_ends_at"),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({
@@ -87,7 +85,7 @@ export const accounts = createTable(
   {
     userId: varchar("userId", { length: 255 })
       .notNull()
-      .references(() => users.id),
+      .references(() => users.id, { onDelete: "cascade" }),
     type: varchar("type", { length: 255 })
       .$type<AdapterAccount["type"]>()
       .notNull(),
@@ -105,7 +103,6 @@ export const accounts = createTable(
     compoundKey: primaryKey({
       columns: [account.provider, account.providerAccountId],
     }),
-    userIdIdx: index("account_userId_idx").on(account.userId),
   }),
 );
 
@@ -119,7 +116,7 @@ export const contentStyles = createTable("content_style", {
     .notNull()
     .references(() => users.id),
   name: varchar("name", { length: 256 }).notNull(),
-  examples: text("examples").notNull(), // This will store JSON array of LinkedIn post texts
+  examples: text("examples").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),

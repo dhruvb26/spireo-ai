@@ -58,31 +58,46 @@ const worker = new Worker(
 
     // Post to LinkedIn
     try {
-      await fetch(`https://api.linkedin.com/rest/posts`, {
+      const response = await fetch("https://api.linkedin.com/v2/ugcPosts", {
         method: "POST",
-        body: JSON.stringify({
-          author: `urn:li:person:${linkedInId}`,
-          commentary: `${content}`,
-          visibility: "PUBLIC",
-          distribution: {
-            feedDistribution: "MAIN_FEED",
-            targetEntities: [],
-            thirdPartyDistributionChannels: [],
-          },
-          lifecycleState: "PUBLISHED",
-          isReshareDisabledByAuthor: false,
-        }),
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
           "LinkedIn-Version": "202406",
+          "X-Restli-Protocol-Version": "2.0.0",
         },
+        body: JSON.stringify({
+          author: `urn:li:person:${linkedInId}`,
+          lifecycleState: "PUBLISHED",
+          specificContent: {
+            "com.linkedin.ugc.ShareContent": {
+              shareCommentary: {
+                text: content,
+              },
+              shareMediaCategory: "NONE",
+            },
+          },
+          visibility: {
+            "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC",
+          },
+        }),
       });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(
+          "Error publishing to LinkedIn",
+          response.status,
+          errorText,
+        );
+        throw new Error(`LinkedIn API error: ${response.status} ${errorText}`);
+      }
 
       // Update the draft status
       await updateDraftStatus(postId);
     } catch (error) {
       console.error("Failed to post to LinkedIn:", error);
+      throw error; // Re-throw the error to mark the job as failed
     }
 
     console.log("Posted successfully");

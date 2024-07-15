@@ -36,7 +36,7 @@ declare module "next-auth/jwt" {
 }
 
 export const authOptions: NextAuthOptions = {
-  debug: true,
+  debug: false,
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
@@ -55,8 +55,6 @@ export const authOptions: NextAuthOptions = {
     jwt: ({ token, user }) => {
       if (user) {
         token.id = user.id;
-        token.hasAccess = user.hasAccess;
-        token.trialEndsAt = user.trialEndsAt;
       }
       return token;
     },
@@ -78,6 +76,8 @@ export const authOptions: NextAuthOptions = {
           email: userData.email,
           emailVerified: userData.emailVerified,
           image: userData.image,
+          trialEndsAt: trialEndsAt,
+          hasAccess: false,
         })
         .returning();
       return result[0];

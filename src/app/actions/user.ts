@@ -4,6 +4,7 @@ import { getServerAuthSession } from "@/server/auth";
 import { accounts } from "@/server/db/schema";
 import { db } from "@/server/db";
 import { eq } from "drizzle-orm";
+import { users } from "@/server/db/schema";
 
 export async function getUserId() {
   const session = await getServerAuthSession();
@@ -32,4 +33,16 @@ export async function getAccessToken(id: string) {
     .where(eq(accounts.userId, id));
 
   return account[0]?.access_token;
+}
+
+export async function checkAccess() {
+  const session = await getServerAuthSession();
+  const id = session?.user.id || "";
+  const user = await db
+    .select({ hasAccess: users.hasAccess })
+    .from(users)
+    .where(eq(users.id, id))
+    .limit(1);
+
+  return user[0]?.hasAccess;
 }
