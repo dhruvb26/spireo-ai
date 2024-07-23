@@ -21,6 +21,7 @@ const ColorInput: React.FC<ColorInputProps> = ({ value, onChange, label }) => {
       <label className="text-sm font-medium">{label}</label>
       <div className="flex items-center space-x-2">
         <Input
+          autoComplete="off"
           type="text"
           value={value}
           onChange={(e) => onChange(e.target.value)}

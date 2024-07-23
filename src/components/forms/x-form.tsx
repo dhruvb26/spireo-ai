@@ -82,7 +82,7 @@ export function XForm({ onSubmit, isLoading }: XFormProps) {
                     type="button"
                     variant="outline"
                     onClick={handleClearFormat}
-                    className="flex-shrink-0 rounded-full"
+                    className="flex-shrink-0 rounded-lg"
                   >
                     Clear Format
                   </Button>
@@ -100,6 +100,7 @@ export function XForm({ onSubmit, isLoading }: XFormProps) {
               <FormLabel>URL</FormLabel>
               <FormControl>
                 <Input
+                  autoComplete="off"
                   placeholder="Enter a YouTube video URL"
                   {...field}
                   disabled={isLoading}
@@ -120,6 +121,7 @@ export function XForm({ onSubmit, isLoading }: XFormProps) {
               <FormLabel>Instructions</FormLabel>
               <FormControl>
                 <Input
+                  autoComplete="off"
                   placeholder="Enter any custom instructions"
                   {...field}
                   disabled={isLoading}
@@ -133,7 +135,7 @@ export function XForm({ onSubmit, isLoading }: XFormProps) {
           )}
         />
         <Button
-          className="rounded-full bg-primary-blue hover:bg-darker-blue"
+          className="rounded-lg bg-brand-purple-500 font-light hover:bg-brand-purple-700"
           type="submit"
           disabled={isLoading}
         >

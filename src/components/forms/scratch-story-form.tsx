@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useEffect, useState } from "react";
+import { Input } from "../ui/input";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -25,20 +26,25 @@ import { PostFormatSelector } from "../post-formatter";
 
 export const scratchStoryFormSchema = z.object({
   postContent: z.string().min(20, {
-    message: "Story content must be at least 20 characters.",
+    message: "Content must be at least 20 characters.",
   }),
   tone: z.string().min(1, {
     message: "Please select a tone.",
   }),
+  linkedInPostUrl: z.string().url().optional(),
   instructions: z.string().optional(),
   formatTemplate: z.string().optional(),
 });
 
 const tones = [
-  { value: "positive", label: "Positive 😊" },
-  { value: "neutral", label: "Neutral 😐" },
-  { value: "negative", label: "Negative 😞" },
-  // ... other tones
+  { value: "professional", label: "Professional 💼" },
+  { value: "informative", label: "Informative 📊" },
+  { value: "engaging", label: "Engaging 🤝" },
+  { value: "inspiring", label: "Inspiring 🌟" },
+  { value: "thought-provoking", label: "Thought-provoking 💭" },
+  { value: "authentic", label: "Authentic 🙌" },
+  { value: "concise", label: "Concise 📝" },
+  { value: "humorous", label: "Humorous 😄" },
 ];
 
 interface ScratchStoryFormProps {
@@ -112,7 +118,7 @@ export function ScratchStoryForm({
                     type="button"
                     variant="outline"
                     onClick={handleClearFormat}
-                    className="flex-shrink-0 rounded-full"
+                    className="flex-shrink-0 rounded-lg"
                   >
                     Clear Format
                   </Button>
@@ -128,7 +134,7 @@ export function ScratchStoryForm({
           name="postContent"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Tell us your story</FormLabel>
+              <FormLabel>Enter a topic</FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="Describe the post you want to create."
@@ -145,9 +151,7 @@ export function ScratchStoryForm({
           name="tone"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>
-                How did this experience primarily make you feel?
-              </FormLabel>
+              <FormLabel>Select the tone you'd like for your post.</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
@@ -185,8 +189,26 @@ export function ScratchStoryForm({
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="linkedInPostUrl"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                Make the post sound like any post of your choice.
+              </FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Enter the URL to the LinkedIn post"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <Button
-          className="rounded-full bg-primary-blue hover:bg-darker-blue"
+          className="rounded-lg bg-brand-purple-500 font-light hover:bg-brand-purple-700"
           type="submit"
           disabled={isLoading}
         >

@@ -108,13 +108,14 @@ export function PostFormatSelector({
   onSelectFormat: (format: string) => void;
 }) {
   const [selectedFormat, setSelectedFormat] = useState<string | null>(null);
-
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   return (
-    <Dialog>
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
         <Button
-          className="rounded-full bg-custom-gray text-white hover:bg-gray-500 hover:text-white"
+          className="bg-brand-gray-800 font-light text-white hover:bg-brand-gray-900 hover:text-white"
           variant="outline"
+          onClick={() => setIsDialogOpen(true)}
         >
           Select Post Format
         </Button>
@@ -161,10 +162,11 @@ export function PostFormatSelector({
         </Tabs>
         <div className="mt-4 flex justify-end">
           <Button
-            className="rounded-full bg-primary-blue hover:bg-darker-blue"
+            className=" bg-brand-gray-800 text-white hover:bg-brand-gray-900 hover:text-white"
             onClick={() => {
               if (selectedFormat) {
                 onSelectFormat(selectedFormat);
+                setIsDialogOpen(false);
               }
             }}
           >

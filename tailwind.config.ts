@@ -9,7 +9,7 @@ const config = {
     "./components/**/*.{ts,tsx}",
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
-    "./node_modules/react-quill/**/*.js", // Add this line to include React Quill
+    "./node_modules/react-quill/**/*.js",
   ],
   prefix: "",
 
@@ -23,6 +23,32 @@ const config = {
     },
     extend: {
       colors: {
+        "brand-purple": {
+          25: "#f4f4fe",
+          50: "#eff6ff",
+          100: "#dbeafe",
+          200: "#bfdbfe",
+          300: "#93c5fd",
+          400: "#60a5fa",
+          500: "#3b82f6",
+          600: "#2563eb",
+          700: "#1d4ed8",
+          800: "#1e40af",
+          900: "#1e3a8a",
+        },
+        "brand-gray": {
+          25: "#fcfcfd",
+          50: "#f9fafb",
+          100: "#f2f4f7",
+          200: "#eaecf0",
+          300: "#d0d5dd",
+          400: "#98a1b2",
+          500: "#667085",
+          600: "#475467",
+          700: "#344054",
+          800: "#1d2939",
+          900: "#101828",
+        },
         "primary-blue": "#2fb4ff",
         "darker-blue": "#0FABF6",
         "custom-gray": "#333333",
@@ -66,6 +92,11 @@ const config = {
         sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
+        // Add this new keyframe for the gradient animation
+        "gradient-animation": {
+          "0%, 100%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+        },
         ripple: {
           "0%, 100%": {
             transform: "translate(-50%, -50%) scale(1)",
@@ -104,6 +135,7 @@ const config = {
         },
       },
       animation: {
+        gradient: "gradient-animation 2s ease infinite",
         ripple: "ripple 3400ms ease infinite",
         marquee: "marquee var(--duration) linear infinite",
         "marquee-vertical": "marquee-vertical var(--duration) linear infinite",

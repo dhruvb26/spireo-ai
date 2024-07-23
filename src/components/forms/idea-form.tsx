@@ -16,7 +16,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import PrimaryButton from "../ui/primary-button";
 
 const formSchema = z.object({
   topic: z.string().min(2, {
@@ -71,7 +70,11 @@ export function IdeaForm({ onIdeasGenerated, onLoading }: IdeaFormProps) {
             <FormItem>
               <FormLabel>Topic</FormLabel>
               <FormControl>
-                <Input placeholder="SEO, B2B, Technology, ..." {...field} />
+                <Input
+                  autoComplete="off"
+                  placeholder="SEO, B2B, Technology, ..."
+                  {...field}
+                />
               </FormControl>
               <FormDescription>
                 Enter a topic you want to generate post ideas for.
@@ -81,7 +84,7 @@ export function IdeaForm({ onIdeasGenerated, onLoading }: IdeaFormProps) {
           )}
         />
         <Button
-          className="rounded-full bg-primary-blue hover:bg-darker-blue"
+          className="rounded-lg bg-brand-purple-500 font-light hover:bg-brand-purple-700"
           type="submit"
           disabled={isSubmitting}
         >

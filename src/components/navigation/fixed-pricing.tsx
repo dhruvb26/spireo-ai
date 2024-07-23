@@ -22,7 +22,7 @@ export default async function FixedPricing() {
       <div className="grid grid-cols-1 gap-x-12 gap-y-10 md:grid-cols-2 md:items-stretch lg:gap-x-20">
         <div className="flex flex-col justify-between lg:py-5">
           <h2 className="text-3xl font-semibold leading-tight text-black sm:text-4xl lg:text-5xl lg:leading-tight">
-            Join 50k+ professionals & boost your LinkedIn presence
+            Join our professional world & boost your LinkedIn presence
           </h2>
 
           <div className="mt-auto">
@@ -65,7 +65,7 @@ export default async function FixedPricing() {
           <div className="overflow-hidden rounded-md bg-white">
             <div className="p-10">
               <h3 className="text-xs font-semibold uppercase tracking-widest text-primary-blue">
-                Pro Plan
+                Launch Plan
               </h3>
               <p className="mt-4 text-6xl font-bold text-black">$29</p>
               <p className="text-lg text-gray-600">per month</p>
@@ -74,30 +74,47 @@ export default async function FixedPricing() {
                 <li className="inline-flex items-center space-x-2">
                   <CheckIcon className="mr-2 h-5 w-5 text-green-500" />
                   <span className="text-base font-medium text-gray-900">
-                    Unlimited AI-generated posts
+                    AI-Powered Content Writing
                   </span>
                 </li>
 
                 <li className="inline-flex items-center space-x-2">
                   <CheckIcon className="mr-2 h-5 w-5 text-green-500" />
                   <span className="text-base font-medium text-gray-900">
-                    Advanced content customization
+                    Convert YouTube to LinkedIn Posts
                   </span>
                 </li>
 
                 <li className="inline-flex items-center space-x-2">
                   <CheckIcon className="mr-2 h-5 w-5 text-green-500" />
                   <span className="text-base font-medium text-gray-900">
-                    Scheduled posting
+                    Preview and Format LinkedIn Posts
                   </span>
                 </li>
-
-                {/* <li className="inline-flex items-center space-x-2">
+                <li className="inline-flex items-center space-x-2">
                   <CheckIcon className="mr-2 h-5 w-5 text-green-500" />
-                  <span className="border-b border-dashed border-black pb-0.5 text-base font-medium text-gray-900">
-                    Premium support
+                  <span className="text-base font-medium text-gray-900">
+                    Get Content Topic Ideas
                   </span>
-                </li> */}
+                </li>
+                <li className="inline-flex items-center space-x-2">
+                  <CheckIcon className="mr-2 h-5 w-5 text-green-500" />
+                  <span className="text-base font-medium text-gray-900">
+                    Get Post Ideas
+                  </span>
+                </li>
+                <li className="inline-flex items-center space-x-2">
+                  <CheckIcon className="mr-2 h-5 w-5 text-green-500" />
+                  <span className="text-base font-medium text-gray-900">
+                    Make LinkedIn Carousels
+                  </span>
+                </li>
+                <li className="inline-flex items-center space-x-2">
+                  <CheckIcon className="mr-2 h-5 w-5 text-green-500" />
+                  <span className="text-base font-medium text-gray-900">
+                    Schedule Your Posts
+                  </span>
+                </li>
               </ul>
               <a
                 href={

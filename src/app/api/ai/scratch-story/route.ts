@@ -1,16 +1,78 @@
 "use server";
 import Anthropic from "@anthropic-ai/sdk";
 import { env } from "@/env";
+import { NextResponse } from "next/server";
+import { checkAccess, updateGeneratedWords } from "@/app/actions/user";
+import { JSDOM } from "jsdom";
+
+function extractLinkedInPostId(url: string): string {
+  const regex = /activity-(\d+)/;
+
+  const match = url.match(regex) as any;
+
+  if (match) {
+    return match[1];
+  }
+  return "";
+}
+function extractCommentary(response: any): string {
+  try {
+    const commentary = response.response.elements[0].commentary.text.text;
+    return commentary;
+  } catch (error) {
+    console.error("Error extracting commentary:", error);
+    return "";
+  }
+}
 
 export async function POST(req: Request) {
+  // Get the user session
+  const hasAccess = await checkAccess();
+
+  // Check if the user has access
+  if (!hasAccess) {
+    return NextResponse.json({ ideas: "Not authorized!" }, { status: 401 });
+  }
+
   const body = await req.json();
   const anthropic = new Anthropic({
     apiKey: env.SPIREO_SECRET_KEY,
   });
-  const { postContent, tone, instructions, formatTemplate } = body;
+  const { postContent, tone, instructions, formatTemplate, linkedInPostUrl } =
+    body;
+
+  // const postUrn = extractLinkedInPostId(linkedInPostUrl);
+  // let postData = null;
+  // let postText = "";
+  // if (postUrn) {
+  //   console.log(postUrn);
+  //   // Fetch post data from Lix API
+  //   try {
+  //     const response = await fetch(
+  //       `https://api.lix-it.com/v1/enrich/post?post_urn=urn%3Ali%3Aactivity%3A${postUrn}`,
+  //       {
+  //         method: "GET",
+  //         headers: {
+  //           Authorization: `xJHvO3bJYunIdIN9TDf8rwywGVnfXBb1i0SluKiwcOCQXTcw3TcEaC36STta`, // Make sure to add LIX_API_KEY to your env file
+  //           "Content-Type": "application/json",
+  //         },
+  //       },
+  //     );
+
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! status: ${response.status}`);
+  //     }
+
+  //     postData = await response.json();
+  //     postText = extractCommentary(postData);
+  //     console.log(postText);
+  //   } catch (error) {
+  //     console.error("Error fetching post data from Lix:", error);
+  //   }
+  // }
 
   const stream = await anthropic.messages.create({
-    model: "claude-3-haiku-20240307",
+    model: env.MODEL,
     max_tokens: 1024,
     stream: true,
     messages: [
@@ -43,7 +105,7 @@ export async function POST(req: Request) {
 
           2. Consider the specified tone. Adjust your writing style to match this tone throughout the story. For example, if the tone is "inspirational," use uplifting language and focus on positive outcomes.
 
-          3. If a post format is provided, follow it strictly. This may include specific structures like bullet points, numbered lists, or paragraph arrangements. If no format is specified, use a clear and professional structure suitable for LinkedIn.
+          3. If a post format or context post is provided, follow it strictly. This may include specific structures like bullet points, numbered lists, emojis, formatted text, or paragraph arrangements. If no format or context is specified, use a clear and professional structure suitable for LinkedIn.
 
           4. Pay close attention to any custom instructions provided. These should be followed precisely as they may contain important details about content, length, or specific elements to include or avoid.
 
@@ -66,6 +128,8 @@ export async function POST(req: Request) {
   });
 
   const encoder = new TextEncoder();
+
+  let wordCount = 0;
   const readable = new ReadableStream({
     async start(controller) {
       for await (const chunk of stream) {
@@ -73,13 +137,22 @@ export async function POST(req: Request) {
           chunk.type === "content_block_delta" &&
           chunk.delta.type === "text_delta"
         ) {
-          controller.enqueue(encoder.encode(chunk.delta.text));
+          const text = chunk.delta.text;
+          controller.enqueue(encoder.encode(text));
+
+          // Count words in this chunk
+          const wordsInChunk = text
+            .split(/\s+/)
+            .filter((word) => word.length > 0).length;
+          wordCount += wordsInChunk;
         }
       }
       controller.close();
+
+      // Call the updateGeneratedWords action with the total word count
+      await updateGeneratedWords(wordCount);
     },
   });
-
   return new Response(readable, {
     headers: {
       "Content-Type": "text/event-stream",

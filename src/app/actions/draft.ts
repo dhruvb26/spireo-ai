@@ -11,6 +11,7 @@ export type Draft = {
   createdAt: Date;
   updatedAt: Date;
   userId: string;
+  status: string;
   linkedInId: string;
 };
 
@@ -31,6 +32,8 @@ export async function saveDraft(
   content: string,
 ): Promise<SaveDraftResult> {
   try {
+    console.log("saveDraft called with content:", content);
+
     const userId = await getUserId();
 
     if (!userId) {
@@ -97,12 +100,16 @@ export async function saveDraft(
     }
   } catch (error) {
     console.error("Error saving draft:", error);
+    if (error instanceof Error) {
+      console.error("Error details:", error.message);
+    }
     return {
       success: false,
       message: "Failed to save draft",
     };
   }
 }
+
 export async function getDrafts(): Promise<GetDraftsResult> {
   try {
     const userId = await getUserId();
@@ -121,7 +128,7 @@ export async function getDrafts(): Promise<GetDraftsResult> {
       .where(
         and(
           eq(drafts.userId, userId),
-          or(eq(drafts.status, "saved"), eq(drafts.status, "scheduled")),
+          // or(eq(drafts.status, "saved"), eq(drafts.status, "scheduled")),
         ),
       );
 
@@ -280,6 +287,52 @@ export async function updateDraftStatus(id: string): Promise<Result> {
       return {
         success: false,
         message: "Draft not found or not in scheduled status",
+      };
+    }
+
+    return {
+      success: true,
+      message: "Draft status updated to published successfully",
+    };
+  } catch (error) {
+    console.error("Error updating draft status:", error);
+    return {
+      success: false,
+      message: "Failed to update draft status",
+    };
+  }
+}
+
+export async function updateDraftPublishedStatus(id: string): Promise<Result> {
+  try {
+    const userId = await getUserId();
+
+    if (!userId) {
+      return {
+        success: false,
+        message: "User not authenticated",
+      };
+    }
+
+    const updatedDraft = await db
+      .update(drafts)
+      .set({
+        status: "published",
+        updatedAt: new Date(),
+      })
+      .where(
+        and(
+          eq(drafts.id, id),
+          eq(drafts.userId, userId),
+          eq(drafts.status, "saved"),
+        ),
+      )
+      .returning();
+
+    if (updatedDraft.length === 0) {
+      return {
+        success: false,
+        message: "Draft not found",
       };
     }
 

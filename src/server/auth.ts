@@ -65,7 +65,6 @@ export const authOptions: NextAuthOptions = {
     createUser: async (userData) => {
       const id = uuidv4();
       const now = new Date();
-      const trialEndsAt = new Date(now.setDate(now.getDate() + 7)); // 7 days trial
       const result = await db
         .insert(users)
         .values({
@@ -74,7 +73,6 @@ export const authOptions: NextAuthOptions = {
           email: userData.email,
           emailVerified: userData.emailVerified,
           image: userData.image,
-          trialEndsAt: trialEndsAt,
           hasAccess: false,
         })
         .returning();

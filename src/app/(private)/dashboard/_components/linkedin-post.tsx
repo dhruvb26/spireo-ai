@@ -61,25 +61,6 @@ const LinkedInPostPreview: React.FC<LinkedInPostPreviewProps> = ({
 
         <ContentViewer value={content} />
 
-        <div className="mb-2 flex items-center justify-between text-xs text-gray-500">
-          <div className="flex items-center">
-            <div className="mr-2 flex -space-x-1">
-              <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-blue-500 text-xs text-white">
-                👍
-              </span>
-              <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-green-500 text-xs text-white">
-                👏
-              </span>
-              <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">
-                ❤️
-              </span>
-            </div>
-            <span>267</span>
-          </div>
-          <div>
-            <span>22 comments • 5 reposts</span>
-          </div>
-        </div>
         <div className="border-t border-gray-200 pt-1">
           <div className="flex items-center justify-between">
             {[
@@ -92,8 +73,10 @@ const LinkedInPostPreview: React.FC<LinkedInPostPreviewProps> = ({
                 key={action.name}
                 className="flex flex-1 flex-col items-center justify-center rounded-lg px-1 py-2 transition-colors duration-200 ease-in-out hover:bg-gray-100"
               >
-                <span className="text-sm text-gray-600">{action.icon}</span>
-                <span className="mt-1 text-xs font-medium text-gray-600">
+                <span className="text-sm text-brand-gray-500">
+                  {action.icon}
+                </span>
+                <span className="mt-1 text-xs font-medium text-brand-gray-500">
                   {action.name}
                 </span>
               </button>

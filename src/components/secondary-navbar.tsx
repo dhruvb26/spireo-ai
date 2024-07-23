@@ -11,7 +11,7 @@ const SecondaryNavbar = () => {
     <nav className="bg-muted">
       <div className="flex flex-row items-center justify-between px-4">
         <div className="flex h-16 items-center">
-          <Link href={"/"}>
+          <Link href={"/dashboard/setup"}>
             <Image src="/logo.png" alt="Company Logo" width={120} height={40} />
           </Link>
         </div>

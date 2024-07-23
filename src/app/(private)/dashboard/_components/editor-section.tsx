@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback } from "react";
+import React, { useCallback, useRef } from "react";
 import {
   Descendant,
   BaseEditor,
@@ -8,27 +8,29 @@ import {
   Text,
   Transforms,
 } from "slate";
+import {
+  TooltipProvider,
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 import { Slate, Editable, ReactEditor, useSlate } from "slate-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Bold, Italic, Smile, Sparkles } from "lucide-react";
 import { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { DatePicker } from "./date-picker";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-
-import ContentViewer from "./content-viewer";
-import PrimaryButton from "@/components/ui/primary-button";
-import { getDraft, saveDraft } from "@/app/actions/draft";
+import ScheduleDialog from "./schedule-dialog";
 import { toast } from "sonner";
 import { getUserId } from "@/app/actions/user";
+import {
+  Paperclip,
+  Sparkle,
+  TextB,
+  TextItalic,
+  TextUnderline,
+  X,
+} from "@phosphor-icons/react";
+import { updateDraftPublishedStatus } from "@/app/actions/draft";
+import FileAttachmentButton from "./file-attachment-button";
 
 export type ParagraphElement = {
   type: "paragraph";
@@ -91,22 +93,30 @@ const CustomEditor = {
       { match: (n) => Text.isText(n), split: true },
     );
   },
+  isUnderlineMarkActive(editor: CustomEditor) {
+    const [match] = Editor.nodes(editor, {
+      match: (n) => Text.isText(n) && n.underline === true,
+      universal: true,
+    });
+    return !!match;
+  },
+  toggleUnderlineMark(editor: CustomEditor) {
+    const isActive = CustomEditor.isUnderlineMarkActive(editor);
+    Transforms.setNodes(
+      editor,
+      { underline: isActive ? undefined : true },
+      { match: (n) => Text.isText(n), split: true },
+    );
+  },
 };
 
-const extractContent = (value: Descendant[]): string => {
+export const extractContent = (value: Descendant[]): string => {
   return value
     .map((n) =>
       SlateElement.isElement(n) ? n.children.map((c) => c.text).join("") : "",
     )
-    .join("\n");
+    .join("");
 };
-
-const initialValue: Descendant[] = [
-  {
-    type: "paragraph",
-    children: [{ text: "" }],
-  },
-];
 
 interface EditorSectionProps {
   value: Descendant[];
@@ -139,6 +149,7 @@ function EditorSection({
         style={{
           fontWeight: props.leaf.bold ? "bold" : "normal",
           fontStyle: props.leaf.italic ? "italic" : "normal",
+          textDecoration: props.leaf.underline ? "underline" : "none",
         }}
       >
         {props.children}
@@ -148,27 +159,63 @@ function EditorSection({
 
   const [charCount, setCharCount] = useState(0);
 
-  const handleChange = (newValue: Descendant[]) => {
-    setValue(newValue);
-    const content = newValue
-      .map((n) =>
-        SlateElement.isElement(n) ? n.children.map((c) => c.text).join("") : "",
-      )
-      .join("\n");
+  const handleChange = useCallback(
+    (newValue: Descendant[]) => {
+      const content = newValue
+        .map((n) =>
+          SlateElement.isElement(n)
+            ? n.children.map((c) => c.text).join("")
+            : "",
+        )
+        .join("");
+      const newCharCount = content.length;
 
-    setCharCount(content.length);
-    if (content.length > 3000) {
-      const truncatedContent = content.slice(0, 3000);
-      setValue([
-        {
-          type: "paragraph",
-          children: [{ text: truncatedContent }],
-        },
-      ]);
+      if (newCharCount <= 3000) {
+        setValue(newValue);
+        setCharCount(newCharCount);
+      } else {
+        // If the new content exceeds 3000 characters, truncate it
+        const truncatedContent = content.slice(0, 3000);
+        const truncatedValue = [
+          { type: "paragraph", children: [{ text: truncatedContent }] },
+        ];
+        setValue(truncatedValue as Descendant[]);
+        setCharCount(3000);
+
+        // Optionally, you can show a toast only when the limit is first reached
+        if (charCount < 3000) {
+          toast.error(
+            "Character limit reached. Maximum 3000 characters allowed.",
+          );
+        }
+      }
+    },
+    [setValue, charCount],
+  );
+
+  const [isPublishing, setIsPublishing] = useState(false);
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const [documentUrn, setDocumentUrn] = useState<string | null>(null);
+  const [documentStatus, setDocumentStatus] = useState<string | null>(null);
+
+  const handleDocumentUploaded = (urn: string, fileType: string) => {
+    setDocumentUrn(urn);
+    setDocumentStatus("Processing");
+    if (fileType == "pdf") {
+      toast.success(`${fileType.toUpperCase()} uploaded successfully`);
     }
+    toast.success(`${fileType} uploaded successfully`);
+  };
+
+  const handleRemoveDocument = () => {
+    setDocumentUrn(null);
+    setDocumentStatus(null);
   };
 
   const handlePublish = async () => {
+    setIsPublishing(true);
+    abortControllerRef.current = new AbortController();
+
     try {
       const userId = await getUserId();
       if (!userId) {
@@ -178,16 +225,23 @@ function EditorSection({
 
       const postContent = extractContent(value);
 
+      const publishData: any = {
+        userId: userId,
+        postId: id,
+        content: postContent,
+      };
+
+      if (documentUrn) {
+        publishData.documentUrn = documentUrn;
+      }
+
       const response = await fetch("/api/publish", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          userId: userId,
-          postId: id,
-          content: postContent,
-        }),
+        body: JSON.stringify(publishData),
+        signal: abortControllerRef.current.signal,
       });
 
       if (!response.ok) {
@@ -196,36 +250,92 @@ function EditorSection({
       }
 
       const result = await response.json();
+      await updateDraftPublishedStatus(id);
       toast.success("Post published successfully");
-    } catch (error) {
-      console.error("Error publishing post:", error);
-      toast.error(
-        error instanceof Error ? error.message : "Failed to publish post",
-      );
+    } catch (error: any) {
+      if (error.name === "AbortError") {
+        toast.info("Publishing cancelled");
+      } else {
+        console.error("Error publishing post:", error);
+        toast.error(
+          error instanceof Error ? error.message : "Failed to publish post",
+        );
+      }
+    } finally {
+      setIsPublishing(false);
+      abortControllerRef.current = null;
     }
   };
 
+  const handleCancelPublish = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+  };
   return (
     <>
-      <div className="p-4">
-        <h1 className="mb-4 text-xl font-semibold">Write Post</h1>
+      <div className="relative p-4">
+        <h1 className="mb-4 text-2xl font-bold tracking-tighter">Write Post</h1>
+        {documentUrn && (
+          <div className="mb-4 flex items-center justify-between rounded-md bg-blue-200 p-2 text-blue-700">
+            <span className="text-sm">
+              Your file has been attached to the post. We're working on adding
+              it to the preview.
+            </span>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleRemoveDocument}
+                    className="bg-blue-200 text-blue-700 hover:bg-blue-200 hover:text-blue-900"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Remove file</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+        )}
         <Slate editor={editor} initialValue={value} onChange={handleChange}>
-          <div className="flex space-x-2">
-            <ToolbarButton format="bold" icon={<Bold className="h-4 w-4" />} />
+          <div className="mb-2 flex space-x-2">
+            <ToolbarButton format="bold" icon={<TextB className="h-4 w-4" />} />
             <ToolbarButton
               format="italic"
-              icon={<Italic className="h-4 w-4" />}
+              icon={<TextItalic className="h-4 w-4" />}
+            />
+            <ToolbarButton
+              format="underline"
+              icon={<TextUnderline className="h-4 w-4" />}
             />
 
-            <Button variant="ghost" size="icon">
-              <Smile className="h-4 w-4" />
-            </Button>
-            <Separator orientation="vertical" className="h-10" />
-            <Button variant="ghost" size="icon">
-              <Sparkles className="h-4 w-4" />
-            </Button>
+            <Separator orientation="vertical" className="h-8" />
+
+            <FileAttachmentButton onFileUploaded={handleDocumentUploaded} />
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="bg-blue-500 text-white hover:bg-blue-700 hover:text-white"
+                  >
+                    <Sparkle className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  {" "}
+                  <p>Rewrite with AI</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
-          <div className="h-[400px] overflow-y-auto rounded-md border border-gray-200">
+
+          <div className="h-[500px] overflow-y-auto rounded-md border border-gray-200">
             <Editable
               renderElement={renderElement}
               renderLeaf={renderLeaf}
@@ -233,25 +343,28 @@ function EditorSection({
             />
           </div>
         </Slate>
-        <div className="mt-2 text-sm text-gray-500">
+        <div className="mt-2 w-full text-right text-sm text-gray-500">
           {charCount}/3000 characters
         </div>
       </div>
       <div className="flex items-center justify-between border-t border-gray-200 p-4">
-        <PrimaryButton
-          className="bg-custom-gray px-[1rem] text-sm hover:bg-slate-500"
-          onClick={handleSave}
+        <Button
+          className="bg-brand-purple-500 font-light hover:bg-brand-purple-700"
+          onClick={handlePublish}
+          disabled={isPublishing}
         >
-          Save Draft
-        </PrimaryButton>
+          {isPublishing ? "Publishing..." : "Publish"}
+        </Button>
         <div className="flex space-x-2">
-          <ScheduleDialog id={id} content={value} />
-          <PrimaryButton
-            className="bg-darker-blue px-[1rem] text-sm"
-            onClick={handlePublish}
+          <ScheduleDialog id={id} content={value} disabled={isPublishing} />
+
+          <Button
+            className="bg-brand-gray-800 px-[1rem] font-light hover:bg-brand-gray-900"
+            onClick={handleSave}
+            disabled={isPublishing}
           >
-            Publish
-          </PrimaryButton>
+            Save Draft
+          </Button>
         </div>
       </div>
     </>
@@ -277,141 +390,13 @@ const ToolbarButton = ({
           CustomEditor.toggleBoldMark(editor);
         } else if (format === "italic") {
           CustomEditor.toggleItalicMark(editor);
+        } else if (format === "underline") {
+          CustomEditor.toggleUnderlineMark(editor);
         }
       }}
     >
       {icon}
     </Button>
-  );
-};
-
-const ScheduleDialog = ({ content, id }: { content: any; id: string }) => {
-  const [scheduleDate, setScheduleDate] = useState<Date | undefined>(undefined);
-  const [postName, setPostName] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleSchedule = async () => {
-    if (!scheduleDate) {
-      console.error("Please select both date and time");
-      toast.error("Please select both date and time");
-      return;
-    }
-
-    const postContent = extractContent(content);
-
-    setIsLoading(true);
-    const userId = await getUserId();
-
-    try {
-      const response = await fetch(`/api/schedule`, {
-        method: "POST",
-        body: JSON.stringify({
-          userId: userId,
-          postId: id,
-          content: postContent,
-          scheduledTime: scheduleDate.toISOString(),
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        toast.success(data.message || "Draft scheduled successfully");
-      } else {
-        toast.error(data.error || "Failed to schedule draft");
-      }
-    } catch (error) {
-      console.error("Error scheduling draft:", error);
-      toast.error("An error occurred while scheduling the draft");
-    } finally {
-      setIsLoading(false); // Changed from true to false
-    }
-  };
-
-  const handleDateChange = (date: Date | undefined) => {
-    if (date) {
-      const newDate = new Date(date);
-      if (scheduleDate) {
-        newDate.setHours(scheduleDate.getHours());
-        newDate.setMinutes(scheduleDate.getMinutes());
-      }
-      setScheduleDate(newDate);
-    } else {
-      setScheduleDate(undefined);
-    }
-  };
-
-  const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const [hours, minutes] = e.target.value.split(":").map(Number);
-    if (scheduleDate) {
-      const newDate = new Date(scheduleDate);
-      newDate.setHours(hours || 0);
-      newDate.setMinutes(minutes || 0);
-      setScheduleDate(newDate);
-    } else {
-      const newDate = new Date();
-      newDate.setHours(hours || 0);
-      newDate.setMinutes(minutes || 0);
-      setScheduleDate(newDate);
-    }
-  };
-
-  return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button className="rounded-full bg-custom-gray px-[1rem] text-sm font-normal hover:bg-slate-500">
-          Schedule
-        </Button>
-      </DialogTrigger>
-      <DialogContent aria-description="schedule" aria-describedby={undefined}>
-        <DialogHeader>
-          <DialogTitle>Schedule Post</DialogTitle>
-        </DialogHeader>
-        <div className="grid w-fit gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="postName" className="text-right">
-              Post Name
-            </Label>
-            <Input
-              id="postName"
-              value={postName}
-              onChange={(e) => setPostName(e.target.value)}
-              className="col-span-3"
-            />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="date" className="text-right">
-              Date
-            </Label>
-            <DatePicker selected={scheduleDate} onSelect={handleDateChange} />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="time" className="text-right">
-              Time
-            </Label>
-            <Input
-              id="time"
-              type="time"
-              value={
-                scheduleDate ? scheduleDate.toTimeString().slice(0, 5) : ""
-              }
-              onChange={handleTimeChange}
-              className="col-span-3"
-            />
-          </div>
-        </div>
-        <Button
-          className="rounded-full bg-custom-gray hover:bg-gray-400"
-          disabled={isLoading}
-          onClick={handleSchedule}
-        >
-          Schedule Post
-        </Button>
-      </DialogContent>
-    </Dialog>
   );
 };
 

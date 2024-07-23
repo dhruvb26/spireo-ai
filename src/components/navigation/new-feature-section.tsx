@@ -97,7 +97,7 @@ const NewFeatureSection: React.FC = () => {
         "Adapt successful pieces for fresh engagement",
         "Efficiently reuse your top-performing content",
       ],
-      imageUrl: "/Screenshot 2024-07-12 at 12.50.09 PM.png",
+      imageUrl: "/Screenshot 2024-07-15 at 10.42.14 PM.png",
       reversed: true,
       quote:
         "The content repurposing feature has been a game-changer for our team. We're getting more mileage out of our best ideas and seeing increased engagement across the board.",
@@ -113,7 +113,7 @@ const NewFeatureSection: React.FC = () => {
         "Create posts directly from ideas",
         "Save concepts for future use",
       ],
-      imageUrl: "/Screenshot 2024-07-12 at 12.50.25 PM.png",
+      imageUrl: "/Screenshot 2024-07-15 at 10.39.00 PM.png",
     },
     {
       spanText: "Stand Out Visually",
@@ -141,22 +141,22 @@ const NewFeatureSection: React.FC = () => {
       ],
       imageUrl: "/Screenshot 2024-07-12 at 12.50.56 PM.png",
     },
-    {
-      spanText: "Stay Ahead of Trends",
-      title: "Follow your favorite LinkedIn creators in real-time",
-      description: [
-        "Find inspiration from industry leaders",
-        "Create curated lists of favorite content creators",
-        "Stay updated on trends and best practices",
-      ],
-      imageUrl: "/placeholder.svg",
-      reversed: true,
-      quote:
-        "The ability to follow and curate content from top LinkedIn creators has transformed how we stay on top of industry trends. It's like having a personalized think tank at your fingertips.",
-      authorName: "Michael Tan",
-      authorTitle: "Head of Innovation",
-      authorImageUrl: "https://randomuser.me/api/portraits/men/4.jpg",
-    },
+    // {
+    //   spanText: "Stay Ahead of Trends",
+    //   title: "Follow your favorite LinkedIn creators in real-time",
+    //   description: [
+    //     "Find inspiration from industry leaders",
+    //     "Create curated lists of favorite content creators",
+    //     "Stay updated on trends and best practices",
+    //   ],
+    //   imageUrl: "/placeholder.svg",
+    //   reversed: true,
+    //   quote:
+    //     "The ability to follow and curate content from top LinkedIn creators has transformed how we stay on top of industry trends. It's like having a personalized think tank at your fingertips.",
+    //   authorName: "Michael Tan",
+    //   authorTitle: "Head of Innovation",
+    //   authorImageUrl: "https://randomuser.me/api/portraits/men/4.jpg",
+    // },
   ];
 
   return (

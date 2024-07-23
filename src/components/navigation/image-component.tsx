@@ -54,7 +54,7 @@ const ImageComponent = () => {
           <Image
             width={1270}
             height={720}
-            src="/Screenshot 2024-07-12 at 12.51.15 PM.png"
+            src="/Screenshot 2024-07-15 at 10.33.08 PM.png"
             alt="Dashboard screenshot"
           />
         </motion.div>

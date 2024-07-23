@@ -23,10 +23,10 @@ const FAQComponent = () => {
               How does Spireo's AI generate content?
             </p>
             <p className="mt-4 text-base text-gray-400">
-              Spireo's AI analyzes your profile, industry trends, and successful
-              content patterns to generate tailored post suggestions. It learns
-              from your preferences and audience engagement to continuously
-              improve its recommendations.
+              Spireo's AI uses Anthropic's state-of-the-art Claude 3.5 Sonnet
+              model to generate curated content for you. This model is trained
+              on a diverse range of LinkedIn posts and is fine-tuned to
+              understand the nuances of professional networking.
             </p>
           </div>
         </div>
@@ -57,8 +57,8 @@ const FAQComponent = () => {
               Is there a free trial available?
             </p>
             <p className="mt-4 text-base text-gray-400">
-              Yes, we offer a 14-day free trial for new users. This allows you
-              to explore all of Spireo's features and see how it can boost your
+              Yes, we offer a 7-day free trial for new users. This allows you to
+              explore all of Spireo's features and see how it can boost your
               LinkedIn engagement before committing to a paid plan.
             </p>
           </div>

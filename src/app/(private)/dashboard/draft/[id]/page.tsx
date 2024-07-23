@@ -4,12 +4,14 @@ import React, { useEffect, useState, useMemo } from "react";
 import { createEditor, Descendant, Element as SlateElement } from "slate";
 import { withReact } from "slate-react";
 import { usePostStore } from "@/store/postStore";
-import { saveDraft } from "@/app/actions/draft";
+import { getDraft, saveDraft } from "@/app/actions/draft";
 import { MdSmartphone, MdTablet, MdLaptop } from "react-icons/md";
 import LinkedInPostPreview from "../../_components/linkedin-post";
 import { toast } from "sonner";
 import { MoonLoader } from "react-spinners";
-import EditorSection from "../../_components/editor-section";
+import EditorSection, {
+  extractContent,
+} from "../../_components/editor-section";
 import { useParams } from "next/navigation";
 
 const initialValue: Descendant[] = [
@@ -28,14 +30,15 @@ export default function EditDraft() {
     "mobile",
   );
   const [isLoading, setIsLoading] = useState(true);
-  const { getPost, updatePost } = usePostStore();
+  const { updatePost } = usePostStore();
 
   useEffect(() => {
     const fetchDraft = async () => {
       setIsLoading(true);
       try {
-        const post = getPost(id);
-        const draftContent = post?.content || "";
+        // const post = getPost(id);
+        const draft = await getDraft(id);
+        const draftContent = draft.data?.content || "";
 
         // Create a new Slate document structure
         const newValue: Descendant[] = [
@@ -65,14 +68,7 @@ export default function EditDraft() {
 
   const handleSave = async () => {
     try {
-      const content = value
-        .map((n) =>
-          SlateElement.isElement(n)
-            ? n.children.map((c) => c.text).join("")
-            : "",
-        )
-        .join("\n");
-
+      const content = extractContent(value);
       const result = await saveDraft(id, content);
       if (result.success) {
         toast.success(result.message);
@@ -86,41 +82,43 @@ export default function EditDraft() {
   };
 
   return (
-    <div className="m-0 flex max-w-full justify-between gap-4 p-0">
+    <div className="m-0 flex max-w-6xl px-4">
       {isLoading ? (
-        <div className="flex h-full w-full flex-col items-center justify-center space-y-4">
+        <div className="flex h-screen w-full items-center justify-center">
           <MoonLoader size={50} color="#333333" loading={isLoading} />
         </div>
       ) : (
-        <>
-          <div className="h-fit w-1/2 rounded-lg border border-gray-200 shadow-sm">
-            <EditorSection
-              id={id}
-              value={value}
-              setValue={setValue}
-              editor={editor}
-              handleSave={handleSave}
-            />
+        <div className="flex w-full flex-col space-y-4 lg:flex-row lg:space-x-4 lg:space-y-0">
+          <div className="w-full lg:w-1/2">
+            <div className="rounded-lg border border-gray-200 shadow-sm">
+              <EditorSection
+                id={id}
+                value={value}
+                setValue={setValue}
+                editor={editor}
+                handleSave={handleSave}
+              />
+            </div>
           </div>
-          <div className="w-1/2">
+          <div className="w-full lg:w-1/2">
             <div className="rounded-lg border border-gray-200 p-4">
-              <div className="mb-4 flex items-center justify-between">
+              <div className="mb-4 flex items-center justify-center">
                 <div className="flex gap-2">
                   <button
                     onClick={() => setDevice("mobile")}
-                    className={`rounded-full p-2 ${device === "mobile" ? "bg-primary-blue text-white" : "bg-gray-200"}`}
+                    className={`rounded-full p-2 ${device === "mobile" ? "text-brand-purple-500" : "text-brand-gray-500"}`}
                   >
                     <MdSmartphone size={24} />
                   </button>
                   <button
                     onClick={() => setDevice("tablet")}
-                    className={`rounded-full p-2 ${device === "tablet" ? "bg-primary-blue text-white" : "bg-gray-200"}`}
+                    className={`rounded-full p-2 ${device === "tablet" ? "text-brand-purple-500" : "text-brand-gray-500"}`}
                   >
                     <MdTablet size={24} />
                   </button>
                   <button
                     onClick={() => setDevice("desktop")}
-                    className={`rounded-full p-2 ${device === "desktop" ? "bg-primary-blue text-white" : "bg-gray-200"}`}
+                    className={`rounded-full p-2 ${device === "desktop" ? "text-brand-purple-500" : "text-brand-gray-500"}`}
                   >
                     <MdLaptop size={24} />
                   </button>
@@ -129,7 +127,7 @@ export default function EditDraft() {
               <LinkedInPostPreview content={value} device={device} />
             </div>
           </div>
-        </>
+        </div>
       )}
     </div>
   );

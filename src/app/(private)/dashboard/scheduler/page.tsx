@@ -7,8 +7,9 @@ import {
   DateLocalizer,
 } from "react-big-calendar";
 import moment from "moment";
-import "react-big-calendar/lib/css/react-big-calendar.css";
 import { getScheduledDrafts } from "@/app/actions/draft";
+import "react-big-calendar/lib/css/react-big-calendar.css";
+import styles from "./PostVisualizer.module.css"; // Create this CSS module file
 
 // Setup the localizer for react-big-calendar
 const localizer: DateLocalizer = momentLocalizer(moment);
@@ -43,6 +44,26 @@ const PostVisualizer: React.FC = () => {
   const [view, setView] = useState<View>("month");
   const [date, setDate] = useState<Date>(new Date());
 
+  const eventStyleGetter = (
+    event: CalendarEvent,
+    start: Date,
+    end: Date,
+    isSelected: boolean,
+  ) => {
+    const style: React.CSSProperties = {
+      backgroundColor: "#3498db",
+      borderRadius: "5px",
+      opacity: 0.8,
+      color: "white",
+      border: "0px",
+      display: "block",
+      fontWeight: "bold",
+    };
+    return {
+      style: style,
+    };
+  };
+
   useEffect(() => {
     const fetchScheduledDrafts = async () => {
       const result: any = await getScheduledDrafts();
@@ -75,39 +96,25 @@ const PostVisualizer: React.FC = () => {
     setView(newView);
   };
 
-  const eventStyleGetter = (
-    event: CalendarEvent,
-    start: Date,
-    end: Date,
-    isSelected: boolean,
-  ) => {
-    const style: React.CSSProperties = {
-      backgroundColor: "#2fb4ff",
-      borderRadius: "0px",
-      opacity: 0.8,
-      color: "white",
-      border: "0px",
-      display: "block",
-    };
-    return {
-      style: style,
-    };
-  };
-
   return (
-    <Calendar
-      localizer={localizer}
-      events={events}
-      startAccessor="start"
-      endAccessor="end"
-      style={{ height: "100%" }}
-      view={view}
-      onView={handleViewChange}
-      date={date}
-      onNavigate={handleNavigate}
-      eventPropGetter={eventStyleGetter}
-      tooltipAccessor={(event: CalendarEvent) => event.draft.content}
-    />
+    <div className={styles.calendarContainer}>
+      <Calendar
+        localizer={localizer}
+        events={events}
+        startAccessor="start"
+        endAccessor="end"
+        defaultView="week"
+        views={["month", "week", "day"]}
+        style={{ height: "700px" }} // Set a fixed height
+        view={view}
+        onView={handleViewChange}
+        date={date}
+        onNavigate={handleNavigate}
+        eventPropGetter={eventStyleGetter}
+        tooltipAccessor={(event: CalendarEvent) => event.draft.content}
+        className={styles.calendar}
+      />
+    </div>
   );
 };
 

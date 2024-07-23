@@ -29,10 +29,10 @@ export default function HomePage() {
         <section className="bg-muted py-10 sm:py-16 lg:py-24">
           <TestimonialSection />
         </section>
-        <section className="bg-white py-10 sm:py-16 lg:py-24">
+        {/* <section className="bg-white py-10 sm:py-16 lg:py-24">
           <FixedPricing />
-        </section>
-        <section className="bg-muted py-10 sm:py-16 lg:py-24">
+        </section> */}
+        <section className="bg-white py-10 sm:py-16 lg:py-24">
           <CTASection />
         </section>
 

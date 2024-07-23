@@ -82,7 +82,7 @@ export function YouTubeForm({ onSubmit, isLoading }: YouTubeFormProps) {
                     type="button"
                     variant="outline"
                     onClick={handleClearFormat}
-                    className="flex-shrink-0 rounded-full"
+                    className="flex-shrink-0 rounded-lg"
                   >
                     Clear Format
                   </Button>
@@ -100,6 +100,7 @@ export function YouTubeForm({ onSubmit, isLoading }: YouTubeFormProps) {
               <FormLabel>URL</FormLabel>
               <FormControl>
                 <Input
+                  autoComplete="off"
                   placeholder="Enter a YouTube video URL"
                   {...field}
                   disabled={isLoading}
@@ -119,8 +120,9 @@ export function YouTubeForm({ onSubmit, isLoading }: YouTubeFormProps) {
             <FormItem>
               <FormLabel>Instructions</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="Enter any custom instructions"
+                <Textarea
+                  autoComplete="off"
+                  placeholder="Add any specific instructions or notes for your post..."
                   {...field}
                   disabled={isLoading}
                 />
@@ -133,7 +135,7 @@ export function YouTubeForm({ onSubmit, isLoading }: YouTubeFormProps) {
           )}
         />
         <Button
-          className="rounded-full bg-primary-blue hover:bg-darker-blue"
+          className="rounded-lg bg-brand-purple-500 font-light hover:bg-brand-purple-700"
           type="submit"
           disabled={isLoading}
         >

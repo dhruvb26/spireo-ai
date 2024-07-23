@@ -71,18 +71,20 @@ const TipsPage = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="mb-2 text-3xl font-bold">Share some tips</h1>
-      <p className="text-sm text-slate-500">
-        Share any tips with the world. Anything from life hacks to professional
-        tips.
-      </p>
-      <FadeSeparator />
-      <div className="flex flex-col gap-8 lg:flex-row">
+    <div className="max-w-6xl lg:max-w-[85rem]">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold tracking-tighter text-brand-gray-900">
+          Create Your Tips Post
+        </h1>
+        <p className="text-md text-brand-gray-500">
+          Share your tips with the world. Offer practical advice to engage your
+          audience.
+        </p>
+      </div>
+      <div className="flex flex-grow flex-col gap-8 lg:flex-row">
         <div className="w-full lg:w-1/2">
           <TipsForm onSubmit={handleSubmit} isLoading={isLoading} />
         </div>
-
         <div className="w-full lg:w-1/2">
           <GeneratedContent
             isLoading={isLoading}

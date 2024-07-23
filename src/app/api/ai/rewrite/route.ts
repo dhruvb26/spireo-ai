@@ -2,8 +2,17 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { env } from "@/env";
 import { NextResponse } from "next/server";
+import { checkAccess } from "@/app/actions/user";
 
 export async function POST(req: Request) {
+  // Get the user session
+  const hasAccess = await checkAccess();
+
+  // Check if the user has access
+  if (!hasAccess) {
+    return NextResponse.json({ ideas: "Not authorized!" }, { status: 401 });
+  }
+
   const anthropic = new Anthropic({
     apiKey: env.SPIREO_SECRET_KEY,
   });
@@ -12,7 +21,7 @@ export async function POST(req: Request) {
   const { originalContent } = body;
 
   const msg = await anthropic.messages.create({
-    model: "claude-3-haiku-20240307",
+    model: env.MODEL,
     max_tokens: 1024,
     messages: [
       {

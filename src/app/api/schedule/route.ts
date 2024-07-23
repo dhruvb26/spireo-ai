@@ -1,3 +1,4 @@
+"use server";
 import { NextResponse } from "next/server";
 import { db } from "@/server/db";
 import { drafts } from "@/server/db/schema";
@@ -5,8 +6,14 @@ import { and, eq } from "drizzle-orm";
 import { queue } from "@/server/bull/queue";
 import { saveJobId } from "@/server/redis";
 import { getJobId, deleteJobId } from "@/server/redis";
+import { checkAccess } from "@/app/actions/user";
 
 export async function POST(req: Request) {
+  const hasAccess = await checkAccess();
+  if (!hasAccess) {
+    return NextResponse.json({ error: "Not authorized!" }, { status: 401 });
+  }
+
   const body = await req.json();
   const { userId, postId, content, scheduledTime } = body;
 
@@ -18,6 +25,17 @@ export async function POST(req: Request) {
   }
 
   try {
+    // Check if a job already exists for this post
+    const existingJobId = await getJobId(userId, postId);
+    if (existingJobId) {
+      // If a job exists, remove it
+      const existingJob = await queue.getJob(existingJobId);
+      if (existingJob) {
+        await existingJob.remove();
+      }
+      await deleteJobId(userId, postId);
+    }
+
     // Check if the draft exists
     let draft = await db
       .select()
@@ -40,16 +58,7 @@ export async function POST(req: Request) {
         .returning();
     }
 
-    console.log(
-      `Scheduling a post for user ${userId} with content: ${content}`,
-    );
-
-    const jobData = {
-      userId,
-      postId,
-      content,
-    };
-
+    const jobData = { userId, postId, content };
     const jobOptions: any = {};
     const now = new Date();
 
@@ -70,17 +79,12 @@ export async function POST(req: Request) {
       }
 
       jobOptions.delay = scheduledDate.getTime() - now.getTime();
-      console.log(`Post scheduled for ${scheduledDate.toISOString()}`);
-    } else {
-      console.log(
-        "No scheduled time provided. Post queued for immediate processing.",
-      );
     }
 
-    // Add a job to the queue
+    // Add a new job to the queue
     const job = await queue.add("post", jobData, jobOptions);
 
-    // Save the job ID in Redis
+    // Save the new job ID in Redis
     await saveJobId(userId, postId, job.id || "");
 
     const scheduledFor = jobOptions.delay
@@ -111,7 +115,9 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       success: true,
-      message: "Post scheduled successfully!",
+      message: existingJobId
+        ? "Post rescheduled successfully!"
+        : "Post scheduled successfully!",
       jobId: job.id,
       scheduledFor: scheduledFor,
     });
@@ -126,6 +132,7 @@ export async function POST(req: Request) {
     );
   }
 }
+
 export async function DELETE(req: Request) {
   const body = await req.json();
   const { userId, postId } = body;
@@ -158,74 +165,74 @@ export async function DELETE(req: Request) {
   return NextResponse.json({ message: "Job removed successfully" });
 }
 
-export async function PUT(req: Request) {
-  const body = await req.json();
-  const { userId, postId, content, scheduledTime } = body;
+// export async function PUT(req: Request) {
+//   const body = await req.json();
+//   const { userId, postId, content, scheduledTime } = body;
 
-  if (!userId || !postId) {
-    return NextResponse.json(
-      { error: "Missing required fields" },
-      { status: 400 },
-    );
-  }
+//   if (!userId || !postId) {
+//     return NextResponse.json(
+//       { error: "Missing required fields" },
+//       { status: 400 },
+//     );
+//   }
 
-  const jobId = await getJobId(userId, postId);
+//   const jobId = await getJobId(userId, postId);
 
-  if (!jobId) {
-    return NextResponse.json({ error: "Job not found" }, { status: 404 });
-  }
+//   if (!jobId) {
+//     return NextResponse.json({ error: "Job not found" }, { status: 404 });
+//   }
 
-  const job = await queue.getJob(jobId);
+//   const job = await queue.getJob(jobId);
 
-  if (!job) {
-    return NextResponse.json(
-      { error: "Job not found in queue" },
-      { status: 404 },
-    );
-  }
+//   if (!job) {
+//     return NextResponse.json(
+//       { error: "Job not found in queue" },
+//       { status: 404 },
+//     );
+//   }
 
-  // Update job data
-  let updatedData = { ...job.data };
-  if (content) {
-    updatedData.content = content;
-  }
+//   // Update job data
+//   let updatedData = { ...job.data };
+//   if (content) {
+//     updatedData.content = content;
+//   }
 
-  // Update job options
-  let updatedOpts = { ...job.opts };
-  if (scheduledTime) {
-    const scheduledDate = new Date(scheduledTime);
-    if (isNaN(scheduledDate.getTime())) {
-      return NextResponse.json(
-        { error: "Invalid scheduledTime" },
-        { status: 400 },
-      );
-    }
+//   // Update job options
+//   let updatedOpts = { ...job.opts };
+//   if (scheduledTime) {
+//     const scheduledDate = new Date(scheduledTime);
+//     if (isNaN(scheduledDate.getTime())) {
+//       return NextResponse.json(
+//         { error: "Invalid scheduledTime" },
+//         { status: 400 },
+//       );
+//     }
 
-    const now = new Date();
-    if (scheduledDate <= now) {
-      return NextResponse.json(
-        { error: "Scheduled time must be in the future" },
-        { status: 400 },
-      );
-    } else {
-      updatedOpts.delay = scheduledDate.getTime() - now.getTime();
-    }
-  }
+//     const now = new Date();
+//     if (scheduledDate <= now) {
+//       return NextResponse.json(
+//         { error: "Scheduled time must be in the future" },
+//         { status: 400 },
+//       );
+//     } else {
+//       updatedOpts.delay = scheduledDate.getTime() - now.getTime();
+//     }
+//   }
 
-  // Remove the existing job
-  await job.remove();
+//   // Remove the existing job
+//   await job.remove();
 
-  // Add a new job with updated data and options
-  const updatedJob = await queue.add("post", updatedData, updatedOpts);
+//   // Add a new job with updated data and options
+//   const updatedJob = await queue.add("post", updatedData, updatedOpts);
 
-  // Update the job ID in Redis
-  await saveJobId(userId, postId, updatedJob.id || "");
+//   // Update the job ID in Redis
+//   await saveJobId(userId, postId, updatedJob.id || "");
 
-  return NextResponse.json({
-    message: "Job updated successfully",
-    jobId: updatedJob.id,
-    scheduledFor: updatedOpts.delay
-      ? new Date(Date.now() + updatedOpts.delay).toISOString()
-      : "immediate",
-  });
-}
+//   return NextResponse.json({
+//     message: "Job updated successfully",
+//     jobId: updatedJob.id,
+//     scheduledFor: updatedOpts.delay
+//       ? new Date(Date.now() + updatedOpts.delay).toISOString()
+//       : "immediate",
+//   });
+// }

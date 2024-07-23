@@ -2,8 +2,17 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { env } from "@/env";
 import { NextResponse } from "next/server";
+import { checkAccess, updateGeneratedWords } from "@/app/actions/user";
 
 export async function POST(req: Request) {
+  // Get the user session
+  const hasAccess = await checkAccess();
+
+  // Check if the user has access
+  if (!hasAccess) {
+    return NextResponse.json({ ideas: "Not authorized!" }, { status: 401 });
+  }
+
   const anthropic = new Anthropic({
     apiKey: env.SPIREO_SECRET_KEY,
   });
@@ -13,7 +22,7 @@ export async function POST(req: Request) {
   const { topic } = body;
 
   const msg = await anthropic.messages.create({
-    model: "claude-3-haiku-20240307",
+    model: env.MODEL,
     max_tokens: 1024,
     messages: [
       {
@@ -45,7 +54,7 @@ export async function POST(req: Request) {
             ...
             </ideas>
 
-            Aim to generate no more than 5 ideas.
+            Aim to generate no more than 10 ideas.
 
             Here's an example of a good output:
 
@@ -55,11 +64,8 @@ export async function POST(req: Request) {
 
             <ideas>
              5 Ways to Stay Ahead in Tech: A Continuous Learning Roadmap
-             Poll: What's your favorite method for learning new tech skills?
              From Novice to Expert: My 30-Day Coding Challenge Journey
              Why Embracing Failure is Crucial for Innovation in Tech
-             Infographic: The Evolution of Programming Languages - Are You Keeping Up?
-             Video: Quick Tips for Balancing Work and Learning in the Fast-Paced Tech World
              The Hidden Benefits of Teaching Others in Your Tech Career
             </ideas>
             </example>
@@ -73,6 +79,12 @@ export async function POST(req: Request) {
 
   // Extract ideas from the generated message
   const content = msg.content[0];
+
+  const outputTokens = msg.usage.output_tokens;
+
+  const estimatedWords = Math.round(outputTokens * 0.75);
+
+  await updateGeneratedWords(estimatedWords);
 
   if (!content) {
     return NextResponse.json({ ideas: [] }, { status: 200 });

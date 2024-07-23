@@ -7,9 +7,12 @@ import { Button } from "@/components/ui/button";
 import { NavigationMenuDemo } from "./navigation-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { signIn } from "next-auth/react";
+import { getServerAuthSession } from "@/server/auth";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
 
   return (
     <div className="flex justify-center px-4 py-4 md:px-8 lg:px-8">

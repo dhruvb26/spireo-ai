@@ -13,6 +13,7 @@ import {
   varchar,
   pgEnum,
   text,
+  jsonb,
 } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
 
@@ -29,12 +30,12 @@ export const statusEnum = pgEnum("status", ["saved", "scheduled", "published"]);
 export const drafts = createTable(
   "draft",
   {
-    id: varchar("id", { length: 256 }).primaryKey().notNull(),
-    name: varchar("name", { length: 256 }),
+    id: varchar("id", { length: 512 }).primaryKey().notNull(),
+    name: varchar("name", { length: 512 }),
     status: statusEnum("status"),
-    userId: varchar("user_id", { length: 256 }),
+    userId: varchar("user_id", { length: 512 }),
     scheduledFor: timestamp("scheduled_for", { withTimezone: true }),
-    linkedInId: varchar("linked_in_id", { length: 256 }),
+    linkedInId: varchar("linked_in_id", { length: 512 }),
     content: text("content"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
@@ -72,7 +73,11 @@ export const users = createTable("user", {
   hasAccess: boolean("hasAccess").default(false),
   priceId: varchar("price_id", { length: 255 }),
   stripeCustomerId: varchar("stripe_customer_id", { length: 255 }),
+  stripeSubscriptionId: varchar("stripe_subscription_id", { length: 255 }),
   trialEndsAt: timestamp("trial_ends_at"),
+  onboardingCompleted: boolean("onboarding_complete").default(false),
+  generatedWords: integer("generated_words").default(0),
+  onboardingData: jsonb("onboarding_data"),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({

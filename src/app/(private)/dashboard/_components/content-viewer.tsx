@@ -1,3 +1,4 @@
+"use client";
 import React, { useRef, useEffect, useState } from "react";
 import { Descendant, Element as SlateElement, Text } from "slate";
 
@@ -5,43 +6,32 @@ interface ContentViewerProps {
   value: Descendant[];
 }
 
-type FormattedText = {
-  text: string;
-  bold?: boolean;
-  italic?: boolean;
-  underline?: boolean;
-};
-
 const ContentViewer: React.FC<ContentViewerProps> = ({ value }) => {
   const [isOverflowing, setIsOverflowing] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  const renderNode = (node: Descendant): string => {
+  const renderNode = (node: Descendant): JSX.Element => {
     if (Text.isText(node)) {
-      const formattedText = node as FormattedText;
-      let formattedString = node.text;
-      if (formattedText.bold) {
-        formattedString = `<strong>${formattedString}</strong>`;
-      }
-      if (formattedText.italic) {
-        formattedString = `<em>${formattedString}</em>`;
-      }
-      if (formattedText.underline) {
-        formattedString = `<u>${formattedString}</u>`;
-      }
-      return formattedString;
-    } else if (SlateElement.isElement(node)) {
-      const childContent = node.children.map(renderNode).join("");
-      if (node.type === "paragraph") {
-        return `<p>${childContent}</p>`;
-      }
-      return childContent;
-    }
-    return "";
-  };
+      let style: React.CSSProperties = {};
+      if (node.bold) style.fontWeight = "bold";
+      if (node.italic) style.fontStyle = "italic";
+      if (node.underline) style.textDecoration = "underline";
 
-  const content = value.map(renderNode).join("");
+      return <span style={style}>{node.text}</span>;
+    } else if (SlateElement.isElement(node)) {
+      if (node.type === "paragraph") {
+        return (
+          <p>
+            {node.children.map((child, index) => (
+              <React.Fragment key={index}>{renderNode(child)}</React.Fragment>
+            ))}
+          </p>
+        );
+      }
+    }
+    return <></>;
+  };
 
   useEffect(() => {
     const checkOverflow = () => {
@@ -56,7 +46,7 @@ const ContentViewer: React.FC<ContentViewerProps> = ({ value }) => {
     window.addEventListener("resize", checkOverflow);
 
     return () => window.removeEventListener("resize", checkOverflow);
-  }, [content]);
+  }, [value]);
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
@@ -69,8 +59,11 @@ const ContentViewer: React.FC<ContentViewerProps> = ({ value }) => {
         className={`whitespace-pre-wrap break-words py-2 font-sans text-sm ${
           isExpanded ? "" : "max-h-[100px] overflow-hidden"
         }`}
-        dangerouslySetInnerHTML={{ __html: content }}
-      />
+      >
+        {value.map((node, index) => (
+          <React.Fragment key={index}>{renderNode(node)}</React.Fragment>
+        ))}
+      </div>
       {isOverflowing && !isExpanded && (
         <button
           onClick={toggleExpand}

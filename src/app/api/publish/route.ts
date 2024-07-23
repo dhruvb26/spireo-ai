@@ -1,13 +1,33 @@
+"use server";
 import { NextResponse } from "next/server";
 import { getAccessToken, getLinkedInId } from "@/app/actions/user";
 import { updateDraftStatus, saveDraft } from "@/app/actions/draft";
+import { checkAccess } from "@/app/actions/user";
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const { userId, postId, content } = body;
+    const hasAccess = await checkAccess();
 
-    console.log(content);
+    if (!hasAccess) {
+      return NextResponse.json({ error: "Not authorized!" }, { status: 401 });
+    }
+
+    const body = await req.json();
+    const { userId, postId, content, documentUrn } = body;
+
+    let urnId = "";
+    let mediaType = "NONE";
+
+    if (documentUrn) {
+      const parts = documentUrn.split(":");
+      urnId = parts[parts.length - 1];
+
+      if (documentUrn.includes(":image:")) {
+        mediaType = "IMAGE";
+      } else if (documentUrn.includes(":document:")) {
+        mediaType = "RICH";
+      }
+    }
 
     const linkedInId = await getLinkedInId(userId);
     const accessToken = await getAccessToken(userId);
@@ -24,6 +44,38 @@ export async function POST(req: Request) {
 
     await saveDraft(postId, content);
 
+    let postBody: any = {
+      author: `urn:li:person:${linkedInId}`,
+      lifecycleState: "PUBLISHED",
+      specificContent: {
+        "com.linkedin.ugc.ShareContent": {
+          shareCommentary: {
+            text: content,
+          },
+          shareMediaCategory: mediaType,
+        },
+      },
+      visibility: {
+        "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC",
+      },
+    };
+
+    if (mediaType === "IMAGE") {
+      postBody.specificContent["com.linkedin.ugc.ShareContent"].media = [
+        {
+          status: "READY",
+          media: `urn:li:digitalmediaAsset:${urnId}`,
+        },
+      ];
+    } else if (mediaType === "RICH") {
+      postBody.specificContent["com.linkedin.ugc.ShareContent"].media = [
+        {
+          status: "READY",
+          media: `urn:li:digitalmediaAsset:${urnId}`,
+        },
+      ];
+    }
+
     const response = await fetch("https://api.linkedin.com/v2/ugcPosts", {
       method: "POST",
       headers: {
@@ -32,21 +84,7 @@ export async function POST(req: Request) {
         Authorization: `Bearer ${accessToken}`,
         "X-Restli-Protocol-Version": "2.0.0",
       },
-      body: JSON.stringify({
-        author: `urn:li:person:${linkedInId}`,
-        lifecycleState: "PUBLISHED",
-        specificContent: {
-          "com.linkedin.ugc.ShareContent": {
-            shareCommentary: {
-              text: content,
-            },
-            shareMediaCategory: "NONE",
-          },
-        },
-        visibility: {
-          "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC",
-        },
-      }),
+      body: JSON.stringify(postBody),
     });
 
     if (!response.ok) {

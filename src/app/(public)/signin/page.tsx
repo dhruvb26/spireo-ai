@@ -10,7 +10,7 @@ export default function SignIn() {
   const handleLinkedInSignIn = () => {
     try {
       signIn("linkedin", {
-        callbackUrl: `/dashboard/subscribe`,
+        callbackUrl: `/dashboard/settings`,
       });
     } catch (error) {
       console.error("Error signing in with LinkedIn", error);
@@ -26,7 +26,7 @@ export default function SignIn() {
   return (
     <div className="flex min-h-screen ">
       <div className="mx-auto flex w-full flex-col md:flex-row md:space-x-8">
-        <div className="flex flex-1 items-center justify-center bg-darker-blue px-4 py-12 md:px-8 md:py-24">
+        <div className="flex flex-1 items-center justify-center bg-blue-500 px-4 py-12 md:px-8 md:py-24">
           <div className="max-w-md space-y-8">
             <h1 className="text-4xl font-bold leading-tight text-white md:text-5xl">
               Boost your LinkedIn presence with AI
@@ -65,11 +65,14 @@ export default function SignIn() {
             <div className="flex flex-col items-center justify-center space-y-4 sm:space-y-6">
               <div className="flex flex-col items-center justify-center space-x-0 space-y-2 sm:flex-row sm:space-x-2 sm:space-y-0">
                 <Image
-                  src="/inverted-logo.png"
-                  width={200}
-                  height={200}
+                  src="/Spireo Logo Symbol Custom.png"
+                  width={40}
+                  height={40}
                   alt="Logo"
                 />
+                <span className="text-3xl font-bold tracking-tighter">
+                  Spireo
+                </span>
               </div>
               <p className="px-2 text-center text-sm sm:px-0">
                 Connect your professional world with ours.
@@ -86,13 +89,13 @@ export default function SignIn() {
               <div className="text-center text-xs text-white">
                 By connecting, you agree to our{" "}
                 <Link href={"#"}>
-                  <span className="text-primary-blue underline">
+                  <span className="text-blue-500 underline hover:text-blue-700">
                     Terms of Service
                   </span>{" "}
                 </Link>
                 and{" "}
                 <Link href={"#"}>
-                  <span className="text-primary-blue underline">
+                  <span className="text-blue-500 underline hover:text-blue-700">
                     Privacy Policy
                   </span>
                 </Link>

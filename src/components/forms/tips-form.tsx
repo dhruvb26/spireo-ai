@@ -87,7 +87,7 @@ export function TipsForm({
                     type="button"
                     variant="outline"
                     onClick={handleClearFormat}
-                    className="flex-shrink-0 rounded-full"
+                    className="flex-shrink-0 rounded-lg"
                   >
                     Clear Format
                   </Button>
@@ -133,7 +133,7 @@ export function TipsForm({
           )}
         />
         <Button
-          className="rounded-full bg-primary-blue hover:bg-darker-blue"
+          className="rounded-lg bg-brand-purple-500 font-light hover:bg-brand-purple-700"
           type="submit"
           disabled={isLoading}
         >

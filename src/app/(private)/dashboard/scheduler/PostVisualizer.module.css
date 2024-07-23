@@ -1,0 +1,112 @@
+.calendarContainer {
+  max-width: 72rem;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 0px;
+}
+
+.calendar {
+  font-family: "Inter", sans-serif;
+}
+
+/* Toolbar styles */
+.calendar :global(.rbc-toolbar) {
+  margin-bottom: 20px;
+  padding: 10px 0;
+  border-bottom: 1px solid #eff6ff;
+}
+
+.calendar :global(.rbc-toolbar-label) {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #101828;
+}
+
+/* Header styles */
+.calendar :global(.rbc-header) {
+  background-color: #ffffff;
+  color: #101828;
+  padding: 8px;
+  font-weight: 400;
+  border-bottom: none;
+}
+
+/* Month view styles */
+.calendar :global(.rbc-month-view) {
+  border: 1px solid #eaecf0;
+  border-radius: 10px;
+}
+
+.calendar :global(.rbc-month-row) {
+  border-top: 1px solid #eaecf0;
+}
+
+.calendar :global(.rbc-day-bg) {
+  border-left: 1px solid #eaecf0;
+}
+
+.calendar :global(.rbc-off-range-bg) {
+  background-color: #fafafa;
+}
+
+.calendar :global(.rbc-date-cell) {
+  padding: 5px;
+  text-align: center;
+  color: #333;
+}
+
+/* Today cell */
+.calendar :global(.rbc-today) {
+  background-color: #eff6ff;
+}
+
+.calendar :global(.rbc-now) {
+  color: #ffffff;
+  background-color: #2563eb;
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+/* Navigation buttons */
+.calendar :global(.rbc-toolbar .rbc-btn-group:first-child button:first-child),
+.calendar :global(.rbc-toolbar .rbc-btn-group:first-child button:last-child) {
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.25rem; /* 20px */
+  background-color: #1d2939;
+  color: #ffffff;
+}
+
+.calendar :global(.rbc-toolbar button) {
+  background-color: #1d2939;
+  color: #ffffff;
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.25rem; /* 20px */
+}
+
+/* View selector */
+.calendar :global(.rbc-toolbar .rbc-btn-group:last-child) {
+  border: 1px solid #eaecf0;
+  border-radius: 5px;
+  overflow: hidden;
+  background-color: #1d2939;
+}
+
+.calendar :global(.rbc-toolbar .rbc-btn-group:last-child button) {
+  border-right: 1px solid #eaecf0;
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.25rem; /* 20px */
+  color: #ffffff;
+}
+
+.calendar :global(.rbc-toolbar .rbc-btn-group:last-child button:last-child) {
+  border-right: none;
+}
+
+.calendar :global(.rbc-toolbar button:hover),
+.calendar :global(.rbc-toolbar button.rbc-active) {
+  background-color: #1d2939;
+}

@@ -3,8 +3,17 @@ import { NextResponse } from "next/server";
 import { YoutubeTranscript } from "youtube-transcript";
 import Anthropic from "@anthropic-ai/sdk";
 import { env } from "@/env";
+import { checkAccess, updateGeneratedWords } from "@/app/actions/user";
 
 export async function POST(req: Request) {
+  // Get the user session
+  const hasAccess = await checkAccess();
+
+  // Check if the user has access
+  if (!hasAccess) {
+    return NextResponse.json({ ideas: "Not authorized!" }, { status: 401 });
+  }
+
   const body = await req.json();
   const { url, instructions, formatTemplate } = body;
   const anthropic = new Anthropic({
@@ -23,7 +32,7 @@ export async function POST(req: Request) {
   // Here you can add any additional processing based on instructions and formatTemplate
   // For now, we're just returning the plain text
   const stream = await anthropic.messages.create({
-    model: "claude-3-haiku-20240307",
+    model: env.MODEL,
     max_tokens: 1024,
     stream: true,
     messages: [
@@ -41,12 +50,15 @@ export async function POST(req: Request) {
                   2. Key points or arguments presented
                   3. Any notable quotes or statistics
                   4. The overall message or takeaway
+                  5. Structure of the video (for eg: Podcast, Single person info content)
     
                   Based on your analysis, create a LinkedIn post that:
                   1. Summarizes the main idea of the video
                   2. Highlights 2-3 key points or insights
                   3. Includes a thought-provoking question or call-to-action for the audience
                   4. Is concise and engaging, suitable for a professional audience on LinkedIn
+                  5. About 200-250 words with no hashtags unless mentioned in the instructions by the user
+                  6. Use of relevant emoticons unless mentioned no emojis in the instructions by the user
     
                   If custom instructions are provided, incorporate them into your post creation process:
                   <custom_instructions>
@@ -66,6 +78,8 @@ export async function POST(req: Request) {
   });
 
   const encoder = new TextEncoder();
+
+  let wordCount = 0;
   const readable = new ReadableStream({
     async start(controller) {
       for await (const chunk of stream) {
@@ -73,10 +87,20 @@ export async function POST(req: Request) {
           chunk.type === "content_block_delta" &&
           chunk.delta.type === "text_delta"
         ) {
-          controller.enqueue(encoder.encode(chunk.delta.text));
+          const text = chunk.delta.text;
+          controller.enqueue(encoder.encode(text));
+
+          // Count words in this chunk
+          const wordsInChunk = text
+            .split(/\s+/)
+            .filter((word) => word.length > 0).length;
+          wordCount += wordsInChunk;
         }
       }
       controller.close();
+
+      // Call the updateGeneratedWords action with the total word count
+      await updateGeneratedWords(wordCount);
     },
   });
 

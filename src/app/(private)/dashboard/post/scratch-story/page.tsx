@@ -76,13 +76,16 @@ const ScratchStoryPage = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="mb-2 text-3xl font-bold">Post from scratch</h1>
-      <p className="text-sm text-slate-500">
-        Create a post without any help. Use your creativity with AI's help.
-      </p>
-      <FadeSeparator />
-      <div className="flex flex-col gap-8 lg:flex-row">
+    <div className="max-w-6xl">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold tracking-tighter text-brand-gray-900">
+          Craft Your Original Post
+        </h1>
+        <p className="text-md text-brand-gray-500">
+          Let AI inspire your creativity from a blank canvas.
+        </p>
+      </div>
+      <div className="flex flex-grow flex-col gap-8 lg:flex-row">
         <div className="w-full lg:w-1/2">
           <ScratchStoryForm
             onSubmit={handleSubmit}
@@ -90,7 +93,6 @@ const ScratchStoryPage = () => {
             initialPostContent={idea || ""}
           />
         </div>
-
         <div className="w-full lg:w-1/2">
           <GeneratedContent
             isLoading={isLoading}
