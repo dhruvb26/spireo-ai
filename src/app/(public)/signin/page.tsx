@@ -10,7 +10,7 @@ export default function SignIn() {
   const handleLinkedInSignIn = () => {
     try {
       signIn("linkedin", {
-        callbackUrl: `/dashboard/settings`,
+        callbackUrl: `/dashboard`,
       });
     } catch (error) {
       console.error("Error signing in with LinkedIn", error);

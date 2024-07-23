@@ -22,24 +22,16 @@ export default async function DashboardLayout({
     return <OnboardingForm />;
   }
   return (
-    <>
-      <script
-        defer
-        data-domain="app.spireo.ai"
-        src="https://plausible.io/js/script.js"
-      ></script>
-
-      <div className="flex min-h-screen">
-        <Suspense fallback={<Loading />}>
-          <Sidebar session={session} user={user}>
-            <main className="relative flex-1 p-8">
-              {!user?.hasAccess && <SubscriptionPrompt />}
-              {children}
-              <FeedbackButton />
-            </main>
-          </Sidebar>
-        </Suspense>
-      </div>
-    </>
+    <div className="flex min-h-screen">
+      <Suspense fallback={<Loading />}>
+        <Sidebar session={session} user={user}>
+          <main className="relative flex-1 p-8">
+            {!user?.hasAccess && <SubscriptionPrompt />}
+            {children}
+            <FeedbackButton />
+          </main>
+        </Sidebar>
+      </Suspense>
+    </div>
   );
 }

@@ -1,8 +1,6 @@
-import Footer from "@/components/navigation/footer";
 import "@/styles/globals.css";
 import { Toaster } from "sonner";
-import { Poppins } from "next/font/google";
-import { GeistSans } from "geist/font/sans";
+import Script from "next/script";
 import { Inter } from "next/font/google";
 
 export const metadata = {
@@ -10,12 +8,6 @@ export const metadata = {
   description: "Growing on LinkedIn made easy.",
   icons: [{ rel: "icon", url: "/Spireo Logo Symbol Custom.png" }],
 };
-
-const poppins = Poppins({
-  weight: ["400", "500", "600", "700"],
-  subsets: ["latin"],
-  display: "swap",
-});
 
 const inter = Inter({
   weight: ["400", "500", "600", "700"],
@@ -32,6 +24,10 @@ export default function RootLayout({
     <html lang="en" className={`${inter.className}`}>
       <body>
         {children}
+        <Script
+          src="https://plausible.io/js/script.js"
+          data-domain="app.spireo.ai"
+        />
         <Toaster
           position="top-right"
           toastOptions={{

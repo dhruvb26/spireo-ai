@@ -40,7 +40,10 @@ const Sidebar = ({ children, session, user }: any) => {
 
   const difference = differenceInDays(endsAt, today);
 
-  const isLinkActive = (href: string) => {
+  const isLinkActive = (href: string, exact: boolean = false) => {
+    if (exact) {
+      return pathname === href;
+    }
     return pathname === href || pathname.startsWith(href);
   };
 
@@ -92,16 +95,16 @@ const Sidebar = ({ children, session, user }: any) => {
               </button>
             </div>
             <Link
-              href="/dashboard/getting-started"
+              href="/dashboard"
               className={`relative flex items-center gap-3  px-6 py-2 text-sm transition-all hover:text-brand-purple-600 ${
-                isLinkActive("/dashboard/getting-started")
+                isLinkActive("/dashboard", true)
                   ? "bg-brand-gray-100 text-brand-purple-600"
                   : "text-brand-gray-500"
               }`}
             >
               <Flag size={20} />
               Get Started
-              {isLinkActive("/dashboard/getting-started") && (
+              {isLinkActive("/dashboard", true) && (
                 <div className="absolute bottom-0 right-0 top-0 w-1 bg-brand-purple-600"></div>
               )}
             </Link>
@@ -275,9 +278,9 @@ const Sidebar = ({ children, session, user }: any) => {
                     Create Post
                   </button>
                   <Link
-                    href="/dashboard/getting-started"
+                    href="/dashboard"
                     className={`flex items-center gap-3  px-6 py-2 text-sm transition-all hover:text-brand-purple-600 ${
-                      isLinkActive("/dashboard/getting-started")
+                      isLinkActive("/dashboard", true)
                         ? "bg-muted text-brand-purple-600"
                         : "text-brand-gray-500"
                     }`}
