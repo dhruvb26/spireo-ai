@@ -5,12 +5,14 @@ import Image from "next/image";
 import { FaLinkedin } from "react-icons/fa";
 import AvatarCircles from "@/components/ui/avatar-circles";
 import { Separator } from "@/components/ui/separator";
+import SparklesText from "@/components/ui/sparkles-text";
 
 export default function SignIn() {
   const handleLinkedInSignIn = () => {
     try {
       signIn("linkedin", {
         callbackUrl: `/dashboard`,
+        redirect: true,
       });
     } catch (error) {
       console.error("Error signing in with LinkedIn", error);
@@ -29,13 +31,13 @@ export default function SignIn() {
         <div className="flex flex-1 items-center justify-center bg-blue-500 px-4 py-12 md:px-8 md:py-24">
           <div className="max-w-md space-y-8">
             <h1 className="text-4xl font-bold leading-tight text-white md:text-5xl">
-              Boost your LinkedIn presence with AI
-              {/* <SparklesText
+              Boost your LinkedIn presence with{" "}
+              <SparklesText
                 sparklesCount={10}
                 colors={{ first: "#FFFFFF", second: "#FFFFFF" }}
-                className="inline-block"
+                className="inline-block text-5xl"
                 text="AI"
-              /> */}
+              />
             </h1>
             <p className="text-md font-light text-white ">
               Millions of designers and agencies around the world showcase their
