@@ -1,4 +1,3 @@
-// File: components/IdeasPageContent.tsx
 "use client";
 
 import { useState } from "react";
@@ -18,7 +17,7 @@ import { saveIdea } from "@/app/actions/idea";
 import { v4 as uuid } from "uuid";
 import { PaperPlaneTilt } from "@phosphor-icons/react/dist/ssr";
 
-export function IdeasPage() {
+export default function IdeasPage() {
   const [ideas, setIdeas] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -123,4 +122,3 @@ export function IdeasPage() {
     </>
   );
 }
-export default IdeasPage;
