@@ -55,7 +55,17 @@ export function initializeQueue() {
       console.log(`User's LinkedIn access token: ${accessToken}`);
 
       try {
-        await saveDraft(postId, content);
+        const saveDraftResponse = await fetch("/api/drafts", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ postId, content }),
+        });
+
+        if (!saveDraftResponse.ok) {
+          throw new Error("Failed to save draft");
+        }
 
         let urnId = "";
         let mediaType = "NONE";
@@ -115,7 +125,17 @@ export function initializeQueue() {
           throw new Error(`Error publishing draft: ${errorText}`);
         }
 
-        await updateDraftStatus(postId);
+        const updateStatusResponse = await fetch("/api/drafts/status", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ postId }),
+        });
+
+        if (!updateStatusResponse.ok) {
+          throw new Error("Failed to update draft status");
+        }
         console.log("Draft published successfully");
       } catch (error) {
         console.error("Failed to post:", error);
