@@ -13,6 +13,7 @@ export const env = createEnv({
       .enum(["development", "test", "production"])
       .default("development"),
     LINKEDIN_CLIENT_ID: z.string(),
+    CRON_SECRET: z.string(),
     LINKEDIN_CLIENT_SECRET: z.string(),
     SPIREO_SECRET_KEY: z.string(),
     NEXTAUTH_SECRET: z.string(),
@@ -39,6 +40,7 @@ export const env = createEnv({
    */
   runtimeEnv: {
     DATABASE_URL: process.env.DATABASE_URL,
+    CRON_SECRET: process.env.CRON_SECRET,
     MODEL: process.env.MODEL,
     VERCEL_URL: process.env.VERCEL_URL,
     NODE_ENV: process.env.NODE_ENV,

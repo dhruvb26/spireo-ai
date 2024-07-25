@@ -2,9 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/server/db";
 import { users } from "@/server/db/schema";
 import { and, eq, lt } from "drizzle-orm";
+import { env } from "@/env";
 
 export async function POST(req: NextRequest) {
   try {
+    if (req.headers.get("Authorization") !== `Bearer ${env.CRON_SECRET}`) {
+      return NextResponse.json({ message: "Not authorized" }, { status: 401 });
+    }
+
     const now = new Date();
 
     // Update all users whose trial has ended
