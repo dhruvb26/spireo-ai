@@ -29,6 +29,15 @@ export async function POST(req: Request) {
     // Check if a job already exists for this post
     const existingJobId = await getJobId(userId, postId);
     if (existingJobId) {
+      if (!queue) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: "Queue not found",
+          },
+          { status: 500 },
+        );
+      }
       // If a job exists, remove it
       const existingJob = await queue.getJob(existingJobId);
       if (existingJob) {
@@ -81,6 +90,16 @@ export async function POST(req: Request) {
       }
 
       jobOptions.delay = scheduledDate.getTime() - now.getTime();
+    }
+
+    if (!queue) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Queue not found",
+        },
+        { status: 500 },
+      );
     }
 
     // Add a new job to the queue
@@ -170,6 +189,16 @@ export async function PUT(req: Request) {
 
   if (!jobId) {
     return NextResponse.json({ error: "Job not found" }, { status: 404 });
+  }
+
+  if (!queue) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Queue not found",
+      },
+      { status: 500 },
+    );
   }
 
   const job = await queue.getJob(jobId);
