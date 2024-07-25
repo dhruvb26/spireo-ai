@@ -2,8 +2,12 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { env } from "@/env";
 import { NextResponse } from "next/server";
-import { checkAccess, updateGeneratedWords } from "@/app/actions/user";
-import { JSDOM } from "jsdom";
+import {
+  checkAccess,
+  getAccessToken,
+  getUserId,
+  updateGeneratedWords,
+} from "@/app/actions/user";
 
 function extractLinkedInPostId(url: string): string {
   const regex = /activity-(\d+)/;
@@ -41,20 +45,27 @@ export async function POST(req: Request) {
   const { postContent, tone, instructions, formatTemplate, linkedInPostUrl } =
     body;
 
-  // const postUrn = extractLinkedInPostId(linkedInPostUrl);
+  const userId = await getUserId();
+  if (!userId) {
+    return NextResponse.json({ ideas: "User not found!" }, { status: 404 });
+  }
+  const accessToken = await getAccessToken(userId);
+
+  // const postId = extractLinkedInPostId(linkedInPostUrl);
   // let postData = null;
   // let postText = "";
-  // if (postUrn) {
-  //   console.log(postUrn);
-  //   // Fetch post data from Lix API
+
+  // if (postId) {
   //   try {
+  //     const encodedPostId = encodeURIComponent(`urn:li:ugcPost:${postId}`);
   //     const response = await fetch(
-  //       `https://api.lix-it.com/v1/enrich/post?post_urn=urn%3Ali%3Aactivity%3A${postUrn}`,
+  //       `https://api.linkedin.com/v2/ugcPosts/${encodedPostId}?viewContext=AUTHOR`,
   //       {
   //         method: "GET",
   //         headers: {
-  //           Authorization: `xJHvO3bJYunIdIN9TDf8rwywGVnfXBb1i0SluKiwcOCQXTcw3TcEaC36STta`, // Make sure to add LIX_API_KEY to your env file
-  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${accessToken}`,
+  //           "X-Restli-Protocol-Version": "2.0.0",
+  //           "LinkedIn-Version": "202406",
   //         },
   //       },
   //     );
@@ -64,10 +75,12 @@ export async function POST(req: Request) {
   //     }
 
   //     postData = await response.json();
-  //     postText = extractCommentary(postData);
+  //     postText =
+  //       postData.specificContent?.["com.linkedin.ugc.ShareContent"]
+  //         ?.shareCommentary?.text || "";
   //     console.log(postText);
   //   } catch (error) {
-  //     console.error("Error fetching post data from Lix:", error);
+  //     console.error("Error fetching post data from LinkedIn:", error);
   //   }
   // }
 

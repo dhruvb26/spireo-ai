@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useMemo } from "react";
-import { createEditor, Descendant, Element as SlateElement } from "slate";
+import { createEditor, Descendant, Element as SlateElement, Text } from "slate";
 import { withReact } from "slate-react";
 import { usePostStore } from "@/store/postStore";
 import { getDraft, saveDraft } from "@/app/actions/draft";
@@ -26,6 +26,7 @@ export default function EditDraft() {
   const id = params.id as string;
   const editor = useMemo(() => withReact(createEditor()), []);
   const [value, setValue] = useState<Descendant[]>(initialValue);
+  const [documentUrn, setDocumentUrn] = useState<string | null>(null);
   const [device, setDevice] = useState<"mobile" | "tablet" | "desktop">(
     "mobile",
   );
@@ -36,25 +37,29 @@ export default function EditDraft() {
     const fetchDraft = async () => {
       setIsLoading(true);
       try {
-        // const post = getPost(id);
         const draft = await getDraft(id);
-        const draftContent = draft.data?.content || "";
+        if (draft.success && draft.data) {
+          const draftContent = draft.data.content || "";
+          const newValue: Descendant[] = draftContent
+            .split("\n")
+            .map((line) => ({
+              type: "paragraph",
+              children: [{ text: line }],
+            }));
 
-        // Create a new Slate document structure
-        const newValue: Descendant[] = [
-          {
-            type: "paragraph",
-            children: [{ text: draftContent.slice(0, 3000) }],
-          },
-        ];
+          editor.children = newValue;
+          editor.onChange();
+          setValue(newValue);
+          updatePost(id, draftContent);
 
-        // Set the editor's content
-        editor.children = newValue;
-        editor.onChange();
-
-        // Update the value state
-        setValue(newValue);
-        updatePost(id, draftContent);
+          // Pass the document_urn to the EditorSection
+          setDocumentUrn(draft.data.documentUrn || null);
+        } else {
+          // If draft is not found, assume it's a new draft
+          setValue(initialValue);
+          updatePost(id, "");
+          setDocumentUrn(null);
+        }
       } catch (error) {
         console.error("Error fetching draft:", error);
         toast.error("An unexpected error occurred while loading the draft");
@@ -97,6 +102,7 @@ export default function EditDraft() {
                 setValue={setValue}
                 editor={editor}
                 handleSave={handleSave}
+                initialDocumentUrn={documentUrn} // Add this line
               />
             </div>
           </div>

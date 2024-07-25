@@ -52,9 +52,6 @@ const Settings: React.FC<SettingsProps> = ({ user, hasAccess, endsAt }) => {
               </Avatar>
               <div>
                 <h4 className="text-lg font-semibold">{user.name}</h4>
-                <p className="text-sm text-brand-gray-500">
-                  Computer Science Student
-                </p>
               </div>
             </div>
           </CardHeader>

@@ -7,6 +7,7 @@ import { queue } from "@/server/bull/queue";
 import { saveJobId } from "@/server/redis";
 import { getJobId, deleteJobId } from "@/server/redis";
 import { checkAccess } from "@/app/actions/user";
+import { deleteDraft } from "@/app/actions/draft";
 
 export async function POST(req: Request) {
   const hasAccess = await checkAccess();
@@ -15,7 +16,7 @@ export async function POST(req: Request) {
   }
 
   const body = await req.json();
-  const { userId, postId, content, scheduledTime } = body;
+  const { userId, postId, content, scheduledTime, documentUrn } = body;
 
   if (!userId || !postId || !content) {
     return NextResponse.json(
@@ -58,7 +59,8 @@ export async function POST(req: Request) {
         .returning();
     }
 
-    const jobData = { userId, postId, content };
+    const jobData = { userId, postId, content, documentUrn };
+    console.log("Job data:", jobData);
     const jobOptions: any = {};
     const now = new Date();
 
@@ -97,6 +99,7 @@ export async function POST(req: Request) {
       .set({
         status: "scheduled",
         content: content,
+        documentUrn: documentUrn, // Add this line
         scheduledFor: scheduledTime ? new Date(scheduledTime) : null,
         updatedAt: new Date(),
       })
@@ -144,6 +147,25 @@ export async function DELETE(req: Request) {
     );
   }
 
+  const result = await deleteDraft(postId);
+
+  if (result.success) {
+    return NextResponse.json({ message: result.message });
+  } else {
+    return NextResponse.json({ error: result.message }, { status: 404 });
+  }
+}
+export async function PUT(req: Request) {
+  const body = await req.json();
+  const { userId, postId, content, scheduledTime, documentUrn } = body;
+
+  if (!userId || !postId) {
+    return NextResponse.json(
+      { error: "Missing required fields" },
+      { status: 400 },
+    );
+  }
+
   const jobId = await getJobId(userId, postId);
 
   if (!jobId) {
@@ -159,80 +181,63 @@ export async function DELETE(req: Request) {
     );
   }
 
-  await job.remove();
-  await deleteJobId(userId, postId);
+  // Update job data
+  let updatedData = { ...job.data, content, documentUrn };
 
-  return NextResponse.json({ message: "Job removed successfully" });
+  // Update job options
+  let updatedOpts = { ...job.opts };
+  let scheduledDate: Date | null = null;
+
+  if (scheduledTime) {
+    scheduledDate = new Date(scheduledTime);
+    if (isNaN(scheduledDate.getTime())) {
+      return NextResponse.json(
+        { error: "Invalid scheduledTime" },
+        { status: 400 },
+      );
+    }
+
+    const now = new Date();
+    if (scheduledDate <= now) {
+      return NextResponse.json(
+        { error: "Scheduled time must be in the future" },
+        { status: 400 },
+      );
+    }
+    updatedOpts.delay = scheduledDate.getTime() - now.getTime();
+  }
+
+  try {
+    // Update the draft in the database
+    await db
+      .update(drafts)
+      .set({
+        content,
+        documentUrn,
+        scheduledFor: scheduledDate,
+        updatedAt: new Date(),
+      })
+      .where(eq(drafts.id, postId));
+
+    // Remove the existing job
+    await job.remove();
+
+    // Add a new job with updated data and options
+    const updatedJob = await queue.add("post", updatedData, updatedOpts);
+
+    // Update the job ID in Redis
+    await saveJobId(userId, postId, updatedJob.id || "");
+
+    return NextResponse.json({
+      message: "Job updated successfully",
+      jobId: updatedJob.id,
+      scheduledFor: scheduledDate ? scheduledDate.toISOString() : "immediate",
+    });
+  } catch (error) {
+    console.error("Error updating job:", error);
+    return NextResponse.json(
+      { error: "Failed to update job" },
+      { status: 500 },
+    );
+  }
 }
-
-// export async function PUT(req: Request) {
-//   const body = await req.json();
-//   const { userId, postId, content, scheduledTime } = body;
-
-//   if (!userId || !postId) {
-//     return NextResponse.json(
-//       { error: "Missing required fields" },
-//       { status: 400 },
-//     );
-//   }
-
-//   const jobId = await getJobId(userId, postId);
-
-//   if (!jobId) {
-//     return NextResponse.json({ error: "Job not found" }, { status: 404 });
-//   }
-
-//   const job = await queue.getJob(jobId);
-
-//   if (!job) {
-//     return NextResponse.json(
-//       { error: "Job not found in queue" },
-//       { status: 404 },
-//     );
-//   }
-
-//   // Update job data
-//   let updatedData = { ...job.data };
-//   if (content) {
-//     updatedData.content = content;
-//   }
-
-//   // Update job options
-//   let updatedOpts = { ...job.opts };
-//   if (scheduledTime) {
-//     const scheduledDate = new Date(scheduledTime);
-//     if (isNaN(scheduledDate.getTime())) {
-//       return NextResponse.json(
-//         { error: "Invalid scheduledTime" },
-//         { status: 400 },
-//       );
-//     }
-
-//     const now = new Date();
-//     if (scheduledDate <= now) {
-//       return NextResponse.json(
-//         { error: "Scheduled time must be in the future" },
-//         { status: 400 },
-//       );
-//     } else {
-//       updatedOpts.delay = scheduledDate.getTime() - now.getTime();
-//     }
-//   }
-
-//   // Remove the existing job
-//   await job.remove();
-
-//   // Add a new job with updated data and options
-//   const updatedJob = await queue.add("post", updatedData, updatedOpts);
-
-//   // Update the job ID in Redis
-//   await saveJobId(userId, postId, updatedJob.id || "");
-
-//   return NextResponse.json({
-//     message: "Job updated successfully",
-//     jobId: updatedJob.id,
-//     scheduledFor: updatedOpts.delay
-//       ? new Date(Date.now() + updatedOpts.delay).toISOString()
-//       : "immediate",
-//   });
-// }

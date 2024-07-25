@@ -76,6 +76,8 @@ export async function POST(req: Request) {
       ];
     }
 
+    console.log("Posting to LinkedIn:", postBody);
+
     const response = await fetch("https://api.linkedin.com/v2/ugcPosts", {
       method: "POST",
       headers: {

@@ -28,6 +28,7 @@ export default async function DashboardLayout({
           <main className="relative flex-1 p-8">
             {!user?.hasAccess && <SubscriptionPrompt />}
             {children}
+
             <FeedbackButton />
           </main>
         </Sidebar>

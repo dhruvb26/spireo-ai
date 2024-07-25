@@ -4,6 +4,8 @@ import { db } from "@/server/db";
 import { drafts } from "@/server/db/schema";
 import { getUserId } from "./user";
 import { eq, and, or } from "drizzle-orm";
+import { getJobId, deleteJobId } from "@/server/redis";
+import { queue } from "@/server/bull/queue";
 // Define the Draft type
 export type Draft = {
   id: string;
@@ -158,15 +160,44 @@ export async function deleteDraft(draftId: string): Promise<DeleteDraftResult> {
       };
     }
 
+    // First, check if the draft exists and get its status
+    const draftToDelete = await db
+      .select()
+      .from(drafts)
+      .where(and(eq(drafts.id, draftId), eq(drafts.userId, userId)))
+      .limit(1);
+
+    if (draftToDelete.length === 0) {
+      return {
+        success: false,
+        message: "Draft not found",
+      };
+    }
+
+    const draftStatus = draftToDelete[0]?.status;
+
+    // If the draft is scheduled, remove it from the queue
+    if (draftStatus === "scheduled") {
+      const jobId = await getJobId(userId, draftId);
+      if (jobId) {
+        const job = await queue.getJob(jobId);
+        if (job) {
+          await job.remove();
+        }
+        await deleteJobId(userId, draftId);
+      }
+    }
+
+    // Now delete the draft from the database
     const deletedDraft = await db
       .delete(drafts)
-      .where(eq(drafts.id, draftId))
+      .where(and(eq(drafts.id, draftId), eq(drafts.userId, userId)))
       .returning();
 
     if (deletedDraft.length === 0) {
       return {
         success: false,
-        message: "Draft not found or already deleted",
+        message: "Failed to delete draft",
       };
     }
 
@@ -182,6 +213,7 @@ export async function deleteDraft(draftId: string): Promise<DeleteDraftResult> {
     };
   }
 }
+
 export async function getDraft(id: string) {
   try {
     const userId = await getUserId();
@@ -196,13 +228,7 @@ export async function getDraft(id: string) {
     const draft = await db
       .select()
       .from(drafts)
-      .where(
-        and(
-          eq(drafts.id, id),
-          eq(drafts.userId, userId),
-          eq(drafts.status, "saved"),
-        ),
-      );
+      .where(and(eq(drafts.id, id), eq(drafts.userId, userId)));
 
     if (!draft || draft.length === 0) {
       return {
@@ -345,6 +371,133 @@ export async function updateDraftPublishedStatus(id: string): Promise<Result> {
     return {
       success: false,
       message: "Failed to update draft status",
+    };
+  }
+}
+// Add these functions to draft.ts
+
+export async function updateDraftDocumentUrn(
+  id: string,
+  documentUrn: string,
+  content?: string,
+): Promise<Result> {
+  try {
+    const userId = await getUserId();
+
+    if (!userId) {
+      return {
+        success: false,
+        message: "User not authenticated",
+      };
+    }
+
+    // Check if the draft exists
+    const existingDraft = await db
+      .select()
+      .from(drafts)
+      .where(and(eq(drafts.id, id), eq(drafts.userId, userId)))
+      .limit(1);
+
+    if (existingDraft.length === 0) {
+      // Draft doesn't exist, create a new one
+      if (content === undefined) {
+        return {
+          success: false,
+          message: "Content is required to create a new draft",
+        };
+      }
+
+      const insertResult = await db
+        .insert(drafts)
+        .values({
+          id: id,
+          status: "saved",
+          userId: userId,
+          content: content,
+          documentUrn: documentUrn,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        })
+        .returning();
+
+      if (insertResult.length === 0) {
+        return {
+          success: false,
+          message: "Failed to create new draft",
+        };
+      }
+
+      return {
+        success: true,
+        message: "Draft created and document URN set successfully",
+      };
+    } else {
+      // Draft exists, update the document URN
+      const updatedDraft = await db
+        .update(drafts)
+        .set({
+          documentUrn: documentUrn,
+          updatedAt: new Date(),
+        })
+        .where(and(eq(drafts.id, id), eq(drafts.userId, userId)))
+        .returning();
+
+      if (updatedDraft.length === 0) {
+        return {
+          success: false,
+          message: "Failed to update draft document URN",
+        };
+      }
+
+      return {
+        success: true,
+        message: "Draft document URN updated successfully",
+      };
+    }
+  } catch (error) {
+    console.error("Error updating draft document URN:", error);
+    return {
+      success: false,
+      message: "Failed to update draft document URN",
+    };
+  }
+}
+export async function removeDraftDocumentUrn(id: string): Promise<Result> {
+  try {
+    const userId = await getUserId();
+
+    if (!userId) {
+      return {
+        success: false,
+        message: "User not authenticated",
+      };
+    }
+
+    const updatedDraft = await db
+      .update(drafts)
+      .set({
+        documentUrn: null,
+        updatedAt: new Date(),
+      })
+      .where(and(eq(drafts.id, id), eq(drafts.userId, userId)))
+      .returning();
+
+    if (updatedDraft.length === 0) {
+      return {
+        success: false,
+        message: "Draft not found",
+      };
+    }
+
+    return {
+      success: true,
+      message: "Draft document URN removed successfully",
+    };
+  } catch (error) {
+    console.error("Error removing draft document URN:", error);
+    return {
+      success: false,
+      message: "Failed to remove draft document URN",
     };
   }
 }

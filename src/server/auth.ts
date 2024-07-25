@@ -56,6 +56,17 @@ export const authOptions: NextAuthOptions = {
       }
       return token;
     },
+    redirect: async ({ url, baseUrl }) => {
+      // If the user is already logged in and tries to access the signin page,
+      // redirect them to the home page or dashboard
+      if (url.startsWith(baseUrl + "/signin")) {
+        const session = await getServerSession(authOptions);
+        if (session) {
+          return baseUrl + "/dashboard"; // or wherever you want to redirect logged-in users
+        }
+      }
+      return url;
+    },
   },
   adapter: {
     ...DrizzleAdapter(db, {
@@ -65,15 +76,18 @@ export const authOptions: NextAuthOptions = {
     createUser: async (userData) => {
       const id = uuidv4();
       const now = new Date();
+      const trialEndsAt = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
+
       const result = await db
         .insert(users)
         .values({
           id,
           name: userData.name,
           email: userData.email,
+          trialEndsAt: trialEndsAt,
           emailVerified: userData.emailVerified,
           image: userData.image,
-          hasAccess: false,
+          hasAccess: true,
         })
         .returning();
       return result[0];

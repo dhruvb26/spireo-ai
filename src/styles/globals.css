@@ -62,6 +62,11 @@
     --ring: 224.3 76.3% 48%;
   }
 }
+.vertical-text {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+}
 
 @layer base {
   * {

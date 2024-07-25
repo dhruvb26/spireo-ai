@@ -18,10 +18,12 @@ import { extractContent } from "./editor-section";
 const ScheduleDialog = ({
   content,
   id,
+  documentUrn,
   disabled,
 }: {
   content: any;
   id: string;
+  documentUrn?: any;
   disabled: any;
 }) => {
   const [scheduleDate, setScheduleDate] = useState<Date | undefined>(undefined);
@@ -41,14 +43,29 @@ const ScheduleDialog = ({
     const userId = await getUserId();
 
     try {
+      interface ScheduleData {
+        userId: string | undefined;
+        postId: string;
+        content: string;
+        scheduledTime: string;
+        documentUrn?: string; // Make this optional
+      }
+
+      const scheduleData: ScheduleData = {
+        userId: userId,
+        postId: id,
+        content: postContent,
+        scheduledTime: scheduleDate.toISOString(),
+      };
+
+      // Include documentUrn in the request if it exists and is not null
+      if (documentUrn !== null && documentUrn !== undefined) {
+        scheduleData.documentUrn = documentUrn;
+      }
+
       const response = await fetch(`/api/schedule`, {
         method: "POST",
-        body: JSON.stringify({
-          userId: userId,
-          postId: id,
-          content: postContent,
-          scheduledTime: scheduleDate.toISOString(),
-        }),
+        body: JSON.stringify(scheduleData),
         headers: {
           "Content-Type": "application/json",
         },
@@ -65,7 +82,7 @@ const ScheduleDialog = ({
       console.error("Error scheduling draft:", error);
       toast.error("An error occurred while scheduling the draft");
     } finally {
-      setIsLoading(false); // Changed from true to false
+      setIsLoading(false);
     }
   };
 

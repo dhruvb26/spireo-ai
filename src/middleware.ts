@@ -10,7 +10,7 @@ export default withAuth(
       console.log("Token: ", token);
       return NextResponse.redirect(new URL("/signin", req.url));
     }
-    console.log("Token: ", token);
+    // console.log("Token: ", token);
     return NextResponse.next();
   },
   // {
@@ -27,6 +27,6 @@ export const config = {
     "/dashboard/:path*",
     "/api/ai/:path*",
     "/api/schedule/:path*",
-    "/api/queue/:path*",
+    // "/api/queue/:path*",
   ],
 };

@@ -102,9 +102,6 @@ export async function POST(req: Request) {
           }
           console.log("User found:", user.id);
 
-          const now = new Date();
-          const trialEndsAt = new Date(now.setDate(now.getDate() + 7)); // 7 days trial
-
           const subscriptionId = session.subscription as string;
           console.log("Subscription ID from session:", subscriptionId);
 
@@ -116,9 +113,9 @@ export async function POST(req: Request) {
             await db
               .update(users)
               .set({
-                trialEndsAt: trialEndsAt,
                 stripeCustomerId: customerId,
                 priceId: priceId,
+                trialEndsAt: null,
                 hasAccess: true,
                 stripeSubscriptionId: subscription.id,
               })
@@ -163,7 +160,6 @@ export async function POST(req: Request) {
         await db
           .update(users)
           .set({
-            trialEndsAt: null,
             stripeCustomerId: null,
             priceId: null,
             hasAccess: false,
@@ -188,16 +184,14 @@ export async function POST(req: Request) {
             await db
               .update(users)
               .set({
-                hasAccess: true,
                 trialEndsAt: null,
+                hasAccess: true,
               })
               .where(eq(users.id, user.id));
           }
         }
         break;
       }
-      // Add this new case in the switch statement
-
       case "customer.subscription.updated": {
         const subscription = data as Stripe.Subscription;
 
@@ -222,24 +216,15 @@ export async function POST(req: Request) {
           );
         }
 
-        // Check if the trial just ended
-        if (
-          subscription.status === "active" &&
-          subscription.trial_end &&
-          subscription.trial_end * 1000 <= Date.now()
-        ) {
-          console.log(`Trial ended for user ${user.id}`);
+        // Update user access based on subscription status
+        await db
+          .update(users)
+          .set({
+            hasAccess: subscription.status === "active",
+          })
+          .where(eq(users.id, user.id));
 
-          await db
-            .update(users)
-            .set({
-              hasAccess: true,
-              trialEndsAt: null,
-            })
-            .where(eq(users.id, user.id));
-
-          console.log(`Updated user ${user.id} access`);
-        }
+        console.log(`Updated user ${user.id} access`);
 
         break;
       }
@@ -258,7 +243,6 @@ export async function POST(req: Request) {
             .update(users)
             .set({
               hasAccess: false,
-              trialEndsAt: null,
             })
             .where(eq(users.id, user.id));
         }

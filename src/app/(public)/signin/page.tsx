@@ -1,13 +1,21 @@
-"use client";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
+import { getServerAuthSession } from "@/server/auth";
 import Image from "next/image";
 import { FaLinkedin } from "react-icons/fa";
 import AvatarCircles from "@/components/ui/avatar-circles";
 import { Separator } from "@/components/ui/separator";
 import SparklesText from "@/components/ui/sparkles-text";
+import { redirect } from "next/navigation";
 
-export default function SignIn() {
+export default async function SignIn() {
+  const session = await getServerAuthSession();
+
+  if (session) {
+    redirect("/dashboard");
+    return null;
+  }
+
   const handleLinkedInSignIn = () => {
     try {
       signIn("linkedin", {

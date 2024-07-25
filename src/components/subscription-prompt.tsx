@@ -28,7 +28,7 @@ const SubscriptionPrompt: React.FC = () => {
         <div className="flex flex-col items-center space-y-4">
           <Link
             target="_blank"
-            href="https://buy.stripe.com/test_3cs16B3DI68Ycve001"
+            href="https://buy.stripe.com/eVa7uTcgf4YP0kU8ww"
             className="bg-gradient-animation text-md flex w-full max-w-xs items-center justify-center gap-3 rounded-lg bg-gradient-to-r from-brand-purple-700 via-brand-purple-500 to-brand-purple-400 px-4 py-2 text-center text-white transition-all hover:scale-105"
           >
             Subscribe

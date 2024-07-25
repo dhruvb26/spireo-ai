@@ -134,7 +134,7 @@ export function ScratchStoryForm({
           name="postContent"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Enter a topic</FormLabel>
+              <FormLabel>What do you want to write about?</FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="Describe the post you want to create."

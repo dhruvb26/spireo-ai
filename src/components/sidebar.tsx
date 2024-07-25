@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { usePostStore } from "@/store/postStore";
 import { signOut } from "next-auth/react";
@@ -137,16 +137,16 @@ const Sidebar = ({ children, session, user }: any) => {
               )}
             </Link>
             <Link
-              href="/dashboard/carousels"
+              href="/dashboard/carousel"
               className={`relative flex items-center gap-3  px-6 py-2 text-sm transition-all hover:text-brand-purple-600 ${
-                isLinkActive("/dashboard/carousels")
+                isLinkActive("/dashboard/carousel")
                   ? "bg-brand-gray-100 text-brand-purple-600"
                   : "text-brand-gray-500"
               }`}
             >
               <ImagesSquare size={20} />
               Carousels
-              {isLinkActive("/dashboard/carousels") && (
+              {isLinkActive("/dashboard/carousel") && (
                 <div className="absolute bottom-0 right-0 top-0 w-1 bg-brand-purple-600"></div>
               )}
             </Link>
@@ -159,7 +159,7 @@ const Sidebar = ({ children, session, user }: any) => {
                   : "text-brand-gray-500"
               }`}
             >
-              <Calendar className="h-4 w-4" />
+              <Calendar size={20} />
               Scheduler
               {isLinkActive("/dashboard/scheduler") && (
                 <div className="absolute bottom-0 right-0 top-0 w-1 bg-brand-purple-600"></div>
@@ -175,7 +175,7 @@ const Sidebar = ({ children, session, user }: any) => {
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <Folder className="h-4 w-4" />
+                  <Folder size={20} />
                   Saved
                 </div>
                 <CaretDown
@@ -194,7 +194,7 @@ const Sidebar = ({ children, session, user }: any) => {
                         : "text-brand-gray-500"
                     }`}
                   >
-                    <Bookmarks size={16} className="ml-4" />
+                    <Bookmarks size={20} className="ml-4" />
                     Ideas
                     {isLinkActive("/dashboard/saved/ideas") && (
                       <div className="absolute bottom-0 right-0 top-0 w-1 bg-brand-purple-600"></div>
@@ -208,7 +208,7 @@ const Sidebar = ({ children, session, user }: any) => {
                         : "text-brand-gray-500"
                     }`}
                   >
-                    <Note size={16} className="ml-4" />
+                    <Note size={20} className="ml-4" />
                     Posts
                     {isLinkActive("/dashboard/saved/posts") && (
                       <div className="absolute bottom-0 right-0 top-0 w-1 bg-brand-purple-600"></div>
@@ -226,7 +226,7 @@ const Sidebar = ({ children, session, user }: any) => {
                   : "text-brand-gray-500"
               }`}
             >
-              <GearSix className="h-4 w-4" />
+              <GearSix size={20} />
               Settings
               {isLinkActive("/dashboard/settings") && (
                 <div className="absolute bottom-0 right-0 top-0 w-1 bg-brand-purple-600"></div>
@@ -281,7 +281,7 @@ const Sidebar = ({ children, session, user }: any) => {
                     href="/dashboard"
                     className={`flex items-center gap-3  px-6 py-2 text-sm transition-all hover:text-brand-purple-600 ${
                       isLinkActive("/dashboard", true)
-                        ? "bg-muted text-brand-purple-600"
+                        ? "rounded-lg bg-muted text-brand-purple-600"
                         : "text-brand-gray-500"
                     }`}
                   >
@@ -292,7 +292,7 @@ const Sidebar = ({ children, session, user }: any) => {
                     href="/dashboard/post"
                     className={`flex items-center gap-3  px-6 py-2 text-sm transition-all hover:text-brand-purple-600 ${
                       isLinkActive("/dashboard/post")
-                        ? "bg-muted text-brand-purple-600"
+                        ? "rounded-lg bg-muted text-brand-purple-600"
                         : "text-brand-gray-500"
                     }`}
                   >
@@ -303,7 +303,7 @@ const Sidebar = ({ children, session, user }: any) => {
                     href="/dashboard/ideas"
                     className={`flex items-center gap-3  px-6 py-2 text-sm transition-all hover:text-brand-purple-600 ${
                       isLinkActive("/dashboard/ideas")
-                        ? "bg-muted text-brand-purple-600"
+                        ? "rounded-lg bg-muted text-brand-purple-600"
                         : "text-brand-gray-500"
                     }`}
                   >
@@ -311,10 +311,10 @@ const Sidebar = ({ children, session, user }: any) => {
                     Get Ideas
                   </Link>
                   <Link
-                    href="/dashboard/carousels"
+                    href="/dashboard/carousel"
                     className={`flex items-center gap-3  px-6 py-2 text-sm transition-all hover:text-brand-purple-600 ${
-                      isLinkActive("/dashboard/carousels")
-                        ? "bg-muted text-brand-purple-600"
+                      isLinkActive("/dashboard/carousel")
+                        ? "rounded-lg bg-muted text-brand-purple-600"
                         : "text-brand-gray-500"
                     }`}
                   >
@@ -326,34 +326,72 @@ const Sidebar = ({ children, session, user }: any) => {
                     href="/dashboard/scheduler"
                     className={`flex items-center gap-3  px-6 py-2 text-sm transition-all hover:text-brand-purple-600 ${
                       isLinkActive("/dashboard/scheduler")
-                        ? "bg-muted text-brand-purple-600"
+                        ? "rounded-lg bg-muted text-brand-purple-600"
                         : "text-brand-gray-500"
                     }`}
                   >
-                    <Calendar className="h-4 w-4" />
+                    <Calendar size={20} />
                     Scheduler
                   </Link>
-                  <Link
-                    href="/dashboard/saved"
-                    className={`flex items-center gap-3  px-6 py-2 text-sm transition-all hover:text-brand-purple-600 ${
-                      isLinkActive("/dashboard/saved")
-                        ? "bg-muted text-brand-purple-600"
-                        : "text-brand-gray-500"
-                    }`}
-                  >
-                    <Folder className="h-4 w-4" />
-                    Saved
-                  </Link>
+
+                  {/* Updated Saved section */}
+                  <div className="relative">
+                    <button
+                      onClick={() => setIsSavedOpen(!isSavedOpen)}
+                      className={`flex w-full items-center justify-between px-6 py-2 text-sm transition-all hover:text-brand-purple-600 ${
+                        isLinkActive("/dashboard/saved")
+                          ? "rounded-lg bg-muted text-brand-purple-600"
+                          : "text-brand-gray-500"
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <Folder size={20} />
+                        Saved
+                      </div>
+                      <CaretDown
+                        className={`h-4 w-4 transition-transform ${
+                          isSavedOpen ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
+                    {isSavedOpen && (
+                      <div className="mt-1 space-y-1">
+                        <Link
+                          href="/dashboard/saved/ideas"
+                          className={`flex items-center gap-3 px-6 py-2 text-sm transition-all hover:text-brand-purple-600 ${
+                            isLinkActive("/dashboard/saved/ideas")
+                              ? "rounded-lg bg-muted text-brand-purple-600"
+                              : "text-brand-gray-500"
+                          }`}
+                        >
+                          <Bookmarks size={20} className="ml-4" />
+                          Ideas
+                        </Link>
+                        <Link
+                          href="/dashboard/saved/posts"
+                          className={`flex items-center gap-3 px-6 py-2 text-sm transition-all hover:text-brand-purple-600 ${
+                            isLinkActive("/dashboard/saved/posts")
+                              ? "rounded-lg bg-muted text-brand-purple-600"
+                              : "text-brand-gray-500"
+                          }`}
+                        >
+                          <Note size={20} className="ml-4" />
+                          Posts
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+
                   <div className="mx-auto my-4 h-px w-full max-w-4xl bg-gradient-to-r from-transparent via-brand-purple-100 to-transparent" />
                   <Link
                     href="/dashboard/settings"
                     className={`flex items-center gap-3  px-6 py-2 text-sm transition-all hover:text-brand-purple-600 ${
                       isLinkActive("/dashboard/settings")
-                        ? "bg-muted text-brand-purple-600"
+                        ? "rounded-lg bg-muted text-brand-purple-600"
                         : "text-brand-gray-500"
                     }`}
                   >
-                    <GearSix className="h-4 w-4" />
+                    <GearSix size={20} />
                     Settings
                   </Link>
                 </nav>
@@ -369,13 +407,13 @@ const Sidebar = ({ children, session, user }: any) => {
                 </div>
               </SheetContent>
             </Sheet>
-            {/* <span className="flex w-full items-center justify-center text-sm text-brand-purple-600">
+            <span className="flex w-full items-center justify-center text-sm text-brand-purple-600">
               <Timer weight="fill" size={24} className="mr-2 inline" />{" "}
               {difference} day(s) left before your free trial runs out!
-            </span> */}
+            </span>
           </div>
           <div className="flex flex-row items-center justify-center space-x-4">
-            {/* <Button className=" hover:bg-blue-700">
+            {/* <Button className=" rounded-lg hover:bg-blue-700">
               <Link
                 className=" text-sm  font-light text-white  hover:text-white"
                 data-canny-link
@@ -385,14 +423,14 @@ const Sidebar = ({ children, session, user }: any) => {
                 Give Feedback
               </Link>
             </Button> */}
-            {/* <img
+            <img
               src={userImage}
               alt="User profile"
               className="h-8 w-8 rounded-full"
-            /> */}
-            <Avatar>
+            />
+            {/* <Avatar>
               <AvatarFallback>S</AvatarFallback>
-            </Avatar>
+            </Avatar> */}
           </div>
         </header>
 

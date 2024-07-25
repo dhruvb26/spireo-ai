@@ -32,6 +32,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
 
 interface Slide {
   title: string;
@@ -316,7 +317,7 @@ const CarouselPage: React.FC = () => {
       if (slideElement) {
         try {
           setDownloading(true);
-          await new Promise((resolve) => setTimeout(resolve, 500));
+          await new Promise((resolve) => setTimeout(resolve, 1000));
 
           const canvas = await html2canvas(slideElement, {
             scale: 3,
@@ -531,7 +532,7 @@ const CarouselPage: React.FC = () => {
             />
           </div>
           <div className=" mt-20 flex w-full items-center justify-center">
-            <button
+            <Button
               onClick={downloadPDF}
               className="flex items-center rounded-lg bg-blue-500 px-4 py-2 text-sm text-white hover:bg-blue-700 hover:text-white"
               disabled={downloading}
@@ -544,7 +545,7 @@ const CarouselPage: React.FC = () => {
                   <FileArrowDown className="ml-2 h-5 w-5" />
                 </>
               )}
-            </button>
+            </Button>
           </div>
         </div>
 

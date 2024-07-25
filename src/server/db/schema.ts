@@ -37,6 +37,7 @@ export const drafts = createTable(
     scheduledFor: timestamp("scheduled_for", { withTimezone: true }),
     linkedInId: varchar("linked_in_id", { length: 512 }),
     content: text("content"),
+    documentUrn: varchar("document_urn", { length: 512 }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -70,7 +71,7 @@ export const users = createTable("user", {
   email: varchar("email", { length: 255 }).notNull(),
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: varchar("image", { length: 255 }),
-  hasAccess: boolean("hasAccess").default(false),
+  hasAccess: boolean("hasAccess").default(true),
   priceId: varchar("price_id", { length: 255 }),
   stripeCustomerId: varchar("stripe_customer_id", { length: 255 }),
   stripeSubscriptionId: varchar("stripe_subscription_id", { length: 255 }),
@@ -78,6 +79,7 @@ export const users = createTable("user", {
   onboardingCompleted: boolean("onboarding_complete").default(false),
   generatedWords: integer("generated_words").default(0),
   onboardingData: jsonb("onboarding_data"),
+  specialAccess: boolean("special_access").default(false),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({

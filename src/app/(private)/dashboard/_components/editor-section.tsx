@@ -29,7 +29,11 @@ import {
   TextUnderline,
   X,
 } from "@phosphor-icons/react";
-import { updateDraftPublishedStatus } from "@/app/actions/draft";
+import {
+  updateDraftPublishedStatus,
+  updateDraftDocumentUrn,
+  removeDraftDocumentUrn,
+} from "@/app/actions/draft";
 import FileAttachmentButton from "./file-attachment-button";
 
 export type ParagraphElement = {
@@ -124,6 +128,7 @@ interface EditorSectionProps {
   setValue: (value: Descendant[]) => void;
   editor: CustomEditor;
   handleSave: () => void;
+  initialDocumentUrn: string | null; // Add this line
 }
 
 function EditorSection({
@@ -132,6 +137,7 @@ function EditorSection({
   setValue,
   editor,
   handleSave,
+  initialDocumentUrn, // Add this line
 }: EditorSectionProps) {
   const renderElement = useCallback((props: any) => {
     switch (props.element.type) {
@@ -194,22 +200,41 @@ function EditorSection({
   );
 
   const [isPublishing, setIsPublishing] = useState(false);
+  const [isRewriting, setIsRewriting] = useState(false);
   const abortControllerRef = useRef<AbortController | null>(null);
-  const [documentUrn, setDocumentUrn] = useState<string | null>(null);
-  const [documentStatus, setDocumentStatus] = useState<string | null>(null);
+  const [documentUrn, setDocumentUrn] = useState<string | null>(
+    initialDocumentUrn,
+  );
+  const [documentStatus, setDocumentStatus] = useState<string | null>(
+    initialDocumentUrn ? "Processing" : null,
+  );
 
-  const handleDocumentUploaded = (urn: string, fileType: string) => {
+  const handleDocumentUploaded = async (urn: string, fileType: string) => {
     setDocumentUrn(urn);
     setDocumentStatus("Processing");
-    if (fileType == "pdf") {
-      toast.success(`${fileType.toUpperCase()} uploaded successfully`);
+
+    await handleSave();
+    const result = await updateDraftDocumentUrn(id, urn);
+    if (result.success) {
+      if (fileType == "pdf") {
+        toast.success(`${fileType.toUpperCase()} uploaded successfully`);
+      } else {
+        toast.success(`Image uploaded successfully`);
+      }
+    } else {
+      toast.error("Failed to update draft with document URN");
     }
-    toast.success(`${fileType} uploaded successfully`);
   };
 
-  const handleRemoveDocument = () => {
-    setDocumentUrn(null);
-    setDocumentStatus(null);
+  const handleRemoveDocument = async () => {
+    const result = await removeDraftDocumentUrn(id);
+    if (result.success) {
+      setDocumentUrn(null);
+      setDocumentStatus(null);
+      toast.success("Document removed successfully");
+    } else {
+      toast.error("Failed to remove document from draft");
+    }
   };
 
   const handlePublish = async () => {
@@ -272,6 +297,50 @@ function EditorSection({
       abortControllerRef.current.abort();
     }
   };
+
+  const handleRewrite = useCallback(async () => {
+    const { selection } = editor;
+    if (!selection) {
+      toast.error("Please select some text to rewrite.");
+      return;
+    }
+
+    setIsRewriting(true);
+
+    const selectedText = Editor.string(editor, selection);
+    const fullContent = extractContent(value);
+
+    try {
+      const response = await fetch("/api/ai/rewrite", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          selectedText,
+          fullContent,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to rewrite text");
+      }
+
+      const { rewrittenText } = await response.json();
+
+      // Replace the selected text with the rewritten text
+      Transforms.delete(editor, { at: selection });
+      Transforms.insertText(editor, rewrittenText, { at: selection.anchor });
+
+      toast.success("Text rewritten successfully");
+    } catch (error) {
+      console.error("Error rewriting text:", error);
+      toast.error("Failed to rewrite text");
+    } finally {
+      setIsRewriting(false);
+    }
+  }, [editor, value]);
+
   return (
     <>
       <div className="relative p-4">
@@ -322,14 +391,15 @@ function EditorSection({
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="bg-blue-500 text-white hover:bg-blue-700 hover:text-white"
+                    className="rounded-lg bg-blue-500 text-white hover:bg-blue-700 hover:text-white"
+                    onClick={handleRewrite}
+                    disabled={isRewriting}
                   >
                     <Sparkle className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  {" "}
-                  <p>Rewrite with AI</p>
+                  <p>{isRewriting ? "Rewriting..." : "Rewrite w/ AI"}</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -356,7 +426,12 @@ function EditorSection({
           {isPublishing ? "Publishing..." : "Publish"}
         </Button>
         <div className="flex space-x-2">
-          <ScheduleDialog id={id} content={value} disabled={isPublishing} />
+          <ScheduleDialog
+            documentUrn={documentUrn}
+            id={id}
+            content={value}
+            disabled={isPublishing}
+          />
 
           <Button
             className="bg-brand-gray-800 px-[1rem] font-light hover:bg-brand-gray-900"
