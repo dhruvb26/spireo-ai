@@ -31,7 +31,7 @@ export const scratchStoryFormSchema = z.object({
   tone: z.string().min(1, {
     message: "Please select a tone.",
   }),
-  linkedInPostUrl: z.string().url().optional(),
+  // linkedInPostUrl: z.string().url().optional(),
   instructions: z.string().optional(),
   formatTemplate: z.string().optional(),
 });
@@ -189,7 +189,7 @@ export function ScratchStoryForm({
             </FormItem>
           )}
         />
-        <FormField
+        {/* <FormField
           control={form.control}
           name="linkedInPostUrl"
           render={({ field }) => (
@@ -206,7 +206,7 @@ export function ScratchStoryForm({
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
         <Button
           className="rounded-lg bg-brand-purple-500 font-light hover:bg-brand-purple-700"
           type="submit"

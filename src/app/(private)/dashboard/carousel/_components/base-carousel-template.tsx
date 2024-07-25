@@ -167,7 +167,9 @@ const BaseCarouselTemplate: React.FC<BaseCarouselTemplateProps> = ({
             logging: true,
           });
           const imgData = canvas.toDataURL("image/png").split(",")[1];
-          zip.file(`Spireo_Slide_${i + 1}.png`, imgData, { base64: true });
+          zip.file(`Spireo_Slide_${i + 1}.png`, imgData as any, {
+            base64: true,
+          });
         }
       }
 
