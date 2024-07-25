@@ -179,6 +179,13 @@ export async function deleteDraft(draftId: string): Promise<DeleteDraftResult> {
     // If the draft is scheduled, remove it from the queue
     if (draftStatus === "scheduled") {
       const jobId = await getJobId(userId, draftId);
+
+      if (!queue) {
+        return {
+          success: false,
+          message: "Queue not found",
+        };
+      }
       if (jobId) {
         const job = await queue.getJob(jobId);
         if (job) {
