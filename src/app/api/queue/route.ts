@@ -7,12 +7,19 @@ import { getJobId, deleteJobId } from "@/server/redis";
 export async function GET(req: Request) {
   try {
     // Get the user session
-    // const hasAccess = await checkAccess();
+    const hasAccess = await checkAccess();
 
-    // // Check if the user has access
-    // if (!hasAccess) {
-    //   return NextResponse.json({ ideas: "Not authorized!" }, { status: 401 });
-    // }
+    // Check if the user has access
+    if (!hasAccess) {
+      return NextResponse.json({ ideas: "Not authorized!" }, { status: 401 });
+    }
+
+    if (!queue) {
+      return NextResponse.json(
+        { error: "Queue not initialized" },
+        { status: 500 },
+      );
+    }
 
     // Get the total number of jobs in the queue
     const jobCounts = await queue.getJobCounts();
@@ -31,6 +38,13 @@ export async function GET(req: Request) {
 export async function DELETE(req: Request) {
   const body = await req.json();
   const { action, userId, postId } = body;
+
+  if (!queue) {
+    return NextResponse.json(
+      { error: "Queue not initialized" },
+      { status: 500 },
+    );
+  }
 
   if (action === "clearAll") {
     try {
