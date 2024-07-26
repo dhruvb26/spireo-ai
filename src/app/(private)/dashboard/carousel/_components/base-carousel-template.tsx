@@ -217,15 +217,14 @@ const BaseCarouselTemplate: React.FC<BaseCarouselTemplateProps> = ({
   };
 
   return (
-    <div className="flex max-h-fit max-w-6xl flex-col items-start justify-start">
-      <div className="mb-4 flex items-center justify-between">
-        <div className="flex w-full flex-col">
-          <h1 className="text-2xl font-bold tracking-tighter text-brand-gray-900 sm:text-3xl">
-            {title}
-          </h1>
-        </div>
+    <div className="max-w-6xl ">
+      <div className="container space-y-2 text-left ">
+        <h1 className="text-3xl font-bold tracking-tighter text-brand-gray-900 ">
+          {title}
+        </h1>
       </div>
-      <div className="flex flex-col gap-8 lg:flex-row">
+
+      <section className="flex flex-col gap-4 p-6 lg:flex-row">
         {/* Left Sidebar */}
         <div className="rounded-lg border border-brand-gray-200 bg-white p-4 shadow lg:w-1/3 lg:p-6">
           <div className="mb-4">
@@ -422,7 +421,7 @@ const BaseCarouselTemplate: React.FC<BaseCarouselTemplateProps> = ({
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Hidden slides for PDF generation */}
       {/* Hidden slides for PDF generation */}

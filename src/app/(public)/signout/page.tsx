@@ -21,7 +21,7 @@ export default function SignOutPage() {
         />
         <h2 className="text-2xl font-bold">Sign Out Confirmation</h2>
         <p className="text-center text-sm">
-          Are you sure you want to sign out of your Spireo account?
+          Are you sure you want to sign out of Spireo?
         </p>
         <div className="flex w-full flex-col space-y-4">
           <button

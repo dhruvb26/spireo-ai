@@ -35,6 +35,7 @@ const Sidebar = ({ children, session, user }: any) => {
   const { addPost } = usePostStore();
   const userImage = session.user.image;
   const endsAt = user.trialEndsAt as Date;
+  const specialAccess = user.specialAccess;
   const generatedWords = user.generatedWords as number;
   const today = new Date();
 
@@ -54,7 +55,7 @@ const Sidebar = ({ children, session, user }: any) => {
   };
 
   const handleSignOut = async () => {
-    await signOut({ callbackUrl: "/" });
+    await signOut({ callbackUrl: "https://spireo.ai" });
   };
 
   return (
@@ -407,10 +408,12 @@ const Sidebar = ({ children, session, user }: any) => {
                 </div>
               </SheetContent>
             </Sheet>
-            <span className="flex w-full items-center justify-center text-sm text-brand-purple-600">
-              <Timer weight="fill" size={24} className="mr-2 inline" />{" "}
-              {difference} day(s) left before your free trial runs out!
-            </span>
+            {!specialAccess && (
+              <span className="flex w-full items-center justify-center text-sm text-brand-purple-600">
+                <Timer weight="fill" size={24} className="mr-2 inline" />{" "}
+                {difference} day(s) left before your free trial runs out!
+              </span>
+            )}
           </div>
           <div className="flex flex-row items-center justify-center space-x-4">
             {/* <Button className=" rounded-lg hover:bg-blue-700">
@@ -434,7 +437,7 @@ const Sidebar = ({ children, session, user }: any) => {
           </div>
         </header>
 
-        <div className="w-screen flex-grow overflow-y-auto overflow-x-hidden  p-0">
+        <div className="w-screen flex-grow overflow-x-hidden overflow-y-hidden p-0">
           {children}
         </div>
       </main>
