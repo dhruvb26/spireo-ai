@@ -6,7 +6,7 @@ import { FaSignOutAlt } from "react-icons/fa";
 
 export default function SignOutPage() {
   const handleSignOut = async () => {
-    await signOut({ callbackUrl: "/" });
+    await signOut({ callbackUrl: "https://spireo.ai" });
   };
 
   return (

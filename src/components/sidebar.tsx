@@ -65,7 +65,7 @@ const Sidebar = ({ children, session, user }: any) => {
           {/* Logo section */}
           <div className="flex h-14 items-center justify-center border-b px-4 lg:px-6">
             <Link
-              href="/"
+              href="/dashboard"
               className="flex items-center justify-center gap-2 font-semibold"
             >
               <Image

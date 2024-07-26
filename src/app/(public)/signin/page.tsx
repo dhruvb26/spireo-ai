@@ -1,31 +1,17 @@
-import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { getServerAuthSession } from "@/server/auth";
 import Image from "next/image";
-import { FaLinkedin } from "react-icons/fa";
 import AvatarCircles from "@/components/ui/avatar-circles";
 import { Separator } from "@/components/ui/separator";
 import SparklesText from "@/components/ui/sparkles-text";
 import { redirect } from "next/navigation";
-
+import LinkedInSignInButton from "@/components/linkedin-signin-button";
 export default async function SignIn() {
   const session = await getServerAuthSession();
 
   if (session) {
     redirect("/dashboard");
-    return null;
   }
-
-  const handleLinkedInSignIn = () => {
-    try {
-      signIn("linkedin", {
-        callbackUrl: `/dashboard`,
-        redirect: true,
-      });
-    } catch (error) {
-      console.error("Error signing in with LinkedIn", error);
-    }
-  };
 
   const avatarUrls = [
     "https://avatars.githubusercontent.com/u/16860528",
@@ -33,6 +19,7 @@ export default async function SignIn() {
     "https://avatars.githubusercontent.com/u/106103625",
     "https://avatars.githubusercontent.com/u/59228569",
   ];
+
   return (
     <div className="flex min-h-screen ">
       <div className="mx-auto flex w-full flex-col md:flex-row md:space-x-8">
@@ -58,18 +45,10 @@ export default async function SignIn() {
               <span className="text-sm font-light text-white">
                 Over <span className="font-semibold">2k</span> Happy Users
               </span>
-              {/* <div className="mt-2 flex items-center">
-                <div className="stars flex">
-                  {Array.from({ length: 5 }, () => (
-                    <Star fill="#f97316" strokeWidth={0} />
-                  ))}
-                </div>
-              </div> */}
             </div>
           </div>
         </div>
 
-        {/* Right side login form */}
         <div className="flex flex-1 items-center justify-center py-12 md:py-24">
           <div className="flex w-full max-w-md flex-col items-center justify-center space-y-6 rounded-lg bg-black p-6 text-white sm:space-y-8 sm:p-8">
             <div className="flex flex-col items-center justify-center space-y-4 sm:space-y-6">
@@ -89,13 +68,7 @@ export default async function SignIn() {
               </p>
             </div>
             <div className="flex flex-col space-x-0">
-              <button
-                onClick={handleLinkedInSignIn}
-                className="mb-4 flex w-full items-center justify-center rounded-full  bg-white px-4 py-2 text-sm text-custom-gray transition duration-300 hover:bg-custom-gray hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 sm:text-base"
-              >
-                <FaLinkedin className="mr-2" />
-                Log in with LinkedIn
-              </button>
+              <LinkedInSignInButton />
               <div className="text-center text-xs text-white">
                 By connecting, you agree to our{" "}
                 <Link href={"#"}>
