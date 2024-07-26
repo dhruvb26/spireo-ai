@@ -35,15 +35,14 @@ export default async function SignIn() {
               />
             </h1>
             <p className="text-md font-light text-white ">
-              Millions of designers and agencies around the world showcase their
-              portfolio work on Flowbite - the home to the world's best design
-              and creative professionals.
+              Spireo's AI-powered tools streamline your LinkedIn strategy,
+              helping you create impactful posts in minutes, not hours. Boost
+              your professional presence and grow your network with ease.
             </p>
-            <div className="flex items-center space-x-4">
-              <AvatarCircles numPeople={99} avatarUrls={avatarUrls} />
-              <Separator orientation="vertical" className="h-10" />
+            <div className="flex items-center space-x-10">
+              <AvatarCircles avatarUrls={avatarUrls} />
               <span className="text-sm font-light text-white">
-                Over <span className="font-semibold">2k</span> Happy Users
+                Trusted by founders, marketers, and other LinkedIn experts
               </span>
             </div>
           </div>
