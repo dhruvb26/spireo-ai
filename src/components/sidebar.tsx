@@ -437,7 +437,7 @@ const Sidebar = ({ children, session, user }: any) => {
           </div>
         </header>
 
-        <div className="w-screen flex-grow overflow-x-hidden overflow-y-hidden p-0">
+        <div className="w-screen flex-grow overflow-y-auto overflow-x-hidden p-0">
           {children}
         </div>
       </main>

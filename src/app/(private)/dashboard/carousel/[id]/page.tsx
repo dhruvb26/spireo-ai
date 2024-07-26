@@ -28,7 +28,7 @@ const CarouselPage = () => {
   }
 
   return (
-    <div className="max-h-fit overflow-hidden">
+    <div className="max-h-fit overflow-y-hidden">
       <Template />
     </div>
   );
