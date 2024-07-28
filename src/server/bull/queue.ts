@@ -55,7 +55,7 @@ export function initializeQueue() {
       console.log(`User's LinkedIn access token: ${accessToken}`);
 
       try {
-        const saveDraftResponse = await fetch("/api/drafts", {
+        const saveDraftResponse = await fetch(`${env.VERCEL_URL}/api/drafts`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -125,13 +125,16 @@ export function initializeQueue() {
           throw new Error(`Error publishing draft: ${errorText}`);
         }
 
-        const updateStatusResponse = await fetch("/api/drafts/status", {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
+        const updateStatusResponse = await fetch(
+          `${env.VERCEL_URL}/api/drafts/status`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ postId }),
           },
-          body: JSON.stringify({ postId }),
-        });
+        );
 
         if (!updateStatusResponse.ok) {
           throw new Error("Failed to update draft status");
