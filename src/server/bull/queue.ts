@@ -41,27 +41,22 @@ export function initializeQueue() {
       console.log(`Scheduled for: ${scheduledFor}`);
       console.log(`Processing post ${postId} for user ${userId}`);
 
-      const environment = env.NEXT_PUBLIC_NODE_ENV;
-      let baseUrl = "";
-      if (environment === "development") {
-        baseUrl = "http://localhost:3000";
-      } else {
-        baseUrl = "https://app.spireo.ai";
-      }
-
       try {
-        const response = await fetch(`${baseUrl}/api/linkedin/post`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+        const response = await fetch(
+          `${env.NEXT_PUBLIC_BASE_URL}/api/linkedin/post`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              userId,
+              postId,
+              content,
+              documentUrn,
+            }),
           },
-          body: JSON.stringify({
-            userId,
-            postId,
-            content,
-            documentUrn,
-          }),
-        });
+        );
 
         if (!response.ok) {
           throw new Error(`Failed to post to LinkedIn: ${response.statusText}`);
