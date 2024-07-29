@@ -1,8 +1,8 @@
+"server-only";
 import { Queue, Worker, QueueEvents } from "bullmq";
 import IORedis from "ioredis";
 import { env } from "@/env";
-import { getLinkedInId, getAccessToken } from "@/app/actions/user";
-import { updateDraftStatus, saveDraft } from "@/app/actions/draft";
+import axios from "axios";
 
 export let redis_connection: IORedis | null = null;
 let queue: Queue | null = null;
@@ -43,103 +43,26 @@ export function initializeQueue() {
       console.log(`Scheduled for: ${scheduledFor}`);
       console.log(`Processing post ${postId} for user ${userId}`);
 
-      const linkedInId = await getLinkedInId(userId);
-      const accessToken = await getAccessToken(userId);
-
-      if (!linkedInId || !accessToken) {
-        console.log("Unable to retrieve LinkedIn credentials");
-        throw new Error("Unable to retrieve LinkedIn credentials");
-      }
-
-      console.log(`User's LinkedIn ID: ${linkedInId}`);
-      console.log(`User's LinkedIn access token: ${accessToken}`);
-
       try {
-        const saveDraftResponse = await fetch(`${env.VERCEL_URL}/api/drafts`, {
+        const response = await fetch(`${env.VERCEL_URL}/api/linkedin/post`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ postId, content }),
-        });
-
-        if (!saveDraftResponse.ok) {
-          throw new Error("Failed to save draft");
-        }
-
-        let urnId = "";
-        let mediaType = "NONE";
-
-        if (documentUrn) {
-          const parts = documentUrn.split(":");
-          urnId = parts[parts.length - 1];
-
-          if (documentUrn.includes(":image:")) {
-            mediaType = "IMAGE";
-          } else if (documentUrn.includes(":document:")) {
-            mediaType = "RICH";
-          }
-        }
-
-        let postBody: any = {
-          author: `urn:li:person:${linkedInId}`,
-          lifecycleState: "PUBLISHED",
-          specificContent: {
-            "com.linkedin.ugc.ShareContent": {
-              shareCommentary: {
-                text: content,
-              },
-              shareMediaCategory: mediaType,
-            },
-          },
-          visibility: {
-            "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC",
-          },
-        };
-
-        if (mediaType === "IMAGE" || mediaType === "RICH") {
-          postBody.specificContent["com.linkedin.ugc.ShareContent"].media = [
-            {
-              status: "READY",
-              media: `urn:li:digitalmediaAsset:${urnId}`,
-            },
-          ];
-        }
-
-        console.log("Posting to LinkedIn:", postBody);
-
-        const response = await fetch("https://api.linkedin.com/v2/ugcPosts", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "LinkedIn-Version": "202406",
-            Authorization: `Bearer ${accessToken}`,
-            "X-Restli-Protocol-Version": "2.0.0",
-          },
-          body: JSON.stringify(postBody),
+          body: JSON.stringify({
+            userId,
+            postId,
+            content,
+            documentUrn,
+          }),
         });
 
         if (!response.ok) {
-          const errorText = await response.text();
-          console.error("Error publishing draft", response.status, errorText);
-          throw new Error(`Error publishing draft: ${errorText}`);
+          throw new Error(`Failed to post to LinkedIn: ${response.statusText}`);
         }
 
-        const updateStatusResponse = await fetch(
-          `${env.VERCEL_URL}/api/drafts/status`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ postId }),
-          },
-        );
-
-        if (!updateStatusResponse.ok) {
-          throw new Error("Failed to update draft status");
-        }
-        console.log("Draft published successfully");
+        const result = await response.json();
+        console.log("Post published successfully", result);
       } catch (error) {
         console.error("Failed to post:", error);
         throw error; // Re-throw the error to mark the job as failed
