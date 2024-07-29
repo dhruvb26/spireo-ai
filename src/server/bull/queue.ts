@@ -1,8 +1,6 @@
-"server-only";
 import { Queue, Worker, QueueEvents } from "bullmq";
 import IORedis from "ioredis";
 import { env } from "@/env";
-import axios from "axios";
 
 export let redis_connection: IORedis | null = null;
 let queue: Queue | null = null;
@@ -43,8 +41,16 @@ export function initializeQueue() {
       console.log(`Scheduled for: ${scheduledFor}`);
       console.log(`Processing post ${postId} for user ${userId}`);
 
+      const environment = env.NEXT_PUBLIC_NODE_ENV;
+      let baseUrl = "";
+      if (environment === "development") {
+        baseUrl = "http://localhost:3000";
+      } else {
+        baseUrl = "https://app.spireo.ai";
+      }
+
       try {
-        const response = await fetch(`${env.VERCEL_URL}/api/linkedin/post`, {
+        const response = await fetch(`${baseUrl}/api/linkedin/post`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
