@@ -2,6 +2,9 @@
 import { NextResponse } from "next/server";
 import { getLinkedInId, getAccessToken } from "@/app/actions/user";
 import { saveDraft, updateDraftStatus } from "@/app/actions/draft";
+import { drafts } from "@/server/db/schema";
+import { and, eq } from "drizzle-orm";
+import { db } from "@/server/db";
 
 type Node = {
   type: string;
@@ -129,7 +132,19 @@ export async function POST(request: Request) {
       );
     }
 
-    await updateDraftStatus(postId);
+    await db
+      .update(drafts)
+      .set({
+        status: "published",
+        updatedAt: new Date(),
+      })
+      .where(
+        and(
+          eq(drafts.id, postId),
+          eq(drafts.userId, userId),
+          eq(drafts.status, "scheduled"),
+        ),
+      );
 
     console.log("Draft published successfully");
 

@@ -8,8 +8,8 @@ let worker: Worker | null = null;
 let queueEvents: QueueEvents | null = null;
 
 const redisOptions = {
-  port: 15424,
-  host: "redis-15424.c261.us-east-1-4.ec2.cloud.redislabs.com",
+  port: 12701,
+  host: "redis-12701.c325.us-east-1-4.ec2.cloud.redislabs.com",
   maxRetriesPerRequest: null,
   username: "default",
   password: env.REDIS_CLOUD_PASSWORD,
@@ -45,7 +45,6 @@ export function initializeQueue() {
         ? new Date(job.timestamp + job.opts.delay)
         : null;
 
-      console.log(`Scheduled for: ${scheduledFor}`);
       console.log(`Processing post ${postId} for user ${userId}`);
 
       try {
@@ -70,14 +69,16 @@ export function initializeQueue() {
         }
 
         const result = await response.json();
-        await closeConnections();
+
         console.log("Post published successfully", result);
       } catch (error) {
         console.error("Failed to post:", error);
         throw error; // Re-throw the error to mark the job as failed
       }
     },
-    { connection: redis_connection },
+    {
+      connection: redis_connection,
+    },
   );
 
   // Handle completed jobs
@@ -88,19 +89,6 @@ export function initializeQueue() {
   // Handle failed jobs
   worker.on("failed", (job, err) => {
     console.log(`Job ${job?.id} has failed with ${err.message}`);
-  });
-
-  // Create QueueEvents
-  queueEvents = new QueueEvents("linkedin-posts", {
-    connection: redis_connection,
-  });
-
-  queueEvents.on("completed", ({ jobId }) => {
-    console.log(`Job ${jobId} has completed`);
-  });
-
-  queueEvents.on("failed", ({ jobId, failedReason }) => {
-    console.error(`Job ${jobId} has failed with reason ${failedReason}`);
   });
 
   return queue;

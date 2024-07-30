@@ -160,8 +160,6 @@ export async function deleteDraft(draftId: string): Promise<DeleteDraftResult> {
       };
     }
 
-    const queue = getQueue();
-
     // First, check if the draft exists and get its status
     const draftToDelete = await db
       .select()
@@ -181,7 +179,7 @@ export async function deleteDraft(draftId: string): Promise<DeleteDraftResult> {
     // If the draft is scheduled, remove it from the queue
     if (draftStatus === "scheduled") {
       const jobId = await getJobId(userId, draftId);
-
+      const queue = getQueue();
       if (!queue) {
         return {
           success: false,
@@ -212,7 +210,10 @@ export async function deleteDraft(draftId: string): Promise<DeleteDraftResult> {
 
     return {
       success: true,
-      message: "Draft deleted successfully",
+      message:
+        draftStatus === "scheduled"
+          ? "Scheduled draft deleted and removed from queue successfully"
+          : "Draft deleted successfully",
     };
   } catch (error) {
     console.error("Error deleting draft:", error);
@@ -299,6 +300,7 @@ export async function updateDraftStatus(id: string): Promise<Result> {
     const userId = await getUserId();
 
     if (!userId) {
+      console.log("User not authenticated");
       return {
         success: false,
         message: "User not authenticated",
@@ -320,12 +322,14 @@ export async function updateDraftStatus(id: string): Promise<Result> {
       );
 
     if (updatedDraft.length === 0) {
+      console.log("Draft not found or not in scheduled status");
       return {
         success: false,
         message: "Draft not found or not in scheduled status",
       };
     }
 
+    console.log("Draft status updated to published successfully");
     return {
       success: true,
       message: "Draft status updated to published successfully",

@@ -1,4 +1,3 @@
-import IORedis from "ioredis";
 import { redis_connection } from "./bull/queue";
 
 export function getJobKey(userId: string, postId: string): string {

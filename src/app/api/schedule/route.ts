@@ -77,7 +77,7 @@ export async function POST(req: Request) {
     const jobData = { userId, postId, content, documentUrn };
     console.log("Job data:", jobData);
     const jobOptions: any = {
-      removeOnComplete: false,
+      removeOnComplete: true,
       removeOnFail: true,
     };
     const now = new Date();

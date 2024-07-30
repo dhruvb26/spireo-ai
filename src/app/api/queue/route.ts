@@ -25,9 +25,11 @@ export async function GET(req: Request) {
 
     // Get the total number of jobs in the queue
     const jobCounts = await queue.getJobCounts();
+    const activeJobs = await queue.getActive();
 
     return NextResponse.json({
       queueLength: jobCounts,
+      activeJobs: activeJobs.map((job) => job.id),
     });
   } catch (error) {
     return NextResponse.json(
@@ -52,11 +54,26 @@ export async function DELETE(req: Request) {
 
   if (action === "clearAll") {
     try {
+      // Pause the queue to stop processing new jobs
+      await queue.pause();
+
+      // Get all active jobs
+      const activeJobs = await queue.getActive();
+
+      // Pause all active jobs
+      for (const job of activeJobs) {
+        await deleteJobId(job.data.userId, job.data.postId);
+        await job.remove();
+      }
+
+      // Obliterate the queue
       await queue.obliterate();
+
       return NextResponse.json({
-        message: "Queue cleared successfully",
+        message: "Active jobs paused and queue cleared successfully",
       });
-    } catch (error) {
+    } catch (error: any) {
+      console.log("Failed to clear queue", error.message);
       return NextResponse.json(
         { error: "Failed to clear queue" },
         { status: 500 },
