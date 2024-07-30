@@ -84,7 +84,7 @@ const ContentSlide: React.FC<{
   name: string;
   handle: string;
   userImage: string;
-}> = ({ slide, theme, name, handle }) => (
+}> = ({ slide, theme, name, handle, userImage }) => (
   <SlideWrapper>
     <div
       className="flex aspect-square h-full max-w-6xl items-center justify-center overflow-hidden px-10"
@@ -94,7 +94,7 @@ const ContentSlide: React.FC<{
         <div>
           <div className="mb-4 flex items-center">
             <img
-              src="https://media.licdn.com/dms/image/D4E03AQFsQskxImXg0w/profile-displayphoto-shrink_100_100/0/1708111490647?e=2147483647&v=beta&t=6gqtqUb-nKKy1dX_qDl8MFpaf2ne3c3cIhrCmRYp4lM"
+              src={userImage}
               alt="Profile"
               className="mr-3 h-12 w-12 rounded-full"
             />

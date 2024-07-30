@@ -21,11 +21,17 @@ const SavedDraftsPage = () => {
     try {
       const result = await getDrafts();
       if (result.success) {
-        setDrafts(result.data || []);
+        // Deserialize the JSON content for each draft
+        const deserializedDrafts = result.data?.map((draft) => ({
+          ...draft,
+          content: JSON.parse(draft.content),
+        }));
+        setDrafts(deserializedDrafts || []);
       } else {
         setError(result.message);
       }
-    } catch (err) {
+    } catch (err: any) {
+      console.error(err.message);
       setError("An unexpected error occurred");
     } finally {
       setIsLoading(false);
@@ -84,7 +90,7 @@ const SavedDraftsPage = () => {
             posts={drafts.map((draft) => ({
               ...draft,
               status: draft.status,
-              updatedAt: new Date(draft.updatedAt), // Ensure updatedAt is a Date object
+              updatedAt: new Date(draft.updatedAt),
             }))}
             onDeleteDraft={handleDeleteDraft}
           />

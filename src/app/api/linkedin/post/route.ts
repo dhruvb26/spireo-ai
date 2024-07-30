@@ -3,21 +3,69 @@ import { NextResponse } from "next/server";
 import { getLinkedInId, getAccessToken } from "@/app/actions/user";
 import { saveDraft, updateDraftStatus } from "@/app/actions/draft";
 
+type Node = {
+  type: string;
+  children?: Node[];
+  text?: string;
+  bold?: boolean;
+  italic?: boolean;
+  underline?: boolean;
+};
+
+function extractText(content: Node | Node[]): string {
+  const nodes = Array.isArray(content) ? content : [content];
+
+  let result = "";
+
+  nodes.forEach((node) => {
+    if (node.type === "paragraph") {
+      result += extractText(node.children || []) + "\n\n";
+    } else {
+      let text = node.text || "";
+
+      // Apply styles using LinkedIn's text formatting
+      if (node.bold) {
+        text = `<b>${text}</b>`;
+      }
+      if (node.italic) {
+        text = `<i>${text}</i>`;
+      }
+      if (node.underline) {
+        text = `<u>${text}</u>`;
+      }
+
+      result += text;
+    }
+  });
+
+  return result.trim();
+}
+
 export async function POST(request: Request) {
-  const { userId, postId, content, documentUrn } = await request.json();
-
-  const linkedInId = await getLinkedInId(userId);
-  const accessToken = await getAccessToken(userId);
-
-  if (!linkedInId || !accessToken) {
-    console.log("Unable to retrieve LinkedIn credentials");
-    return NextResponse.json(
-      { error: "Unable to retrieve LinkedIn credentials" },
-      { status: 400 },
-    );
-  }
-
   try {
+    const { userId, postId, content, documentUrn } = await request.json();
+
+    console.log("Content received: ", content);
+
+    if (!userId || !postId || !content) {
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 },
+      );
+    }
+
+    const formattedContent = extractText(JSON.parse(content));
+    const linkedInId = await getLinkedInId(userId);
+    const accessToken = await getAccessToken(userId);
+
+    if (!linkedInId || !accessToken) {
+      console.error("Unable to retrieve LinkedIn credentials");
+      return NextResponse.json(
+        { error: "Unable to retrieve LinkedIn credentials" },
+        { status: 400 },
+      );
+    }
+
     await saveDraft(postId, content);
 
     let urnId = "";
@@ -34,14 +82,16 @@ export async function POST(request: Request) {
       }
     }
 
-    let postBody: any = {
+    const postBody: any = {
       author: `urn:li:person:${linkedInId}`,
       lifecycleState: "PUBLISHED",
       specificContent: {
         "com.linkedin.ugc.ShareContent": {
           shareCommentary: {
-            text: content,
+            text: formattedContent,
+            attributes: [],
           },
+
           shareMediaCategory: mediaType,
         },
       },
@@ -80,6 +130,8 @@ export async function POST(request: Request) {
     }
 
     await updateDraftStatus(postId);
+
+    console.log("Draft published successfully");
 
     return NextResponse.json({ message: "Draft published successfully" });
   } catch (error) {

@@ -17,6 +17,6 @@ export const config = {
     "/dashboard/:path*",
     "/api/ai/:path*",
     "/api/schedule/:path*",
-    "/api/queue/:path*",
+    // "/api/queue/:path*",
   ],
 };

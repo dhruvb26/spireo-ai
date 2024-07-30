@@ -7,21 +7,28 @@ let queue: Queue | null = null;
 let worker: Worker | null = null;
 let queueEvents: QueueEvents | null = null;
 
-export function initializeQueue() {
-  redis_connection = new IORedis({
-    port: 13219,
-    host: "redis-13219.c1.us-west-2-2.ec2.redns.redis-cloud.com",
-    maxRetriesPerRequest: null,
-    username: "default",
-    password: env.REDIS_CLOUD_PASSWORD,
-  });
+const redisOptions = {
+  port: 15424,
+  host: "redis-15424.c261.us-east-1-4.ec2.cloud.redislabs.com",
+  maxRetriesPerRequest: null,
+  username: "default",
+  password: env.REDIS_CLOUD_PASSWORD,
+  retryStrategy: function (times: number) {
+    return Math.max(Math.min(Math.exp(times), 20000), 1000);
+  },
+};
 
-  redis_connection.on("error", (error) => {
-    console.error(error);
-  });
+export function initializeQueue() {
+  if (queue) return queue;
+
+  redis_connection = new IORedis(redisOptions);
 
   redis_connection.on("connect", () => {
     console.log("Connected to Redis");
+  });
+
+  redis_connection.on("error", (error) => {
+    console.error("Failed to connect to Redis", error);
   });
 
   // Create a queue
@@ -63,6 +70,7 @@ export function initializeQueue() {
         }
 
         const result = await response.json();
+        await closeConnections();
         console.log("Post published successfully", result);
       } catch (error) {
         console.error("Failed to post:", error);
@@ -94,7 +102,11 @@ export function initializeQueue() {
   queueEvents.on("failed", ({ jobId, failedReason }) => {
     console.error(`Job ${jobId} has failed with reason ${failedReason}`);
   });
+
+  return queue;
 }
+
+initializeQueue();
 
 export async function closeConnections() {
   if (worker) {
@@ -112,8 +124,12 @@ export async function closeConnections() {
   console.log("All connections closed");
 }
 
-// Initialize the queue when the module is imported
-initializeQueue();
+export function getQueue() {
+  if (!queue) {
+    throw new Error("Queue not initialized");
+  }
+  return queue;
+}
 
 // Make sure to call closeConnections() when your application is shutting down
 process.on("SIGTERM", async () => {
@@ -127,6 +143,3 @@ process.on("SIGINT", async () => {
   await closeConnections();
   process.exit(0);
 });
-
-// Export the queue for use in other parts of your application
-export { queue };

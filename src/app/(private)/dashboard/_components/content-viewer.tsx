@@ -11,24 +11,45 @@ const ContentViewer: React.FC<ContentViewerProps> = ({ value }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
+  const renderElement = (props: any) => {
+    switch (props.element.type) {
+      case "paragraph":
+        // Check if the paragraph is empty (only contains empty text)
+        const isEmpty =
+          props.element.children.length === 1 &&
+          props.element.children[0].text === "";
+        return (
+          <p className={`${isEmpty ? "h-4" : "mb-0"}`}>{props.children}</p>
+        );
+      default:
+        return <p className="mb-4">{props.children}</p>;
+    }
+  };
+
+  const renderLeaf = (props: any) => {
+    return (
+      <span
+        style={{
+          fontWeight: props.leaf.bold ? "bold" : "normal",
+          fontStyle: props.leaf.italic ? "italic" : "normal",
+          textDecoration: props.leaf.underline ? "underline" : "none",
+        }}
+      >
+        {props.leaf.text}
+      </span>
+    );
+  };
+
   const renderNode = (node: Descendant): JSX.Element => {
     if (Text.isText(node)) {
-      let style: React.CSSProperties = {};
-      if (node.bold) style.fontWeight = "bold";
-      if (node.italic) style.fontStyle = "italic";
-      if (node.underline) style.textDecoration = "underline";
-
-      return <span style={style}>{node.text}</span>;
+      return renderLeaf({ leaf: node });
     } else if (SlateElement.isElement(node)) {
-      if (node.type === "paragraph") {
-        return (
-          <p>
-            {node.children.map((child, index) => (
-              <React.Fragment key={index}>{renderNode(child)}</React.Fragment>
-            ))}
-          </p>
-        );
-      }
+      return renderElement({
+        element: node,
+        children: node.children.map((child, index) => (
+          <React.Fragment key={index}>{renderNode(child)}</React.Fragment>
+        )),
+      });
     }
     return <></>;
   };

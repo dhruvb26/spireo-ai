@@ -4,6 +4,42 @@ import { getAccessToken, getLinkedInId } from "@/app/actions/user";
 import { updateDraftStatus, saveDraft } from "@/app/actions/draft";
 import { checkAccess } from "@/app/actions/user";
 
+function convertToLinkedInFormat(content: any[]) {
+  let plainText = "";
+  const attributes = [] as any[];
+  let currentPosition = 0;
+
+  if (!Array.isArray(content)) {
+    throw new Error("Content must be an array");
+  }
+
+  content.forEach((node) => {
+    if (node.type === "paragraph" && Array.isArray(node.children)) {
+      node.children.forEach((child: any) => {
+        if (typeof child === "object" && "text" in child) {
+          plainText += child.text;
+
+          if (child.bold || child.italic) {
+            attributes.push({
+              start: currentPosition,
+              length: child.text.length,
+              attributes: {
+                "com.linkedin.pemberly.text.bold": child.bold || false,
+                "com.linkedin.pemberly.text.italic": child.italic || false,
+              },
+            });
+          }
+
+          currentPosition += child.text.length;
+        }
+      });
+      plainText += "\n";
+      currentPosition += 1; // for the newline
+    }
+  });
+
+  return { text: plainText.trim(), attributes };
+}
 export async function POST(req: Request) {
   try {
     const hasAccess = await checkAccess();
@@ -13,7 +49,9 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { userId, postId, content, documentUrn } = body;
+    const { userId, postId, content: contentString, documentUrn } = body;
+    const content = JSON.parse(contentString);
+    const { text, attributes } = convertToLinkedInFormat(content);
 
     let urnId = "";
     let mediaType = "NONE";
@@ -42,7 +80,7 @@ export async function POST(req: Request) {
       );
     }
 
-    await saveDraft(postId, content);
+    // await saveDraft(postId, content);
 
     let postBody: any = {
       author: `urn:li:person:${linkedInId}`,
@@ -50,7 +88,8 @@ export async function POST(req: Request) {
       specificContent: {
         "com.linkedin.ugc.ShareContent": {
           shareCommentary: {
-            text: content,
+            text: text,
+            attributes: attributes,
           },
           shareMediaCategory: mediaType,
         },
@@ -60,14 +99,7 @@ export async function POST(req: Request) {
       },
     };
 
-    if (mediaType === "IMAGE") {
-      postBody.specificContent["com.linkedin.ugc.ShareContent"].media = [
-        {
-          status: "READY",
-          media: `urn:li:digitalmediaAsset:${urnId}`,
-        },
-      ];
-    } else if (mediaType === "RICH") {
+    if (mediaType === "IMAGE" || mediaType === "RICH") {
       postBody.specificContent["com.linkedin.ugc.ShareContent"].media = [
         {
           status: "READY",

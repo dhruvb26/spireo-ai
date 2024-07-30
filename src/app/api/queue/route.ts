@@ -1,5 +1,5 @@
 "use server";
-import { queue } from "@/server/bull/queue";
+import { getQueue } from "@/server/bull/queue";
 import { NextResponse } from "next/server";
 import { checkAccess } from "@/app/actions/user";
 import { getJobId, deleteJobId } from "@/server/redis";
@@ -7,12 +7,14 @@ import { getJobId, deleteJobId } from "@/server/redis";
 export async function GET(req: Request) {
   try {
     // Get the user session
-    const hasAccess = await checkAccess();
+    // const hasAccess = await checkAccess();
 
-    // Check if the user has access
-    if (!hasAccess) {
-      return NextResponse.json({ ideas: "Not authorized!" }, { status: 401 });
-    }
+    // // Check if the user has access
+    // if (!hasAccess) {
+    //   return NextResponse.json({ ideas: "Not authorized!" }, { status: 401 });
+    // }
+
+    const queue = getQueue();
 
     if (!queue) {
       return NextResponse.json(
@@ -38,6 +40,8 @@ export async function GET(req: Request) {
 export async function DELETE(req: Request) {
   const body = await req.json();
   const { action, userId, postId } = body;
+
+  const queue = getQueue();
 
   if (!queue) {
     return NextResponse.json(

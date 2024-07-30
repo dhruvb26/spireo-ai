@@ -20,9 +20,9 @@ export const ParallaxScroll = ({
 }: {
   posts: {
     id: string;
-    content: string;
+    content: any; // This is now a deserialized JSON object
     status: string;
-    updatedAt: Date; // Changed from string to Date
+    updatedAt: Date;
   }[];
   className?: string;
   onDeleteDraft: (id: string) => void;
@@ -43,13 +43,29 @@ export const ParallaxScroll = ({
   const secondPart = posts.slice(third, 2 * third);
   const thirdPart = posts.slice(2 * third);
 
+  const renderContent = (content: any) => {
+    // This function will render the deserialized content
+    return content.map((node: any, index: number) => (
+      <div key={index}>
+        {node.type === "paragraph" && (
+          <p>
+            {node.children.map((child: any, childIndex: number) => (
+              <span key={childIndex}>{child.text}</span>
+            ))}
+          </p>
+        )}
+        {/* Add more conditions here for other node types */}
+      </div>
+    ));
+  };
+
   const PostCard = ({ post, translateY }: { post: any; translateY: any }) => (
     <motion.div
       style={{ y: translateY }}
       className="rounded-lg border border-brand-gray-200 bg-brand-gray-25 p-4 shadow-sm"
     >
       <div className="flex flex-col">
-        <p className="mb-2 line-clamp-3">{post.content}</p>
+        <div className="mb-2 line-clamp-3">{renderContent(post.content)}</div>
         <p className="text-sm text-gray-500">
           Last updated: {post.updatedAt.toLocaleString()}
         </p>

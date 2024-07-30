@@ -3,11 +3,11 @@ import { NextResponse } from "next/server";
 import { db } from "@/server/db";
 import { drafts } from "@/server/db/schema";
 import { and, eq } from "drizzle-orm";
-import { queue } from "@/server/bull/queue";
+import { getQueue } from "@/server/bull/queue";
 import { saveJobId } from "@/server/redis";
 import { getJobId, deleteJobId } from "@/server/redis";
 import { checkAccess } from "@/app/actions/user";
-import { deleteDraft } from "@/app/actions/draft";
+import { deleteDraft, getDraft } from "@/app/actions/draft";
 
 export async function POST(req: Request) {
   const hasAccess = await checkAccess();
@@ -15,8 +15,14 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Not authorized!" }, { status: 401 });
   }
 
+  // Initialize the queue
+  const queue = getQueue();
+
   const body = await req.json();
-  const { userId, postId, content, scheduledTime, documentUrn } = body;
+  const { userId, postId, scheduledTime, documentUrn } = body;
+
+  const gettingDraft = await getDraft(postId);
+  const content = gettingDraft?.data?.content;
 
   if (!userId || !postId || !content) {
     return NextResponse.json(
@@ -70,7 +76,10 @@ export async function POST(req: Request) {
 
     const jobData = { userId, postId, content, documentUrn };
     console.log("Job data:", jobData);
-    const jobOptions: any = {};
+    const jobOptions: any = {
+      removeOnComplete: false,
+      removeOnFail: true,
+    };
     const now = new Date();
 
     if (scheduledTime) {
@@ -175,6 +184,9 @@ export async function DELETE(req: Request) {
   }
 }
 export async function PUT(req: Request) {
+  // Initialize the queue
+  const queue = getQueue();
+
   const body = await req.json();
   const { userId, postId, content, scheduledTime, documentUrn } = body;
 

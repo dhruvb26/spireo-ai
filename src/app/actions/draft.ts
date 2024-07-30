@@ -3,9 +3,9 @@
 import { db } from "@/server/db";
 import { drafts } from "@/server/db/schema";
 import { getUserId } from "./user";
-import { eq, and, or } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { getJobId, deleteJobId } from "@/server/redis";
-import { queue } from "@/server/bull/queue";
+import { getQueue } from "@/server/bull/queue";
 // Define the Draft type
 export type Draft = {
   id: string;
@@ -160,6 +160,8 @@ export async function deleteDraft(draftId: string): Promise<DeleteDraftResult> {
       };
     }
 
+    const queue = getQueue();
+
     // First, check if the draft exists and get its status
     const draftToDelete = await db
       .select()
@@ -292,6 +294,8 @@ export async function getScheduledDrafts() {
 
 export async function updateDraftStatus(id: string): Promise<Result> {
   try {
+    console.log("updateDraftStatus called with id:", id);
+
     const userId = await getUserId();
 
     if (!userId) {
@@ -313,8 +317,7 @@ export async function updateDraftStatus(id: string): Promise<Result> {
           eq(drafts.userId, userId),
           eq(drafts.status, "scheduled"),
         ),
-      )
-      .returning();
+      );
 
     if (updatedDraft.length === 0) {
       return {

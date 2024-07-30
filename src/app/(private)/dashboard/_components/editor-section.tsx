@@ -22,7 +22,6 @@ import ScheduleDialog from "./schedule-dialog";
 import { toast } from "sonner";
 import { getUserId } from "@/app/actions/user";
 import {
-  Paperclip,
   Sparkle,
   TextB,
   TextItalic,
@@ -35,6 +34,14 @@ import {
   removeDraftDocumentUrn,
 } from "@/app/actions/draft";
 import FileAttachmentButton from "./file-attachment-button";
+
+const serializeContent = (nodes: Descendant[]): string => {
+  return JSON.stringify(nodes);
+};
+
+const deserializeContent = (content: string): Descendant[] => {
+  return JSON.parse(content) as Descendant[];
+};
 
 export type ParagraphElement = {
   type: "paragraph";
@@ -123,22 +130,34 @@ export const extractContent = (value: Descendant[]): string => {
 };
 
 interface EditorSectionProps {
-  value: Descendant[];
+  initialValue: string | Descendant[];
   id: string;
   setValue: (value: Descendant[]) => void;
   editor: CustomEditor;
   handleSave: () => void;
-  initialDocumentUrn: string | null; // Add this line
+  initialDocumentUrn: string | null;
 }
 
 function EditorSection({
-  value,
+  initialValue,
   id,
   setValue,
   editor,
   handleSave,
-  initialDocumentUrn, // Add this line
+  initialDocumentUrn,
 }: EditorSectionProps) {
+  const [value, setInternalValue] = useState<Descendant[]>(() => {
+    if (typeof initialValue === "string") {
+      try {
+        return deserializeContent(initialValue);
+      } catch (e) {
+        // If deserialization fails, treat it as plain text
+        return [{ type: "paragraph", children: [{ text: initialValue }] }];
+      }
+    }
+    return initialValue;
+  });
+
   const renderElement = useCallback((props: any) => {
     switch (props.element.type) {
       case "paragraph":
@@ -177,6 +196,7 @@ function EditorSection({
       const newCharCount = content.length;
 
       if (newCharCount <= 3000) {
+        setInternalValue(newValue);
         setValue(newValue);
         setCharCount(newCharCount);
       } else {
@@ -185,6 +205,7 @@ function EditorSection({
         const truncatedValue = [
           { type: "paragraph", children: [{ text: truncatedContent }] },
         ];
+        setInternalValue(truncatedValue as Descendant[]);
         setValue(truncatedValue as Descendant[]);
         setCharCount(3000);
 
@@ -239,7 +260,6 @@ function EditorSection({
 
   const handlePublish = async () => {
     setIsPublishing(true);
-    abortControllerRef.current = new AbortController();
 
     try {
       const userId = await getUserId();
@@ -248,7 +268,7 @@ function EditorSection({
         return;
       }
 
-      const postContent = extractContent(value);
+      const postContent = serializeContent(value);
 
       const publishData: any = {
         userId: userId,
@@ -266,7 +286,6 @@ function EditorSection({
           "Content-Type": "application/json",
         },
         body: JSON.stringify(publishData),
-        signal: abortControllerRef.current.signal,
       });
 
       if (!response.ok) {
@@ -288,13 +307,6 @@ function EditorSection({
       }
     } finally {
       setIsPublishing(false);
-      abortControllerRef.current = null;
-    }
-  };
-
-  const handleCancelPublish = () => {
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
     }
   };
 

@@ -14,6 +14,14 @@ import EditorSection, {
 } from "../../_components/editor-section";
 import { useParams } from "next/navigation";
 
+const serializeContent = (nodes: Descendant[]): string => {
+  return JSON.stringify(nodes);
+};
+
+const deserializeContent = (content: string): Descendant[] => {
+  return JSON.parse(content) as Descendant[];
+};
+
 const initialValue: Descendant[] = [
   {
     type: "paragraph",
@@ -39,23 +47,27 @@ export default function EditDraft() {
       try {
         const draft = await getDraft(id);
         if (draft.success && draft.data) {
-          const draftContent = draft.data.content || "";
-          const newValue: Descendant[] = draftContent
-            .split("\n")
-            .map((line) => ({
-              type: "paragraph",
-              children: [{ text: line }],
-            }));
+          let newValue: Descendant[];
+          if (typeof draft.data.content === "string") {
+            try {
+              newValue = deserializeContent(draft.data.content);
+            } catch (e) {
+              // If deserialization fails, treat it as plain text
+              newValue = [
+                { type: "paragraph", children: [{ text: draft.data.content }] },
+              ];
+            }
+          } else {
+            newValue = draft.data.content || initialValue;
+          }
 
           editor.children = newValue;
           editor.onChange();
           setValue(newValue);
-          updatePost(id, draftContent);
+          updatePost(id, draft.data.content || "");
 
-          // Pass the document_urn to the EditorSection
           setDocumentUrn(draft.data.documentUrn || null);
         } else {
-          // If draft is not found, assume it's a new draft
           setValue(initialValue);
           updatePost(id, "");
           setDocumentUrn(null);
@@ -72,20 +84,20 @@ export default function EditDraft() {
   }, [id, updatePost, editor]);
 
   const handleSave = async () => {
+    const serializedContent = serializeContent(value);
+
     try {
-      const content = extractContent(value);
-      const result = await saveDraft(id, content);
+      const result = await saveDraft(id, serializedContent);
       if (result.success) {
-        toast.success(result.message);
+        toast.success("Draft saved successfully");
       } else {
-        toast.error(result.message);
+        toast.error("Failed to save draft");
       }
     } catch (error) {
       console.error("Error saving draft:", error);
-      toast.error("An unexpected error occurred while saving the draft");
+      toast.error("An error occurred while saving the draft");
     }
   };
-
   return (
     <div className="m-0 flex max-w-6xl px-4">
       {isLoading ? (
@@ -98,7 +110,7 @@ export default function EditDraft() {
             <div className="rounded-lg border border-gray-200 shadow-sm">
               <EditorSection
                 id={id}
-                value={value}
+                initialValue={value}
                 setValue={setValue}
                 editor={editor}
                 handleSave={handleSave}
