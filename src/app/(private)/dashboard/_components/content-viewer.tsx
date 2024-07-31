@@ -3,10 +3,11 @@ import React, { useRef, useEffect, useState } from "react";
 import { Descendant, Element as SlateElement, Text } from "slate";
 
 interface ContentViewerProps {
+  postId: string;
   value: Descendant[];
 }
 
-const ContentViewer: React.FC<ContentViewerProps> = ({ value }) => {
+const ContentViewer: React.FC<ContentViewerProps> = ({ value, postId }) => {
   const [isOverflowing, setIsOverflowing] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -14,7 +15,6 @@ const ContentViewer: React.FC<ContentViewerProps> = ({ value }) => {
   const renderElement = (props: any) => {
     switch (props.element.type) {
       case "paragraph":
-        // Check if the paragraph is empty (only contains empty text)
         const isEmpty =
           props.element.children.length === 1 &&
           props.element.children[0].text === "";

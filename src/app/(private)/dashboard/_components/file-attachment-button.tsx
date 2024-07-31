@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,13 +9,19 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { usePostStore } from "@/store/postStore";
 import { Paperclip } from "lucide-react";
+import { updateDownloadUrl } from "@/app/actions/draft";
 
 const FileAttachmentButton = ({
+  postId,
   onFileUploaded,
 }: {
   onFileUploaded: (urn: string, fileType: string) => void;
+  postId: string;
 }) => {
+  const setDownloadUrl = usePostStore((state) => state.setDownloadUrl);
+
   const [isOpen, setIsOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -32,6 +39,7 @@ const FileAttachmentButton = ({
       try {
         const formData = new FormData();
         formData.append("file", selectedFile);
+        formData.append("postId", postId);
 
         const isDocument = [
           "application/pdf",
@@ -62,7 +70,7 @@ const FileAttachmentButton = ({
             urn = result.imageUrn;
             fileType = "image";
           }
-          console.log("File URN:", urn);
+
           onFileUploaded(urn, fileType);
           setSelectedFile(null);
           setIsOpen(false);

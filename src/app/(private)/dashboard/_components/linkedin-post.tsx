@@ -4,10 +4,14 @@ import { FaThumbsUp, FaComment, FaShare, FaPaperPlane } from "react-icons/fa";
 import { getUser } from "@/app/actions/user";
 import { Descendant } from "slate";
 import ContentViewer from "@/app/(private)/dashboard/_components/content-viewer";
+import { getDownloadUrl } from "@/app/actions/draft";
+import { useRouter } from "next/navigation";
+import { revalidatePost } from "@/app/actions/revalidate";
 
 interface LinkedInPostPreviewProps {
   content: Descendant[];
   device: "mobile" | "tablet" | "desktop";
+  postId: string;
 }
 
 interface User {
@@ -20,16 +24,38 @@ interface User {
 const LinkedInPostPreview: React.FC<LinkedInPostPreviewProps> = ({
   content,
   device,
+  postId,
 }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const userData = await getUser();
-      setUser(userData as User);
+    const fetchData = async () => {
+      try {
+        // Fetch user data
+        const userData = await getUser();
+        setUser(userData as User);
+
+        // Fetch download URL
+        const result = await getDownloadUrl(postId);
+
+        if (result.success) {
+          console.log("Getting download URL: ", result.data);
+          setDownloadUrl(result.data || "");
+          window.location.reload();
+        } else {
+          setError(result.message);
+        }
+      } catch (err) {
+        setError("An error occurred while fetching data");
+        console.error(err);
+      }
     };
-    fetchUser();
-  }, []);
+
+    fetchData();
+  }, [postId]);
 
   return (
     <div className="flex w-full justify-center">
@@ -59,7 +85,13 @@ const LinkedInPostPreview: React.FC<LinkedInPostPreviewProps> = ({
           <button className="ml-2 text-gray-500">•••</button>
         </div>
 
-        <ContentViewer value={content} />
+        <ContentViewer postId={postId} value={content} />
+
+        {downloadUrl && (
+          <div className="mt-2 flex h-fit items-center justify-center">
+            <img src={downloadUrl} alt="Image" className="" />
+          </div>
+        )}
 
         <div className="border-t border-gray-200 pt-1">
           <div className="flex items-center justify-between">

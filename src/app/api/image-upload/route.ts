@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { getAccessToken, getLinkedInId } from "@/app/actions/user";
 import { checkAccess } from "@/app/actions/user";
 import { getServerAuthSession } from "@/server/auth";
+import { updateDownloadUrl } from "@/app/actions/draft";
 
 export async function POST(req: Request) {
   try {
@@ -65,7 +66,9 @@ export async function POST(req: Request) {
 
     // Get the file from the request
     const formData = await req.formData();
+
     const file = formData.get("file") as File;
+    const postId = formData.get("postId") as string;
 
     if (!file) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
@@ -86,11 +89,32 @@ export async function POST(req: Request) {
       throw new Error(`Upload failed with status: ${uploadResponse.status}`);
     }
 
+    const getImageUrl = `https://api.linkedin.com/rest/images/${imageUrn}`;
+
+    const completeResponse = await fetch(getImageUrl, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "LinkedIn-Version": "202406",
+      },
+    });
+
+    if (!completeResponse.ok) {
+      throw new Error(
+        `GET image failed with status: ${completeResponse.status}`,
+      );
+    }
+
+    const completeData = await completeResponse.json();
+
+    await updateDownloadUrl(postId, completeData.downloadUrl);
+
     return NextResponse.json(
       {
         success: true,
         message: "File uploaded successfully",
         imageUrn: imageUrn,
+        downloadUrl: completeData.downloadUrl,
       },
       { status: 200 },
     );

@@ -9,6 +9,14 @@ const config = {
   experimental: {
     missingSuspenseWithCSRBailout: false,
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**",
+      },
+    ],
+  },
 };
 
 export default config;

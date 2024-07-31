@@ -30,16 +30,18 @@ const initialValue: Descendant[] = [
 ];
 
 export default function EditDraft() {
+  const { updatePost, setDownloadUrl } = usePostStore();
+
   const params = useParams();
   const id = params.id as string;
   const editor = useMemo(() => withReact(createEditor()), []);
   const [value, setValue] = useState<Descendant[]>(initialValue);
   const [documentUrn, setDocumentUrn] = useState<string | null>(null);
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [device, setDevice] = useState<"mobile" | "tablet" | "desktop">(
     "mobile",
   );
   const [isLoading, setIsLoading] = useState(true);
-  const { updatePost } = usePostStore();
 
   useEffect(() => {
     const fetchDraft = async () => {
@@ -142,7 +144,11 @@ export default function EditDraft() {
                   </button>
                 </div>
               </div>
-              <LinkedInPostPreview content={value} device={device} />
+              <LinkedInPostPreview
+                postId={id}
+                content={value}
+                device={device}
+              />
             </div>
           </div>
         </div>

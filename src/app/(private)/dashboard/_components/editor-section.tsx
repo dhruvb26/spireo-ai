@@ -32,8 +32,11 @@ import {
   updateDraftPublishedStatus,
   updateDraftDocumentUrn,
   removeDraftDocumentUrn,
+  deleteDownloadUrl,
 } from "@/app/actions/draft";
 import FileAttachmentButton from "./file-attachment-button";
+import { useRouter } from "next/navigation";
+import { revalidatePost } from "@/app/actions/revalidate";
 
 const serializeContent = (nodes: Descendant[]): string => {
   return JSON.stringify(nodes);
@@ -222,7 +225,7 @@ function EditorSection({
 
   const [isPublishing, setIsPublishing] = useState(false);
   const [isRewriting, setIsRewriting] = useState(false);
-  const abortControllerRef = useRef<AbortController | null>(null);
+  const router = useRouter();
   const [documentUrn, setDocumentUrn] = useState<string | null>(
     initialDocumentUrn,
   );
@@ -234,7 +237,7 @@ function EditorSection({
     setDocumentUrn(urn);
     setDocumentStatus("Processing");
 
-    await handleSave();
+    handleSave();
     const result = await updateDraftDocumentUrn(id, urn);
     if (result.success) {
       if (fileType == "pdf") {
@@ -249,10 +252,13 @@ function EditorSection({
 
   const handleRemoveDocument = async () => {
     const result = await removeDraftDocumentUrn(id);
+    await deleteDownloadUrl(id);
     if (result.success) {
       setDocumentUrn(null);
       setDocumentStatus(null);
+
       toast.success("Document removed successfully");
+      window.location.reload();
     } else {
       toast.error("Failed to remove document from draft");
     }
@@ -360,8 +366,7 @@ function EditorSection({
         {documentUrn && (
           <div className="mb-4 flex items-center justify-between rounded-md bg-blue-200 p-2 text-blue-700">
             <span className="text-sm">
-              Your file has been attached to the post. We're working on adding
-              it to the preview.
+              Your file has been attached to the post.
             </span>
             <TooltipProvider>
               <Tooltip>
@@ -396,7 +401,10 @@ function EditorSection({
 
             <Separator orientation="vertical" className="h-8" />
 
-            <FileAttachmentButton onFileUploaded={handleDocumentUploaded} />
+            <FileAttachmentButton
+              postId={id}
+              onFileUploaded={handleDocumentUploaded}
+            />
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>

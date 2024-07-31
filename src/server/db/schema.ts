@@ -38,6 +38,7 @@ export const drafts = createTable(
     linkedInId: varchar("linked_in_id", { length: 512 }),
     content: text("content"),
     documentUrn: varchar("document_urn", { length: 512 }),
+    downloadUrl: varchar("download_url", { length: 512 }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),

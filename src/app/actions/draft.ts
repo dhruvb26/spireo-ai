@@ -515,3 +515,168 @@ export async function removeDraftDocumentUrn(id: string): Promise<Result> {
     };
   }
 }
+export async function updateDownloadUrl(
+  id: string,
+  downloadUrl: string,
+): Promise<Result> {
+  try {
+    const userId = await getUserId();
+
+    if (!userId) {
+      return {
+        success: false,
+        message: "User not authenticated",
+      };
+    }
+
+    console.log(
+      "updateDownloadUrl called with id:",
+      id,
+      "and downloadUrl:",
+      downloadUrl,
+    );
+
+    // Check if the draft exists
+    const existingDraft = await db
+      .select()
+      .from(drafts)
+      .where(and(eq(drafts.id, id), eq(drafts.userId, userId)))
+      .limit(1);
+
+    if (existingDraft.length === 0) {
+      const insertResult = await db.insert(drafts).values({
+        id: id,
+        status: "saved",
+        userId: userId,
+        downloadUrl: downloadUrl,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+
+      if (insertResult.length === 0) {
+        return {
+          success: false,
+          message: "Failed to create new draft",
+        };
+      }
+
+      return {
+        success: true,
+        message: "Draft created and download URL set successfully",
+      };
+    } else {
+      // Draft exists, update the download URL
+      const updatedDraft = await db
+        .update(drafts)
+        .set({
+          downloadUrl: downloadUrl,
+          updatedAt: new Date(),
+        })
+        .where(and(eq(drafts.id, id), eq(drafts.userId, userId)));
+
+      if (updatedDraft.length === 0) {
+        return {
+          success: false,
+          message: "Failed to update draft download URL",
+        };
+      }
+
+      return {
+        success: true,
+        message: "Draft download URL updated successfully",
+      };
+    }
+  } catch (error) {
+    console.error("Error updating draft download URL:", error);
+    return {
+      success: false,
+      message: "Failed to update draft download URL",
+    };
+  }
+}
+
+export async function deleteDownloadUrl(id: string): Promise<Result> {
+  try {
+    const userId = await getUserId();
+
+    if (!userId) {
+      return {
+        success: false,
+        message: "User not authenticated",
+      };
+    }
+
+    const updatedDraft = await db
+      .update(drafts)
+      .set({
+        downloadUrl: null,
+        updatedAt: new Date(),
+      })
+      .where(and(eq(drafts.id, id), eq(drafts.userId, userId)))
+      .returning();
+
+    if (updatedDraft.length === 0) {
+      return {
+        success: false,
+        message: "Draft not found",
+      };
+    }
+
+    return {
+      success: true,
+      message: "Draft download URL removed successfully",
+    };
+  } catch (error) {
+    console.error("Error removing draft download URL:", error);
+    return {
+      success: false,
+      message: "Failed to remove draft download URL",
+    };
+  }
+}
+export async function getDownloadUrl(
+  id: string,
+): Promise<Result<string | null>> {
+  try {
+    const userId = await getUserId();
+
+    if (!userId) {
+      return {
+        success: false,
+        message: "User not authenticated",
+        data: null,
+      };
+    }
+
+    console.log("getDownloadUrl called with id:", id);
+
+    const draft = await db
+      .select({
+        downloadUrl: drafts.downloadUrl,
+      })
+      .from(drafts)
+      .where(and(eq(drafts.id, id), eq(drafts.userId, userId)))
+      .limit(1);
+
+    if (draft.length === 0) {
+      return {
+        success: false,
+        message: "Draft not found",
+        data: null,
+      };
+    }
+
+    return {
+      success: true,
+      message: "Download URL retrieved successfully",
+      data: draft[0]?.downloadUrl,
+    };
+  } catch (error) {
+    console.error("Error retrieving draft download URL:", error);
+    return {
+      success: false,
+      message: "Failed to retrieve draft download URL",
+      data: null,
+    };
+  }
+}
