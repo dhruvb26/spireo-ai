@@ -44,7 +44,6 @@ const LinkedInPostPreview: React.FC<LinkedInPostPreviewProps> = ({
         if (result.success) {
           console.log("Getting download URL: ", result.data);
           setDownloadUrl(result.data || "");
-          window.location.reload();
         } else {
           setError(result.message);
         }

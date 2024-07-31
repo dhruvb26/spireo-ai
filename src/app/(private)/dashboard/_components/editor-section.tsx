@@ -258,7 +258,6 @@ function EditorSection({
       setDocumentStatus(null);
 
       toast.success("Document removed successfully");
-      window.location.reload();
     } else {
       toast.error("Failed to remove document from draft");
     }
