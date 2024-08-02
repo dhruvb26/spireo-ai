@@ -138,7 +138,7 @@ const OutroSlide: React.FC<{
   name: string;
   handle: string;
   userImage: string;
-}> = ({ slide, theme, name, handle }) => (
+}> = ({ slide, theme, name, handle, userImage }) => (
   <SlideWrapper>
     <div
       className={`aspect-square w-full overflow-hidden`}
@@ -157,9 +157,7 @@ const OutroSlide: React.FC<{
           <div className="flex items-center">
             <div className="flex flex-row items-start justify-start space-x-2">
               <img
-                src={
-                  "https://media.licdn.com/dms/image/D4E03AQFsQskxImXg0w/profile-displayphoto-shrink_100_100/0/1708111490647?e=2147483647&v=beta&t=6gqtqUb-nKKy1dX_qDl8MFpaf2ne3c3cIhrCmRYp4lM"
-                }
+                src={userImage}
                 alt="User profile"
                 className="h-12 w-12 rounded-full"
               />

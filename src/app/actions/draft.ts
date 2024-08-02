@@ -657,7 +657,6 @@ export async function getDownloadUrl(
       .from(drafts)
       .where(and(eq(drafts.id, id), eq(drafts.userId, userId)))
       .limit(1);
-
     if (draft.length === 0) {
       return {
         success: false,

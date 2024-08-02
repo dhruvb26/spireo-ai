@@ -6,7 +6,6 @@ import { Descendant } from "slate";
 import ContentViewer from "@/app/(private)/dashboard/_components/content-viewer";
 import { getDownloadUrl } from "@/app/actions/draft";
 import { useRouter } from "next/navigation";
-import { revalidatePost } from "@/app/actions/revalidate";
 
 interface LinkedInPostPreviewProps {
   content: Descendant[];
@@ -43,7 +42,7 @@ const LinkedInPostPreview: React.FC<LinkedInPostPreviewProps> = ({
 
         if (result.success) {
           console.log("Getting download URL: ", result.data);
-          setDownloadUrl(result.data || "");
+          setDownloadUrl(result.data as string);
         } else {
           setError(result.message);
         }
@@ -54,7 +53,7 @@ const LinkedInPostPreview: React.FC<LinkedInPostPreviewProps> = ({
     };
 
     fetchData();
-  }, [postId]);
+  }, [postId, setDownloadUrl, downloadUrl]);
 
   return (
     <div className="flex w-full justify-center">
