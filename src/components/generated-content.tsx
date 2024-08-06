@@ -156,14 +156,14 @@ export function GeneratedContent({
             >
               {copied ? "Copied!" : <Copy className="h-4 w-4" />}
             </Button>
-            <Button
+            {/* <Button
               size={"sm"}
               onClick={handleSave}
               className="rounded-lg bg-brand-gray-100 text-brand-gray-700 hover:bg-brand-gray-200"
               disabled={!isStreamComplete || copied || isPublishing}
             >
               {<DownloadSimple className="h-4 w-4" />}
-            </Button>
+            </Button> */}
             <Button
               size={"sm"}
               onClick={handlePublish}
