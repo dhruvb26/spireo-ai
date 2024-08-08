@@ -10,6 +10,7 @@ const config = {
     serverComponentsExternalPackages: ["bullmq"],
     esmExternals: "loose",
   },
+  swcMinify: false,
   webpack: (config) => {
     config.resolve.alias.canvas = false;
 
@@ -24,3 +25,4 @@ const config = {
     ],
   },
 };
+export default config;
