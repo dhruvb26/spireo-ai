@@ -5,17 +5,17 @@ import { templates } from "./templateData";
 
 const TemplateSelector: React.FC = () => {
   return (
-    <div className="max-w-6xl lg:max-w-[85rem]">
-      <div className="container space-y-2 text-left">
-        <h1 className="text-3xl font-bold tracking-tighter text-brand-gray-900">
+    <main>
+      <div className="mb-2 text-left">
+        <h1 className="text-xl font-semibold tracking-tight text-brand-gray-900">
           Build Eye-Catching Carousels
         </h1>
-        <p className="text-md mx-auto text-brand-gray-500">
+        <p className="text-sm text-brand-gray-500">
           Choose one of our captivating carousel templates to get started. Our
           AI-powered tools will help you create stunning visuals in no time.
         </p>
       </div>
-      <section className="py-12">
+      <div className="pt-8">
         <div className="container grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {templates.map((template) => (
             <Link
@@ -29,7 +29,9 @@ const TemplateSelector: React.FC = () => {
                   className="h-48 w-full p-10 transition-transform group-hover:scale-105"
                 />
                 <div className="bg-card p-4 text-brand-gray-900">
-                  <h3 className="text-lg font-semibold">{template.name}</h3>
+                  <h3 className="text-md font-semibold tracking-tight">
+                    {template.name}
+                  </h3>
                   <p className="text-sm text-brand-gray-500">
                     {template.description}
                   </p>
@@ -38,8 +40,8 @@ const TemplateSelector: React.FC = () => {
             </Link>
           ))}
         </div>
-      </section>
-    </div>
+      </div>
+    </main>
   );
 };
 

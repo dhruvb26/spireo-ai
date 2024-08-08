@@ -29,7 +29,7 @@ interface CalendarProps {
 
 const Calendar: React.FC<CalendarProps> = ({ drafts }) => {
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
-  const [currentView, setCurrentView] = useState<"1week" | "2weeks">("1week");
+  const [currentView, setCurrentView] = useState<"1week" | "2weeks">("2weeks");
   const [hoveredDraft, setHoveredDraft] = useState<Draft | null>(null);
   const [activeDraft, setActiveDraft] = useState<Draft | null>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
@@ -157,21 +157,23 @@ const Calendar: React.FC<CalendarProps> = ({ drafts }) => {
       </div>
     );
   };
+
   const renderCalendarView = () => {
     const dates = getWeekDates(currentDate, currentView === "1week" ? 1 : 2);
+    const today = new Date().toDateString();
     return (
       <div className="grid grid-cols-7 gap-px bg-gray-200">
         {dates.map((date, index) => (
           <div
             key={index}
             className={`flex h-64 flex-col ${
-              isFirstDayOfMonth(date) ? "bg-blue-50" : "bg-white"
-            }`}
+              date.toDateString() === today ? "bg-blue-50" : "bg-white"
+            } ${isFirstDayOfMonth(date) ? "bg-blue-100" : ""}`}
           >
             <div
               className={`flex-shrink-0 border-b p-2 ${
-                isFirstDayOfMonth(date) ? "bg-blue-100" : ""
-              }`}
+                date.toDateString() === today ? "bg-blue-100" : ""
+              } ${isFirstDayOfMonth(date) ? "bg-black/90 text-white" : ""}`}
             >
               <div className="text-xs text-blue-700">
                 {formatDayOfWeek(date).toUpperCase()}
@@ -195,6 +197,7 @@ const Calendar: React.FC<CalendarProps> = ({ drafts }) => {
       </div>
     );
   };
+
   const isFirstDayOfMonth = (date: Date): boolean => {
     return date.getDate() === 1;
   };
@@ -203,14 +206,14 @@ const Calendar: React.FC<CalendarProps> = ({ drafts }) => {
     <div className="calendar-container">
       <div className="mb-4 flex items-center justify-between">
         <div className="flex flex-row space-x-2">
-          <span className="text-2xl font-bold tracking-tighter">
+          <span className="text-xl font-semibold tracking-tight">
             {formatMonthYear(currentDate)}
           </span>
           <div className="flex flex-row items-center space-x-4">
             <button onClick={goToPrevious} className="p-1">
               <ChevronLeft className="h-5 w-5" />
             </button>
-            <button onClick={goToToday} className="text-sm font-medium">
+            <button onClick={goToToday} className="text-sm">
               Today
             </button>
             <button onClick={goToNext} className="p-1">

@@ -3,12 +3,12 @@ import {
   Dialog,
   DialogContent,
   DialogHeader,
-  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import TipButton from "./tip-button";
 
 interface PostFormat {
   templates: string[];
@@ -109,25 +109,30 @@ export function PostFormatSelector({
 }) {
   const [selectedFormat, setSelectedFormat] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-      <DialogTrigger asChild>
-        <Button
-          className="bg-brand-gray-800 font-light text-white hover:bg-brand-gray-900 hover:text-white"
-          variant="outline"
-          onClick={() => setIsDialogOpen(true)}
-        >
-          Select Post Format
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="max-h-[80vh] sm:max-w-[800px]">
-        <DialogHeader>
-          <DialogTitle>Select Post Format</DialogTitle>
-        </DialogHeader>
+      <div className="flex items-center justify-start space-x-2">
+        <DialogTrigger asChild>
+          <Button
+            className="rounded-lg bg-blue-600 text-sm text-white hover:bg-blue-700 hover:text-white"
+            onClick={() => setIsDialogOpen(true)}
+          >
+            Post Format
+          </Button>
+        </DialogTrigger>
+
+        <TipButton
+          heading="Why use a post format?"
+          content="Selecting a post format can help structure your content and make it more engaging. Try one out to enhance your post!"
+        />
+      </div>
+      <DialogContent className="min-h-[80vh] sm:max-w-[800px]">
+        <DialogHeader></DialogHeader>
         <Tabs defaultValue={categories[0]} className="w-full">
           <TabsList className="grid h-fit w-full grid-cols-5">
             {categories.map((category) => (
-              <TabsTrigger key={category} value={category}>
+              <TabsTrigger className="text-sm" key={category} value={category}>
                 {category}
               </TabsTrigger>
             ))}
@@ -136,9 +141,9 @@ export function PostFormatSelector({
             <TabsContent
               key={category}
               value={category}
-              className="h-[400px] w-full"
+              className="h-[500px] w-full"
             >
-              <ScrollArea className="h-full pr-4">
+              <ScrollArea className="h-full">
                 {postFormats
                   .find((format) => format.category === category)
                   ?.templates.map((template, index) => (
@@ -151,7 +156,10 @@ export function PostFormatSelector({
                       }`}
                       onClick={() => setSelectedFormat(template)}
                     >
-                      <pre className="whitespace-pre-wrap font-sans text-sm">
+                      <div className="mb-2 text-sm font-semibold text-blue-600">
+                        #{index + 1}
+                      </div>
+                      <pre className="whitespace-pre-wrap font-sans ">
                         {template}
                       </pre>
                     </div>
@@ -160,9 +168,9 @@ export function PostFormatSelector({
             </TabsContent>
           ))}
         </Tabs>
-        <div className="mt-4 flex justify-end">
+        <div className="flex justify-end py-0">
           <Button
-            className=" bg-brand-gray-800 text-white hover:bg-brand-gray-900 hover:text-white"
+            className=" rounded-lg bg-brand-gray-800 text-sm text-white hover:bg-brand-gray-900 hover:text-white"
             onClick={() => {
               if (selectedFormat) {
                 onSelectFormat(selectedFormat);
@@ -170,7 +178,7 @@ export function PostFormatSelector({
               }
             }}
           >
-            Use Post Format
+            Use Format
           </Button>
         </div>
       </DialogContent>

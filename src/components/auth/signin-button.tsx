@@ -2,9 +2,7 @@
 import { signIn } from "next-auth/react";
 import GradientButton from "../ui/rounded-border-button";
 import { ArrowRight } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { useEffect } from "react";
+
 export function SignIn() {
   return (
     <GradientButton

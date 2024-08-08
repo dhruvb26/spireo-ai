@@ -1,22 +1,17 @@
 "use client";
 
 import React, { useEffect, useState, useMemo } from "react";
-import { createEditor, Descendant, Element as SlateElement, Text } from "slate";
+import { createEditor, Descendant } from "slate";
 import { withReact } from "slate-react";
 import { usePostStore } from "@/store/postStore";
-import { getDraft, saveDraft } from "@/app/actions/draft";
+import { getDraft, saveDraft } from "@/actions/draft";
 import { MdSmartphone, MdTablet, MdLaptop } from "react-icons/md";
 import LinkedInPostPreview from "../../_components/linkedin-post";
 import { toast } from "sonner";
-import { MoonLoader } from "react-spinners";
-import EditorSection, {
-  extractContent,
-} from "../../_components/editor-section";
+import EditorSection from "../../_components/editor-section";
 import { useParams } from "next/navigation";
-
-const serializeContent = (nodes: Descendant[]): string => {
-  return JSON.stringify(nodes);
-};
+import { Loader2 } from "lucide-react";
+import { withHistory } from "slate-history";
 
 const deserializeContent = (content: string): Descendant[] => {
   return JSON.parse(content) as Descendant[];
@@ -30,14 +25,12 @@ const initialValue: Descendant[] = [
 ];
 
 export default function EditDraft() {
-  const { updatePost, setDownloadUrl } = usePostStore();
-
+  const { updatePost } = usePostStore();
   const params = useParams();
   const id = params.id as string;
-  const editor = useMemo(() => withReact(createEditor()), []);
+  const editor = useMemo(() => withHistory(withReact(createEditor())), []);
   const [value, setValue] = useState<Descendant[]>(initialValue);
   const [documentUrn, setDocumentUrn] = useState<string | null>(null);
-  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [device, setDevice] = useState<"mobile" | "tablet" | "desktop">(
     "mobile",
   );
@@ -54,7 +47,6 @@ export default function EditDraft() {
             try {
               newValue = deserializeContent(draft.data.content);
             } catch (e) {
-              // If deserialization fails, treat it as plain text
               newValue = [
                 { type: "paragraph", children: [{ text: draft.data.content }] },
               ];
@@ -86,10 +78,8 @@ export default function EditDraft() {
   }, [id, updatePost, editor]);
 
   const handleSave = async () => {
-    const serializedContent = serializeContent(value);
-
     try {
-      const result = await saveDraft(id, serializedContent);
+      const result = await saveDraft(id, value);
       if (result.success) {
         toast.success("Draft saved successfully");
       } else {
@@ -101,58 +91,52 @@ export default function EditDraft() {
     }
   };
   return (
-    <div className="m-0 flex max-w-6xl px-4">
+    <main className="flex">
       {isLoading ? (
-        <div className="flex h-screen w-full items-center justify-center">
-          <MoonLoader size={50} color="#333333" loading={isLoading} />
+        <div className="flex h-screen w-screen items-center justify-center">
+          <Loader2 className="ml-1 inline-block h-12 w-12 animate-spin text-blue-600" />
         </div>
       ) : (
         <div className="flex w-full flex-col space-y-4 lg:flex-row lg:space-x-4 lg:space-y-0">
           <div className="w-full lg:w-1/2">
-            <div className="rounded-lg border border-gray-200 shadow-sm">
+            <div className="">
               <EditorSection
                 id={id}
                 initialValue={value}
                 setValue={setValue}
                 editor={editor}
                 handleSave={handleSave}
-                initialDocumentUrn={documentUrn} // Add this line
+                initialDocumentUrn={documentUrn}
               />
             </div>
           </div>
-          <div className="w-full lg:w-1/2">
-            <div className="rounded-lg border border-gray-200 p-4">
-              <div className="mb-4 flex items-center justify-center">
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setDevice("mobile")}
-                    className={`rounded-full p-2 ${device === "mobile" ? "text-brand-purple-500" : "text-brand-gray-500"}`}
-                  >
-                    <MdSmartphone size={24} />
-                  </button>
-                  <button
-                    onClick={() => setDevice("tablet")}
-                    className={`rounded-full p-2 ${device === "tablet" ? "text-brand-purple-500" : "text-brand-gray-500"}`}
-                  >
-                    <MdTablet size={24} />
-                  </button>
-                  <button
-                    onClick={() => setDevice("desktop")}
-                    className={`rounded-full p-2 ${device === "desktop" ? "text-brand-purple-500" : "text-brand-gray-500"}`}
-                  >
-                    <MdLaptop size={24} />
-                  </button>
-                </div>
+          <div className="w-full rounded bg-blue-50 pb-4 lg:w-1/2">
+            <div className="mb-4 mt-7 flex items-center justify-center">
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setDevice("mobile")}
+                  className={`rounded-full p-2 ${device === "mobile" ? "text-brand-purple-600" : "text-brand-gray-500"}`}
+                >
+                  <MdSmartphone size={24} />
+                </button>
+                <button
+                  onClick={() => setDevice("tablet")}
+                  className={`rounded-full p-2 ${device === "tablet" ? "text-brand-purple-600" : "text-brand-gray-500"}`}
+                >
+                  <MdTablet size={24} />
+                </button>
+                <button
+                  onClick={() => setDevice("desktop")}
+                  className={`rounded-full p-2 ${device === "desktop" ? "text-brand-purple-600" : "text-brand-gray-500"}`}
+                >
+                  <MdLaptop size={24} />
+                </button>
               </div>
-              <LinkedInPostPreview
-                postId={id}
-                content={value}
-                device={device}
-              />
             </div>
+            <LinkedInPostPreview postId={id} content={value} device={device} />
           </div>
         </div>
       )}
-    </div>
+    </main>
   );
 }

@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { Pencil, TrashSimple } from "@phosphor-icons/react";
+import { PencilSimpleLine, TrashSimple } from "@phosphor-icons/react";
 import {
   TooltipProvider,
   Tooltip,
@@ -20,7 +20,7 @@ export const ParallaxScroll = ({
 }: {
   posts: {
     id: string;
-    content: any; // This is now a deserialized JSON object
+    content: any;
     status: string;
     updatedAt: Date;
   }[];
@@ -44,80 +44,100 @@ export const ParallaxScroll = ({
   const thirdPart = posts.slice(2 * third);
 
   const renderContent = (content: any) => {
-    // This function will render the deserialized content
-    return content.map((node: any, index: number) => (
-      <div key={index}>
-        {node.type === "paragraph" && (
-          <p>
-            {node.children.map((child: any, childIndex: number) => (
-              <span key={childIndex}>{child.text}</span>
-            ))}
-          </p>
-        )}
-        {/* Add more conditions here for other node types */}
-      </div>
-    ));
+    const maxLength = 100; // Adjust this value to change the cutoff point
+    let totalLength = 0;
+    let truncatedContent = [];
+
+    for (let node of content) {
+      if (node.type === "paragraph") {
+        for (let child of node.children) {
+          if (totalLength + child.text.length <= maxLength) {
+            truncatedContent.push(child.text);
+            totalLength += child.text.length;
+          } else {
+            const remainingSpace = maxLength - totalLength;
+            truncatedContent.push(child.text.slice(0, remainingSpace));
+            truncatedContent.push("...");
+            return truncatedContent.join(" ");
+          }
+        }
+      }
+    }
+
+    return truncatedContent.join(" ");
   };
 
   const PostCard = ({ post, translateY }: { post: any; translateY: any }) => (
     <motion.div
       style={{ y: translateY }}
-      className="rounded-lg border border-brand-gray-200 bg-brand-gray-25 p-4 shadow-sm"
+      className="mb-6 rounded-lg border border-brand-gray-200 bg-white p-4 shadow-sm"
     >
-      <div className="flex flex-col">
-        <div className="mb-2 line-clamp-3">{renderContent(post.content)}</div>
-        <p className="text-sm text-gray-500">
-          Last updated: {post.updatedAt.toLocaleString()}
-        </p>
+      <div className="mb-3 flex items-center">
+        <div>
+          <p className="text-xs text-brand-gray-500">
+            Updated • {post.updatedAt.toLocaleString()}
+          </p>
+        </div>
       </div>
-      <div className="mt-4 flex items-center justify-end space-x-4">
-        {post.status === "published" ? (
-          <Badge className="bg-green-500 hover:bg-green-500">published</Badge>
-        ) : (
-          <Badge className="bg-blue-700 hover:bg-blue-700">{post.status}</Badge>
-        )}
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                href={`/dashboard/draft/${post.id}`}
-                className="text-brand-purple-600 transition-colors hover:text-brand-purple-700"
-              >
-                <Pencil className="h-5 w-5" />
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Edit draft</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
 
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                onClick={() => onDeleteDraft(post.id)}
-                className="text-brand-purple-600 transition-colors hover:text-brand-purple-700"
-              >
-                <TrashSimple className="h-5 w-5" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Delete draft</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+      <div className="mb-4 text-sm text-brand-gray-900">
+        {renderContent(post.content)}
+      </div>
+
+      <div className="mb-3 flex items-center justify-between">
+        <Badge
+          className={
+            post.status === "published"
+              ? "bg-green-50 text-xs font-normal text-green-600 hover:bg-green-100"
+              : "bg-blue-50 text-xs font-normal text-blue-600 hover:bg-blue-100"
+          }
+        >
+          {post.status}
+        </Badge>
+        <div className="flex space-x-4">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  href={`/dashboard/draft/${post.id}`}
+                  className="text-brand-purple-600 transition-colors hover:text-brand-purple-700"
+                >
+                  <PencilSimpleLine className="h-5 w-5" />
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Edit draft</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => onDeleteDraft(post.id)}
+                  className="text-brand-purple-600 transition-colors hover:text-brand-purple-700"
+                >
+                  <TrashSimple className="h-5 w-5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Delete draft</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
       </div>
     </motion.div>
   );
 
   return (
     <div
-      className={cn("h-[40rem] w-full items-start overflow-y-auto", className)}
+      className={cn("h-[40rem] w-full overflow-y-auto", className)}
       ref={gridRef}
     >
-      <div className="mx-auto grid max-w-5xl grid-cols-1 items-start gap-10 px-2 py-2 md:grid-cols-2 lg:grid-cols-3">
-        <div className="grid gap-10">
+      <div className="grid grid-cols-1 items-start gap-6  py-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6">
           {firstPart.map((post, idx) => (
             <PostCard
               key={`grid-1-${idx}`}
@@ -126,7 +146,7 @@ export const ParallaxScroll = ({
             />
           ))}
         </div>
-        <div className="grid gap-10">
+        <div className="grid gap-6">
           {secondPart.map((post, idx) => (
             <PostCard
               key={`grid-2-${idx}`}
@@ -135,7 +155,7 @@ export const ParallaxScroll = ({
             />
           ))}
         </div>
-        <div className="grid gap-10">
+        <div className="grid gap-6">
           {thirdPart.map((post, idx) => (
             <PostCard
               key={`grid-3-${idx}`}

@@ -6,8 +6,8 @@ import { and, eq } from "drizzle-orm";
 import { getQueue } from "@/server/bull/queue";
 import { saveJobId } from "@/server/redis";
 import { getJobId, deleteJobId } from "@/server/redis";
-import { checkAccess } from "@/app/actions/user";
-import { deleteDraft, getDraft } from "@/app/actions/draft";
+import { checkAccess } from "@/actions/user";
+import { deleteDraft, getDraft } from "@/actions/draft";
 
 export async function POST(req: Request) {
   const hasAccess = await checkAccess();
@@ -175,14 +175,59 @@ export async function DELETE(req: Request) {
     );
   }
 
-  const result = await deleteDraft(postId);
+  try {
+    const queue = getQueue();
+    if (!queue) {
+      return NextResponse.json(
+        { error: "Queue not initialized" },
+        { status: 500 },
+      );
+    }
 
-  if (result.success) {
-    return NextResponse.json({ message: result.message });
-  } else {
-    return NextResponse.json({ error: result.message }, { status: 404 });
+    // First, try to get the job ID from Redis
+    const jobId = await getJobId(userId, postId);
+    console.log(
+      `Job ID from Redis for user ${userId}, post ${postId}: ${jobId}`,
+    );
+
+    if (jobId) {
+      // If we have a job ID, try to remove it from the queue
+      const job = await queue.getJob(jobId);
+      if (job) {
+        await job.remove();
+        console.log(`Removed job ${jobId} from queue`);
+      } else {
+        console.log(`Job ${jobId} not found in queue`);
+      }
+
+      // Always delete the job ID from Redis, even if the job wasn't in the queue
+      await deleteJobId(userId, postId);
+      console.log(
+        `Deleted job ID from Redis for user ${userId}, post ${postId}`,
+      );
+    } else {
+      console.log(
+        `No job ID found in Redis for user ${userId}, post ${postId}`,
+      );
+    }
+
+    // Now delete the draft
+    const result = await deleteDraft(postId);
+
+    if (result.success) {
+      return NextResponse.json({ message: result.message });
+    } else {
+      return NextResponse.json({ error: result.message }, { status: 404 });
+    }
+  } catch (error) {
+    console.error("Error in DELETE method:", error);
+    return NextResponse.json(
+      { error: "An error occurred while processing the request" },
+      { status: 500 },
+    );
   }
 }
+
 export async function PUT(req: Request) {
   // Initialize the queue
   const queue = getQueue();

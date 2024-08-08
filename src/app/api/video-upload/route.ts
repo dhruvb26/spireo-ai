@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getAccessToken, getLinkedInId, checkAccess } from "@/app/actions/user";
+import { getAccessToken, getLinkedInId, checkAccess } from "@/actions/user";
 import { getServerAuthSession } from "@/server/auth";
 import crypto from "crypto";
 

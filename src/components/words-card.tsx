@@ -23,14 +23,14 @@ const WordsCard: React.FC<WordsCardProps> = ({ words }) => {
     <Card>
       <CardHeader className="p-2 pt-2 md:p-4">
         <CardTitle className="mb-2 flex items-center justify-between">
-          <Badge className="bg-brand-purple-500">Launch</Badge>
+          <Badge className="bg-blue-600">Launch</Badge>
           <span className="text-xs font-extralight text-brand-gray-600">
             {formatNumber(wordsGenerated)} / {formatNumber(wordLimit)}
           </span>
         </CardTitle>
-        <div className="mb-2 h-2.5 w-full rounded-full bg-gray-200">
+        <div className="mb-2 h-1.5 w-full rounded-full bg-gray-200">
           <div
-            className="h-2.5 rounded-full bg-brand-purple-500 transition-all duration-300 ease-in-out"
+            className="h-1.5 rounded-full bg-blue-600 transition-all duration-300 ease-in-out"
             style={{ width: `${wordPercentage}%` }}
           ></div>
         </div>

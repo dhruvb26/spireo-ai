@@ -11,7 +11,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
+import { Loader2 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { useState, useEffect } from "react";
 import { PostFormatSelector } from "../post-formatter";
@@ -63,6 +65,40 @@ export function TipsForm({
     form.setValue("formatTemplate", "");
   };
 
+  const [isGeneratingInstructions, setIsGeneratingInstructions] =
+    useState(false);
+
+  const handleGenerateInstructions = async () => {
+    setIsGeneratingInstructions(true);
+    try {
+      const response = await fetch("/api/ai/generate-instructions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to generate instructions");
+      }
+
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let instructions = "";
+
+      while (true) {
+        const { done, value } = await reader!.read();
+        if (done) break;
+        instructions += decoder.decode(value);
+        form.setValue("instructions", instructions);
+      }
+    } catch (error) {
+      console.error("Error generating instructions:", error);
+    } finally {
+      setIsGeneratingInstructions(false);
+    }
+  };
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -80,7 +116,7 @@ export function TipsForm({
                       {...field}
                       value={selectedFormat}
                       onChange={handleFormatChange}
-                      className="min-h-[200px] font-mono text-sm"
+                      className="min-h-[200px] text-sm"
                     />
                   </FormControl>
                   <Button
@@ -89,7 +125,7 @@ export function TipsForm({
                     onClick={handleClearFormat}
                     className="flex-shrink-0 rounded-lg"
                   >
-                    Clear Format
+                    Clear
                   </Button>
                 </div>
                 <FormMessage />
@@ -113,31 +149,54 @@ export function TipsForm({
             </FormItem>
           )}
         />
-
         <FormField
           control={form.control}
           name="instructions"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>
-                Enter any custom instructions for your post generation.
-              </FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Add any specific instructions or notes for your post..."
-                  {...field}
-                />
-              </FormControl>
+              <FormLabel>Instructions</FormLabel>
+              <div className="flex items-start space-x-2">
+                <FormControl className="flex-grow">
+                  <Textarea
+                    className="h-[150px] "
+                    autoComplete="off"
+                    placeholder="Add any specific instructions or notes for your post."
+                    {...field}
+                    disabled={isLoading || isGeneratingInstructions}
+                  />
+                </FormControl>
+              </div>
+              <FormDescription>
+                Enter instructions for a more tailored repurpose or{" "}
+                <span
+                  onClick={handleGenerateInstructions}
+                  className={`cursor-pointer text-brand-purple-600 hover:text-brand-purple-700 ${
+                    isLoading || isGeneratingInstructions
+                      ? "pointer-events-none opacity-50"
+                      : ""
+                  }`}
+                >
+                  {isGeneratingInstructions ? (
+                    <>
+                      generating
+                      <Loader2 className="ml-1 inline-block h-4 w-4 animate-spin" />
+                    </>
+                  ) : (
+                    "generate some using AI."
+                  )}
+                </span>
+              </FormDescription>
+
               <FormMessage />
             </FormItem>
           )}
         />
         <Button
-          className="rounded-lg bg-brand-purple-500 font-light hover:bg-brand-purple-700"
+          className="rounded-lg bg-brand-purple-600 font-light hover:bg-brand-purple-700"
           type="submit"
           disabled={isLoading}
         >
-          {isLoading ? "Generating..." : "Generate Post"}
+          {isLoading ? "Generating" : "Generate Post"}
         </Button>
       </form>
     </Form>

@@ -1,8 +1,8 @@
 "use server";
 import { NextResponse } from "next/server";
-import { getAccessToken, getLinkedInId } from "@/app/actions/user";
-import { updateDraftStatus, saveDraft } from "@/app/actions/draft";
-import { checkAccess } from "@/app/actions/user";
+import { getAccessToken, getLinkedInId } from "@/actions/user";
+import { updateDraft } from "@/actions/draft";
+import { checkAccess } from "@/actions/user";
 
 function convertToLinkedInFormat(content: any[]) {
   let plainText = "";
@@ -40,6 +40,7 @@ function convertToLinkedInFormat(content: any[]) {
 
   return { text: plainText.trim(), attributes };
 }
+
 export async function POST(req: Request) {
   try {
     const hasAccess = await checkAccess();
@@ -134,7 +135,7 @@ export async function POST(req: Request) {
       );
     }
 
-    await updateDraftStatus(postId);
+    await updateDraft(postId, "published");
 
     return NextResponse.json({
       success: true,

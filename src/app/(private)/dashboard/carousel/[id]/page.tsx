@@ -1,8 +1,8 @@
 "use client";
 
+import { Loader2 } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
-import { MoonLoader } from "react-spinners";
 
 const CarouselPage = () => {
   const params = useParams();
@@ -22,7 +22,7 @@ const CarouselPage = () => {
   if (!Template) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
-        <MoonLoader size={50} color="#333333" />
+        <Loader2 className="ml-1 inline-block h-12 w-12 animate-spin text-blue-600" />
       </div>
     );
   }

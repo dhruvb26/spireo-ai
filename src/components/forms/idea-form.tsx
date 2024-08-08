@@ -84,11 +84,11 @@ export function IdeaForm({ onIdeasGenerated, onLoading }: IdeaFormProps) {
           )}
         />
         <Button
-          className="rounded-lg bg-brand-purple-500 font-light hover:bg-brand-purple-700"
+          className="rounded-lg bg-brand-purple-600 font-light hover:bg-brand-purple-700"
           type="submit"
           disabled={isSubmitting}
         >
-          {isSubmitting ? "Generating Ideas..." : "Generate Ideas"}
+          {isSubmitting ? "Generating" : "Generate Ideas"}
         </Button>
       </form>
     </Form>

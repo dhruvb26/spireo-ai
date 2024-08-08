@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useEffect } from "react";
 import {
   Descendant,
   BaseEditor,
@@ -14,14 +14,18 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from "@/components/ui/tooltip";
-import { Slate, Editable, ReactEditor, useSlate } from "slate-react";
+import { Slate, Editable, ReactEditor, useSlate, withReact } from "slate-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
 import ScheduleDialog from "./schedule-dialog";
 import { toast } from "sonner";
-import { getUserId } from "@/app/actions/user";
+import EmojiPicker, { SkinTonePickerLocation } from "emoji-picker-react";
+import { getUserId } from "@/actions/user";
+import Router from "next/router";
 import {
+  Brain,
+  Smiley,
   Sparkle,
   TextB,
   TextItalic,
@@ -29,16 +33,17 @@ import {
   X,
 } from "@phosphor-icons/react";
 import {
-  updateDraftPublishedStatus,
+  updateDraft,
   updateDraftDocumentUrn,
   removeDraftDocumentUrn,
   deleteDownloadUrl,
-} from "@/app/actions/draft";
+} from "@/actions/draft";
 import FileAttachmentButton from "./file-attachment-button";
-import { useRouter } from "next/navigation";
-import { revalidatePost } from "@/app/actions/revalidate";
+import { Loader2, Send } from "lucide-react";
+import { withHistory } from "slate-history";
+import { HistoryEditor } from "slate-history";
 
-const serializeContent = (nodes: Descendant[]): string => {
+export const serializeContent = (nodes: Descendant[]): string => {
   return JSON.stringify(nodes);
 };
 
@@ -65,7 +70,7 @@ type FormattedText = {
   underline?: boolean;
 };
 type CustomText = FormattedText;
-export type CustomEditor = BaseEditor & ReactEditor;
+export type CustomEditor = BaseEditor & ReactEditor & HistoryEditor;
 
 declare module "slate" {
   interface CustomTypes {
@@ -138,6 +143,7 @@ interface EditorSectionProps {
   setValue: (value: Descendant[]) => void;
   editor: CustomEditor;
   handleSave: () => void;
+
   initialDocumentUrn: string | null;
 }
 
@@ -186,6 +192,22 @@ function EditorSection({
   }, []);
 
   const [charCount, setCharCount] = useState(0);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
+  const handleEmojiSelect = useCallback(
+    (emoji: any) => {
+      const { selection } = editor;
+      if (selection) {
+        Transforms.insertText(editor, emoji.emoji, { at: selection });
+      } else {
+        Transforms.insertText(editor, emoji.emoji, {
+          at: Editor.end(editor, []),
+        });
+      }
+      setShowEmojiPicker(false);
+    },
+    [editor],
+  );
 
   const handleChange = useCallback(
     (newValue: Descendant[]) => {
@@ -225,7 +247,6 @@ function EditorSection({
 
   const [isPublishing, setIsPublishing] = useState(false);
   const [isRewriting, setIsRewriting] = useState(false);
-  const router = useRouter();
   const [documentUrn, setDocumentUrn] = useState<string | null>(
     initialDocumentUrn,
   );
@@ -244,6 +265,7 @@ function EditorSection({
         toast.success(`${fileType.toUpperCase()} uploaded successfully`);
       } else {
         toast.success(`Image uploaded successfully`);
+        window.location.reload();
       }
     } else {
       toast.error("Failed to update draft with document URN");
@@ -258,10 +280,27 @@ function EditorSection({
       setDocumentStatus(null);
 
       toast.success("Document removed successfully");
+      window.location.reload();
     } else {
       toast.error("Failed to remove document from draft");
     }
   };
+
+  const customStyles = {
+    "--epr-emoji-size": "24px",
+    "--epr-picker-border-radius": "4px",
+    "--epr-emoji-gap": "8px",
+    "--epr-hover-bg-color": "#f0f0f0",
+    "--epr-bg-color": "#ffffff",
+    "--epr-category-label-bg-color": "#ffffff",
+    "--epr-text-color": "#101828",
+    "--epr-category-icon-active-color": "#ffffff",
+    "--epr-search-input-bg-color": "#dbeafe",
+    "--epr-search-input-text-color": "#1d4ed8",
+    "--epr-search-input-placeholder-color": "#2563eb",
+    "--epr-category-navigation-button-size": "0px",
+    "--epr-preview-height": "50px",
+  } as React.CSSProperties;
 
   const handlePublish = async () => {
     setIsPublishing(true);
@@ -285,7 +324,7 @@ function EditorSection({
         publishData.documentUrn = documentUrn;
       }
 
-      const response = await fetch("/api/publish", {
+      const response = await fetch("/api/linkedin/post", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -299,7 +338,7 @@ function EditorSection({
       }
 
       const result = await response.json();
-      await updateDraftPublishedStatus(id);
+      await updateDraft(id, "published");
       toast.success("Post published successfully");
     } catch (error: any) {
       if (error.name === "AbortError") {
@@ -358,36 +397,75 @@ function EditorSection({
     }
   }, [editor, value]);
 
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (!event.ctrlKey && !event.metaKey) return;
+
+      switch (event.key) {
+        case "b":
+          event.preventDefault();
+          CustomEditor.toggleBoldMark(editor);
+          break;
+        case "i":
+          event.preventDefault();
+          CustomEditor.toggleItalicMark(editor);
+          break;
+        case "u":
+          event.preventDefault();
+          CustomEditor.toggleUnderlineMark(editor);
+          break;
+        case "z":
+          event.preventDefault();
+          if (event.shiftKey) {
+            editor.redo();
+          } else {
+            editor.undo();
+          }
+          break;
+        case "y":
+          if (event.ctrlKey) {
+            event.preventDefault();
+            editor.redo();
+          }
+          break;
+      }
+    },
+    [editor],
+  );
+
   return (
     <>
-      <div className="relative p-4">
-        <h1 className="mb-4 text-2xl font-bold tracking-tighter">Write Post</h1>
+      <div className="relative">
+        <h1 className="text-xl font-semibold tracking-tight text-brand-gray-900">
+          Write Post
+        </h1>
+        <p className="text-sm  text-brand-gray-500 ">
+          Craft your new post using our advanced text editor. Utilize our
+          AI-powered rewrite feature for assistance when needed.
+        </p>
         {documentUrn && (
-          <div className="mb-4 flex items-center justify-between rounded-md bg-blue-200 p-2 text-blue-700">
-            <span className="text-sm">
+          <div className="mt-2 flex items-center justify-between rounded-md bg-blue-100 p-2 py-1 text-blue-600">
+            <span className="text-xs">
               Your file has been attached to the post.
             </span>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
-                    variant="ghost"
                     size="sm"
                     onClick={handleRemoveDocument}
-                    className="bg-blue-200 text-blue-700 hover:bg-blue-200 hover:text-blue-900"
+                    className="bg-blue-100 text-blue-600 hover:bg-blue-100 hover:text-blue-700"
                   >
                     <X className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent>
-                  <p>Remove file</p>
-                </TooltipContent>
+                <TooltipContent>Remove File</TooltipContent>
               </Tooltip>
             </TooltipProvider>
           </div>
         )}
         <Slate editor={editor} initialValue={value} onChange={handleChange}>
-          <div className="mb-2 flex space-x-2">
+          <div className="my-2 flex space-x-2">
             <ToolbarButton format="bold" icon={<TextB className="h-4 w-4" />} />
             <ToolbarButton
               format="italic"
@@ -410,39 +488,69 @@ function EditorSection({
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="rounded-lg bg-blue-500 text-white hover:bg-blue-700 hover:text-white"
-                    onClick={handleRewrite}
-                    disabled={isRewriting}
+                    className="rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-600"
+                    onClick={() => setShowEmojiPicker(!showEmojiPicker)}
                   >
-                    <Sparkle className="h-4 w-4" />
+                    <Smiley weight="duotone" className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>{isRewriting ? "Rewriting..." : "Rewrite w/ AI"}</p>
+                  <p>Add Emoji</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-600"
+                    onClick={handleRewrite}
+                    disabled={isRewriting}
+                  >
+                    <Brain weight="duotone" className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{isRewriting ? "Rewriting" : "Rewrite w/ AI"}</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
           </div>
 
-          <div className="h-[500px] overflow-y-auto rounded-md border border-gray-200">
+          {showEmojiPicker && (
+            <div className="absolute z-10">
+              <EmojiPicker
+                style={customStyles}
+                width={450}
+                skinTonePickerLocation={SkinTonePickerLocation.PREVIEW}
+                height={450}
+                onEmojiClick={handleEmojiSelect}
+              />
+            </div>
+          )}
+
+          <div className="h-[500px] overflow-y-auto">
             <Editable
+              onKeyDown={handleKeyDown}
               renderElement={renderElement}
               renderLeaf={renderLeaf}
-              className="min-h-full w-full resize-none whitespace-pre-wrap p-2 focus:outline-none focus:ring-0"
+              className="min-h-full w-full resize-none whitespace-pre-wrap rounded border border-brand-gray-200 p-2 text-sm focus:outline-none focus:ring-0"
             />
           </div>
         </Slate>
-        <div className="mt-2 w-full text-right text-sm text-gray-500">
+        <div className="mt-2 w-full text-right text-xs text-gray-500">
           {charCount}/3000 characters
         </div>
       </div>
-      <div className="flex items-center justify-between border-t border-gray-200 p-4">
+      <div className="flex items-center justify-between border-gray-200 py-4">
         <Button
-          className="bg-brand-purple-500 font-light hover:bg-brand-purple-700"
-          onClick={handlePublish}
+          className="rounded-lg bg-brand-gray-800 px-[1rem] hover:bg-brand-gray-900"
+          onClick={handleSave}
           disabled={isPublishing}
         >
-          {isPublishing ? "Publishing..." : "Publish"}
+          Save Draft
         </Button>
         <div className="flex space-x-2">
           <ScheduleDialog
@@ -451,13 +559,17 @@ function EditorSection({
             content={value}
             disabled={isPublishing}
           />
-
           <Button
-            className="bg-brand-gray-800 px-[1rem] font-light hover:bg-brand-gray-900"
-            onClick={handleSave}
+            className="rounded-lg bg-brand-purple-600 font-light hover:bg-brand-purple-700"
+            onClick={handlePublish}
             disabled={isPublishing}
           >
-            Save Draft
+            {isPublishing ? "Publishing" : "Publish"}
+            {isPublishing ? (
+              <Loader2 className="ml-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Send className="ml-2 h-4 w-4" />
+            )}
           </Button>
         </div>
       </div>

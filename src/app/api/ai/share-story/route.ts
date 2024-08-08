@@ -2,7 +2,7 @@
 import { NextResponse } from "next/server";
 import { env } from "@/env";
 import Anthropic from "@anthropic-ai/sdk";
-import { checkAccess, updateGeneratedWords } from "@/app/actions/user";
+import { checkAccess, updateGeneratedWords } from "@/actions/user";
 
 export async function POST(req: Request) {
   // Get the user session
@@ -71,6 +71,8 @@ export async function POST(req: Request) {
             - Any format template or custom instructions have been followed precisely.
 
           6. Present your final LinkedIn story post directly, without any surrounding tags.
+
+          7. If user asks for bolded or italic text use unicode text instead of markdown format.
 
           Remember, your goal is to create a post that is both authentic and inspiring, encouraging engagement from LinkedIn users. Craft your story in a way that professionals can relate to and find value in.`,
       },

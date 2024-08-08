@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { YoutubeTranscript } from "youtube-transcript";
 import Anthropic from "@anthropic-ai/sdk";
 import { env } from "@/env";
-import { checkAccess, updateGeneratedWords } from "@/app/actions/user";
+import { checkAccess, updateGeneratedWords } from "@/actions/user";
 
 export async function POST(req: Request) {
   // Get the user session
@@ -59,6 +59,7 @@ export async function POST(req: Request) {
                   4. Is concise and engaging, suitable for a professional audience on LinkedIn
                   5. About 200-250 words with no hashtags unless mentioned in the instructions by the user
                   6. Use of relevant emoticons unless mentioned no emojis in the instructions by the user
+                  7. If user asks for bolded or italic text use unicode text instead of markdown format.
     
                   If custom instructions are provided, incorporate them into your post creation process:
                   <custom_instructions>

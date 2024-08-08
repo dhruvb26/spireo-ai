@@ -2,7 +2,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { env } from "@/env";
 import { NextResponse } from "next/server";
-import { checkAccess } from "@/app/actions/user";
+import { checkAccess } from "@/actions/user";
 
 export async function POST(req: Request) {
   // Get the user session
@@ -45,6 +45,7 @@ export async function POST(req: Request) {
             2. Ensure the rewritten text fits well within the context of the full content
             3. Improve clarity, engagement, and professionalism
             4. Keep the length similar to the original selected text
+            5. If user asks for bolded or italic text use unicode text instead of markdown format.
 
             Provide only the rewritten text without any additional comments or explanations.
           `,

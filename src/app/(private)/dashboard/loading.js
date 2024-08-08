@@ -12,7 +12,6 @@ export default function Loading() {
           alt="Loading"
           width={96}
           height={96}
-          style={{ objectFit: "contain", width: "100%", height: "auto" }}
           priority
         />
       </div>

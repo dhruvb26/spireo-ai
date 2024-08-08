@@ -217,16 +217,16 @@ const BaseCarouselTemplate: React.FC<BaseCarouselTemplateProps> = ({
   };
 
   return (
-    <div className="max-w-6xl ">
-      <div className="container space-y-2 text-left ">
-        <h1 className="text-3xl font-bold tracking-tighter text-brand-gray-900 ">
+    <main>
+      <div className="container space-y-2 text-left">
+        <h1 className="text-xl font-semibold tracking-tight text-brand-gray-900 ">
           {title}
         </h1>
       </div>
 
       <section className="flex flex-col gap-4 p-6 lg:flex-row">
         {/* Left Sidebar */}
-        <div className="rounded-lg border border-brand-gray-200 bg-white p-4 shadow lg:w-1/3 lg:p-6">
+        <div className="rounded-lg border border-brand-gray-200 bg-white p-4  lg:w-1/3 lg:p-6">
           <div className="mb-4">
             <Label htmlFor="name">Your Name</Label>
             <Input
@@ -257,7 +257,7 @@ const BaseCarouselTemplate: React.FC<BaseCarouselTemplateProps> = ({
               {themes.map((theme) => (
                 <div
                   key={theme.name}
-                  className="h-8 w-8 cursor-pointer rounded border border-brand-gray-50 shadow-sm"
+                  className="h-8 w-8 cursor-pointer rounded border border-brand-gray-50"
                   style={{ backgroundColor: theme.backgroundColor }}
                   onClick={() => setCurrentTheme(theme)}
                 />
@@ -281,7 +281,7 @@ const BaseCarouselTemplate: React.FC<BaseCarouselTemplateProps> = ({
         </div>
 
         {/* Right Panel - Slide Preview */}
-        <div className="flex w-full flex-col rounded-lg border border-brand-gray-200 bg-white p-4 shadow lg:flex-row lg:space-x-6 lg:p-6">
+        <div className="flex w-full flex-col rounded-lg border border-brand-gray-200 bg-white p-4  lg:flex-row lg:space-x-6 lg:p-6">
           <div className="mb-6 flex flex-col items-center justify-between lg:mb-0 lg:w-1/3">
             <div className="flex w-full flex-col">
               <div className="mb-4">
@@ -434,7 +434,7 @@ const BaseCarouselTemplate: React.FC<BaseCarouselTemplateProps> = ({
           </div>
         ))}
       </div>
-    </div>
+    </main>
   );
 };
 

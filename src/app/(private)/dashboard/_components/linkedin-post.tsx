@@ -1,11 +1,17 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { FaThumbsUp, FaComment, FaShare, FaPaperPlane } from "react-icons/fa";
-import { getUser } from "@/app/actions/user";
+import { getUser } from "@/actions/user";
 import { Descendant } from "slate";
 import ContentViewer from "@/app/(private)/dashboard/_components/content-viewer";
-import { getDownloadUrl } from "@/app/actions/draft";
-import { useRouter } from "next/navigation";
+import { getDownloadUrl } from "@/actions/draft";
+import {
+  ChatCircleText,
+  GlobeHemisphereWest,
+  PaperPlaneTilt,
+  Repeat,
+  ThumbsUp,
+} from "@phosphor-icons/react";
+import { Button } from "@/components/ui/button";
 
 interface LinkedInPostPreviewProps {
   content: Descendant[];
@@ -28,7 +34,6 @@ const LinkedInPostPreview: React.FC<LinkedInPostPreviewProps> = ({
   const [user, setUser] = useState<User | null>(null);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -75,18 +80,22 @@ const LinkedInPostPreview: React.FC<LinkedInPostPreviewProps> = ({
             />
           </div>
           <div className="min-w-0 flex-grow">
-            <p className="text-sm text-black">{user?.name || "..."}</p>
-            <p className="text-sm text-gray-500">
-              Now • <span>🌐</span>
+            <p className="text-sm font-semibold text-black">
+              {user?.name || "..."}
+            </p>
+            <p className="flex items-center text-xs text-gray-500">
+              Now •
+              <span className="ml-1">
+                <GlobeHemisphereWest weight="fill" />
+              </span>
             </p>
           </div>
-          <button className="ml-2 text-gray-500">•••</button>
         </div>
 
         <ContentViewer postId={postId} value={content} />
 
         {downloadUrl && (
-          <div className="mt-2 flex h-fit items-center justify-center">
+          <div className="mt-2 flex items-center justify-center">
             <img src={downloadUrl} alt="Image" className="" />
           </div>
         )}
@@ -94,14 +103,30 @@ const LinkedInPostPreview: React.FC<LinkedInPostPreviewProps> = ({
         <div className="border-t border-gray-200 pt-1">
           <div className="flex items-center justify-between">
             {[
-              { name: "Like", icon: <FaThumbsUp /> },
-              { name: "Comment", icon: <FaComment /> },
-              { name: "Repost", icon: <FaShare /> },
-              { name: "Send", icon: <FaPaperPlane /> },
+              {
+                name: "Like",
+                icon: (
+                  <ThumbsUp
+                    className="scale-x-[-1] transform"
+                    weight="fill"
+                    size={20}
+                  />
+                ),
+              },
+              {
+                name: "Comment",
+                icon: <ChatCircleText weight="fill" size={20} />,
+              },
+              { name: "Repost", icon: <Repeat weight="bold" size={20} /> },
+              {
+                name: "Send",
+                icon: <PaperPlaneTilt weight="fill" size={20} />,
+              },
             ].map((action) => (
-              <button
+              <Button
+                size={"sm"}
                 key={action.name}
-                className="flex flex-1 flex-col items-center justify-center rounded-lg px-1 py-2 transition-colors duration-200 ease-in-out hover:bg-gray-100"
+                className="flex flex-1 flex-row items-center justify-center space-x-1 rounded-lg bg-white px-1 py-2 transition-colors duration-200 ease-in-out hover:bg-white"
               >
                 <span className="text-sm text-brand-gray-500">
                   {action.icon}
@@ -109,7 +134,7 @@ const LinkedInPostPreview: React.FC<LinkedInPostPreviewProps> = ({
                 <span className="mt-1 text-xs font-medium text-brand-gray-500">
                   {action.name}
                 </span>
-              </button>
+              </Button>
             ))}
           </div>
         </div>

@@ -9,9 +9,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { usePostStore } from "@/store/postStore";
-import { Paperclip } from "lucide-react";
-import { updateDownloadUrl } from "@/app/actions/draft";
+import { Paperclip, Loader2 } from "lucide-react";
 
 const FileAttachmentButton = ({
   postId,
@@ -20,8 +18,6 @@ const FileAttachmentButton = ({
   onFileUploaded: (urn: string, fileType: string) => void;
   postId: string;
 }) => {
-  const setDownloadUrl = usePostStore((state) => state.setDownloadUrl);
-
   const [isOpen, setIsOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -94,7 +90,9 @@ const FileAttachmentButton = ({
       </DialogTrigger>
       <DialogContent aria-describedby="Upload">
         <DialogHeader>
-          <DialogTitle>Attach File</DialogTitle>
+          <DialogTitle className="text-lg font-semibold tracking-tight">
+            Attach File
+          </DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <Input
@@ -109,10 +107,18 @@ const FileAttachmentButton = ({
             </p>
           )}
           <Button
+            className="rounded-lg bg-blue-600 hover:bg-blue-700"
             onClick={handleAttach}
             disabled={!selectedFile || isUploading}
           >
-            {isUploading ? "Uploading..." : "Attach"}
+            {isUploading ? (
+              <>
+                Uploading
+                <Loader2 className="ml-2 h-4 w-4 animate-spin" />
+              </>
+            ) : (
+              "Attach"
+            )}
           </Button>
         </div>
       </DialogContent>

@@ -4,10 +4,10 @@ import "slick-carousel/slick/slick.css";
 import Loading from "./loading.js";
 import "slick-carousel/slick/slick-theme.css";
 import { getServerAuthSession } from "@/server/auth";
-import { getUserFromDb } from "@/app/actions/user";
+import { getUserFromDb } from "@/actions/user";
 import SubscriptionPrompt from "@/components/subscription-prompt";
 import FeedbackButton from "@/components/feedback-button";
-import { OnboardingForm } from "./_components/onboarding/onboarding-form";
+import { OnboardingForm } from "../../../components/forms/onboarding-form";
 
 export default async function DashboardLayout({
   children,
@@ -16,7 +16,7 @@ export default async function DashboardLayout({
 }) {
   const session = await getServerAuthSession();
   const user = await getUserFromDb();
-  const isOnboardingComplete = user?.onboardingCompleted; // Assume this field exists in your user model
+  const isOnboardingComplete = user?.onboardingCompleted;
 
   if (!isOnboardingComplete) {
     return <OnboardingForm />;
@@ -25,10 +25,9 @@ export default async function DashboardLayout({
     <div className="flex min-h-screen">
       <Suspense fallback={<Loading />}>
         <Sidebar session={session} user={user}>
-          <main className="relative flex-1 p-8">
+          <main className="max-w-screen w-full p-8">
             {!user?.hasAccess && <SubscriptionPrompt />}
             {children}
-
             <FeedbackButton />
           </main>
         </Sidebar>

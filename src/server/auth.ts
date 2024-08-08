@@ -109,7 +109,7 @@ export const authOptions: NextAuthOptions = {
       }),
       authorization: {
         params: {
-          scope: "openid profile email w_member_social",
+          scope: "openid profile email w_member_social r_basicprofile",
         },
       },
     }),

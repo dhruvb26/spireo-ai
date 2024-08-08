@@ -1,9 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { getIdeas, deleteIdea, Idea } from "@/app/actions/idea";
+import { getIdeas, deleteIdea, Idea } from "@/actions/idea";
 import { toast } from "sonner";
-import MoonLoader from "react-spinners/MoonLoader";
-import { Trash2Icon, SendIcon } from "lucide-react";
 import Link from "next/link";
 import {
   TooltipProvider,
@@ -14,9 +12,11 @@ import {
 import {
   ArrowUpRight,
   PaperPlaneTilt,
+  ShareFat,
   Trash,
   TrashSimple,
 } from "@phosphor-icons/react";
+import { Loader2 } from "lucide-react";
 
 const SavedIdeasPage = () => {
   const [ideas, setIdeas] = useState<Idea[]>([]);
@@ -58,47 +58,49 @@ const SavedIdeasPage = () => {
   };
 
   return (
-    <div className="max-w-6xl lg:max-w-[85rem]">
-      <div className="container space-y-2 text-left">
-        <h1 className="text-3xl font-bold tracking-tighter text-brand-gray-900">
+    <main>
+      <div className="mb-2 text-left">
+        <h1 className="text-xl font-semibold tracking-tight text-brand-gray-900">
           Saved Ideas
         </h1>
-        <p className="text-md mx-auto text-brand-gray-500">
+        <p className="mx-auto text-sm text-brand-gray-500">
           Manage your saved ideas here.
         </p>
       </div>
 
-      <div className="mt-4 ">
+      <div className="mt-4">
         {isLoading ? (
-          <div className="flex items-center justify-center">
-            <MoonLoader size={50} color="#333333" loading={isLoading} />
+          <div className="flex h-[30vw] items-center justify-center">
+            <Loader2 className="ml-1 inline-block h-12 w-12 animate-spin text-blue-600" />
           </div>
         ) : error ? (
           <p className="text-red-500">{error}</p>
         ) : ideas.length === 0 ? (
-          <div className="flex flex-col items-center justify-center space-y-4">
-            <span className=" text-brand-gray-500">
+          <div className="flex h-[30vw] flex-col items-center justify-center space-y-4">
+            <span className="text-sm text-brand-gray-500">
               No ideas yet. Start generating now!
             </span>
             <Link
               href="/dashboard/ideas"
-              className="flex items-center text-brand-purple-600 hover:text-brand-purple-700"
+              className="flex items-center text-sm text-brand-purple-600 hover:text-brand-purple-700"
             >
               Generate Ideas
               <ArrowUpRight className="ml-1" size={14} />
             </Link>
           </div>
         ) : (
-          <ul className="mt-4 space-y-4 px-8">
+          <ul className="mt-4 space-y-4">
             {ideas.map((idea) => (
               <li
                 key={idea.id}
-                className="flex items-center justify-between rounded-lg border border-brand-gray-200 bg-brand-gray-25 p-4 shadow-sm"
+                className="flex max-w-3xl items-center justify-between rounded-lg border border-brand-gray-200 p-4"
               >
                 <div className="flex flex-col">
-                  <p className="mb-2 text-brand-gray-900">{idea.content}</p>
+                  <p className="mb-2 text-sm text-brand-gray-900">
+                    {idea.content}
+                  </p>
                   <p className="text-sm text-brand-gray-500">
-                    Created: {new Date(idea.createdAt).toLocaleDateString()}
+                    Created • {new Date(idea.createdAt).toLocaleDateString()}
                   </p>
                 </div>
 
@@ -108,9 +110,9 @@ const SavedIdeasPage = () => {
                       <TooltipTrigger asChild>
                         <Link
                           href={`/dashboard/post/scratch-story?idea=${encodeURIComponent(idea.content)}`}
-                          className="text-brand-purple-500 transition-colors hover:text-brand-purple-700"
+                          className="text-brand-purple-600 transition-colors hover:text-brand-purple-700"
                         >
-                          <PaperPlaneTilt className="h-5 w-5" />
+                          <ShareFat className="h-5 w-5" />
                         </Link>
                       </TooltipTrigger>
                       <TooltipContent>
@@ -124,7 +126,7 @@ const SavedIdeasPage = () => {
                       <TooltipTrigger asChild>
                         <button
                           onClick={() => handleDeleteIdea(idea.id)}
-                          className="text-brand-purple-500 transition-colors hover:text-brand-purple-700"
+                          className="text-brand-purple-600 transition-colors hover:text-brand-purple-700"
                         >
                           <TrashSimple className="h-5 w-5" />
                         </button>
@@ -140,7 +142,7 @@ const SavedIdeasPage = () => {
           </ul>
         )}
       </div>
-    </div>
+    </main>
   );
 };
 

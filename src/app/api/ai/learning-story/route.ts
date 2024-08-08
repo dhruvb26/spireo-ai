@@ -1,7 +1,7 @@
 "use server";
 import Anthropic from "@anthropic-ai/sdk";
 import { env } from "@/env";
-import { checkAccess, updateGeneratedWords } from "@/app/actions/user";
+import { checkAccess, updateGeneratedWords } from "@/actions/user";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -58,6 +58,7 @@ export async function POST(req: Request) {
                 3. Describe how you learned it.
                 4. List 2-3 key takeaways.
                 5. End with a call to action or thought-provoking question.
+                6. If user asks for bolded or italic text use unicode text instead of markdown format.
 
                 If a format_template is provided, use it to structure your post instead of the default format. Follow the template exactly as given, replacing any placeholders with the appropriate content from the inputs.
 

@@ -1,7 +1,7 @@
 "use server";
 import { NextResponse } from "next/server";
-import { getAccessToken, getLinkedInId } from "@/app/actions/user";
-import { checkAccess } from "@/app/actions/user";
+import { getAccessToken, getLinkedInId } from "@/actions/user";
+import { checkAccess } from "@/actions/user";
 import { getServerAuthSession } from "@/server/auth";
 
 export async function POST(req: Request) {

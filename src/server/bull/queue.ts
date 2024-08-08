@@ -1,39 +1,43 @@
-import { Queue, Worker, QueueEvents } from "bullmq";
+import { Queue, Worker, QueueEvents, ConnectionOptions } from "bullmq";
 import IORedis from "ioredis";
 import { env } from "@/env";
 
-export let redis_connection: IORedis | null = null;
+export let redisConnection: IORedis | null = null;
 let queue: Queue | null = null;
 let worker: Worker | null = null;
 let queueEvents: QueueEvents | null = null;
 
-const redisOptions = {
+const redisOptions: ConnectionOptions = {
   port: 12701,
   host: "redis-12701.c325.us-east-1-4.ec2.cloud.redislabs.com",
-  maxRetriesPerRequest: null,
   username: "default",
   password: env.REDIS_CLOUD_PASSWORD,
-  retryStrategy: function (times: number) {
-    return Math.max(Math.min(Math.exp(times), 20000), 1000);
-  },
+  maxRetriesPerRequest: null,
 };
+
+function createClient() {
+  if (!redisConnection) {
+    redisConnection = new IORedis(redisOptions as any);
+
+    redisConnection.on("error", (error) => {
+      console.error("Redis connection error:", error);
+    });
+
+    redisConnection.on("connect", () => {
+      console.log("Connected to Redis");
+    });
+  }
+  return redisConnection;
+}
 
 export function initializeQueue() {
   if (queue) return queue;
 
-  redis_connection = new IORedis(redisOptions);
-
-  redis_connection.on("connect", () => {
-    console.log("Connected to Redis");
-  });
-
-  redis_connection.on("error", (error) => {
-    console.error("Failed to connect to Redis", error);
-  });
+  const client = createClient();
 
   // Create a queue
   queue = new Queue("linkedin-posts", {
-    connection: redis_connection,
+    connection: client,
   });
 
   // Create a worker to process jobs
@@ -41,9 +45,9 @@ export function initializeQueue() {
     "linkedin-posts",
     async (job) => {
       const { userId, postId, content, documentUrn } = job.data;
-      const scheduledFor = job.opts.delay
-        ? new Date(job.timestamp + job.opts.delay)
-        : null;
+      // const scheduledFor = job.opts.delay
+      //   ? new Date(job.timestamp + job.opts.delay)
+      //   : null;
 
       console.log(`Processing post ${postId} for user ${userId}`);
 
@@ -77,7 +81,7 @@ export function initializeQueue() {
       }
     },
     {
-      connection: redis_connection,
+      connection: client,
     },
   );
 
@@ -94,7 +98,12 @@ export function initializeQueue() {
   return queue;
 }
 
-initializeQueue();
+export function getQueue() {
+  if (!queue) {
+    return initializeQueue();
+  }
+  return queue;
+}
 
 export async function closeConnections() {
   if (worker) {
@@ -106,17 +115,10 @@ export async function closeConnections() {
   if (queueEvents) {
     await queueEvents.close();
   }
-  if (redis_connection) {
-    await redis_connection.quit();
+  if (redisConnection) {
+    await redisConnection.quit();
   }
   console.log("All connections closed");
-}
-
-export function getQueue() {
-  if (!queue) {
-    throw new Error("Queue not initialized");
-  }
-  return queue;
 }
 
 // Make sure to call closeConnections() when your application is shutting down

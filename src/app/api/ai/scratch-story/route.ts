@@ -7,27 +7,27 @@ import {
   getAccessToken,
   getUserId,
   updateGeneratedWords,
-} from "@/app/actions/user";
+} from "@/actions/user";
 
-function extractLinkedInPostId(url: string): string {
-  const regex = /activity-(\d+)/;
+// function extractLinkedInPostId(url: string): string {
+//   const regex = /activity-(\d+)/;
 
-  const match = url.match(regex) as any;
+//   const match = url.match(regex) as any;
 
-  if (match) {
-    return match[1];
-  }
-  return "";
-}
-function extractCommentary(response: any): string {
-  try {
-    const commentary = response.response.elements[0].commentary.text.text;
-    return commentary;
-  } catch (error) {
-    console.error("Error extracting commentary:", error);
-    return "";
-  }
-}
+//   if (match) {
+//     return match[1];
+//   }
+//   return "";
+// }
+// function extractCommentary(response: any): string {
+//   try {
+//     const commentary = response.response.elements[0].commentary.text.text;
+//     return commentary;
+//   } catch (error) {
+//     console.error("Error extracting commentary:", error);
+//     return "";
+//   }
+// }
 
 export async function POST(req: Request) {
   // Get the user session
@@ -131,6 +131,8 @@ export async function POST(req: Request) {
           8. Proofread your story for grammar, spelling, and clarity. Ensure it maintains a professional tone suitable for LinkedIn, regardless of the specific tone requested.
 
           9. If the custom instructions or post format require any specific hashtags, mentions, or LinkedIn-specific features (like polls or carousel posts), include these as directed.
+
+          10. If user asks for bolded or italic text use unicode text instead of markdown format.
 
           Write your final LinkedIn story directly without any surrounding tags. Ensure that your story adheres to all the guidelines provided, including topic, tone, post format (if given), and any custom instructions.
 

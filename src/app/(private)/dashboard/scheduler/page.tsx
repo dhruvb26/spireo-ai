@@ -1,4 +1,4 @@
-import { getDrafts } from "@/app/actions/draft";
+import { getDrafts } from "@/actions/draft";
 import Calendar, { Draft } from "../_components/calendar-component";
 
 interface GetDraftsResult {
@@ -17,9 +17,9 @@ const SchedulerPage = async () => {
   }
 
   return (
-    <div className="max-w-6xl p-4">
+    <main>
       <Calendar drafts={drafts} />
-    </div>
+    </main>
   );
 };
 

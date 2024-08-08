@@ -3,7 +3,6 @@
 import React, { useState, useRef } from "react";
 import { YouTubeForm } from "@/components/forms/youtube-form";
 import { GeneratedContent } from "@/components/generated-content";
-import FadeSeparator from "@/components/ui/fade-separator";
 import { z } from "zod";
 import { RepurposeFormSchema } from "@/components/forms/youtube-form";
 
@@ -58,17 +57,17 @@ const YouTubeLinkedInPage = () => {
   };
 
   return (
-    <div className="max-w-6xl">
+    <main>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tighter text-brand-gray-900">
-          Create Your YouTube to LinkedIn Post
+        <h1 className="text-xl font-semibold tracking-tight text-brand-gray-900">
+          Convert YouTube Video to LinkedIn Post
         </h1>
-        <p className="text-md text-brand-gray-500">
+        <p className="text-sm text-brand-gray-500">
           Simply paste the URL of your video and we'll generate a LinkedIn post
           for you.
         </p>
       </div>
-      <div className="flex flex-grow flex-col gap-8 lg:flex-row">
+      <div className="flex w-full flex-grow flex-col gap-8 lg:flex-row">
         <div className="w-full lg:w-1/2">
           <YouTubeForm onSubmit={handleSubmit} isLoading={isLoading} />
         </div>
@@ -81,7 +80,7 @@ const YouTubeLinkedInPage = () => {
           />
         </div>
       </div>
-    </div>
+    </main>
   );
 };
 export default YouTubeLinkedInPage;

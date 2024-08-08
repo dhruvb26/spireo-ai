@@ -2,7 +2,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { env } from "@/env";
 import { NextResponse } from "next/server";
-import { checkAccess, updateGeneratedWords } from "@/app/actions/user";
+import { checkAccess, updateGeneratedWords } from "@/actions/user";
 
 export async function POST(req: Request) {
   // Get the user session
@@ -52,6 +52,7 @@ export async function POST(req: Request) {
         4. Aim for a length of 1300-1500 characters, which is optimal for LinkedIn posts.
         5. If custom instructions are provided, prioritize following those instructions over these general guidelines.
         6. If format templates are provided, use them exactly as specified, inserting the tips and any other required content into the template.
+        7. If user asks for bolded or italic text use unicode text instead of markdown format.
 
         Important: Output only the content of the LinkedIn post directly, without any surrounding tags or additional commentary. The post will be streamed directly to the frontend, so ensure that your output is ready to be displayed as-is.
         `,
