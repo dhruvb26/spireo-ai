@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import { getUser } from "@/actions/user";
 import { Descendant } from "slate";
 import ContentViewer from "@/app/(private)/dashboard/_components/content-viewer";
@@ -12,6 +13,16 @@ import {
   ThumbsUp,
 } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+
+const PdfViewerComponent = dynamic(() => import("./PdfViewer"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center">
+      <Loader2 className="mb-2 h-4 w-4 animate-spin text-blue-600" />
+    </div>
+  ),
+});
 
 interface LinkedInPostPreviewProps {
   content: Descendant[];
@@ -34,20 +45,26 @@ const LinkedInPostPreview: React.FC<LinkedInPostPreviewProps> = ({
   const [user, setUser] = useState<User | null>(null);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [contentType, setContentType] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch user data
         const userData = await getUser();
         setUser(userData as User);
 
-        // Fetch download URL
         const result = await getDownloadUrl(postId);
 
         if (result.success) {
           console.log("Getting download URL: ", result.data);
           setDownloadUrl(result.data as string);
+
+          const response = await fetch(result.data as string, {
+            method: "HEAD",
+          });
+          const type = response.headers.get("Content-Type");
+          setContentType(type);
+          console.log("Content type: ", type);
         } else {
           setError(result.message);
         }
@@ -58,7 +75,7 @@ const LinkedInPostPreview: React.FC<LinkedInPostPreviewProps> = ({
     };
 
     fetchData();
-  }, [postId, setDownloadUrl, downloadUrl]);
+  }, [postId]);
 
   return (
     <div className="flex w-full justify-center">
@@ -96,7 +113,20 @@ const LinkedInPostPreview: React.FC<LinkedInPostPreviewProps> = ({
 
         {downloadUrl && (
           <div className="mt-2 flex items-center justify-center">
-            <img src={downloadUrl} alt="Image" className="" />
+            <img
+              src={downloadUrl}
+              alt="Content"
+              className={`h-auto ${
+                device === "mobile"
+                  ? "max-w-[320px]"
+                  : device === "tablet"
+                    ? "max-w-[480px]"
+                    : "max-w-[560px]"
+              }`}
+            />
+            {/* // (
+            //   <PdfViewerComponent file={downloadUrl} device={device} />
+            // ) */}
           </div>
         )}
 

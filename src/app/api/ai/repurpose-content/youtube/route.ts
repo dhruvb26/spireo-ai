@@ -1,4 +1,3 @@
-
 import { NextResponse } from "next/server";
 import { YoutubeTranscript } from "youtube-transcript";
 import Anthropic from "@anthropic-ai/sdk";
@@ -34,11 +33,14 @@ export async function POST(req: Request) {
     // Get transcript
     let transcript;
     try {
-      transcript = await YoutubeTranscript.fetchTranscript(url); 
+      transcript = await YoutubeTranscript.fetchTranscript(url);
       console.log("Successfully fetched transcript");
     } catch (error) {
       console.error("Error fetching transcript:", error);
-      return NextResponse.json({ error: "Failed to fetch transcript" }, { status: 500 });
+      return NextResponse.json(
+        { error: "Failed to fetch transcript" },
+        { status: 500 },
+      );
     }
 
     // Combine transcript text
@@ -97,7 +99,10 @@ export async function POST(req: Request) {
       console.log("Anthropic stream created");
     } catch (error) {
       console.error("Error creating Anthropic stream:", error);
-      return NextResponse.json({ error: "Failed to generate content" }, { status: 500 });
+      return NextResponse.json(
+        { error: "Failed to generate content" },
+        { status: 500 },
+      );
     }
 
     const encoder = new TextEncoder();
@@ -142,7 +147,10 @@ export async function POST(req: Request) {
     });
   } catch (error) {
     console.error("Unexpected error in POST handler:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }
 
@@ -175,7 +183,7 @@ function convertToRegularYouTubeUrl(url: string): string {
     // If it's not a Shorts URL, return the original URL
     return url;
   } catch (error) {
-      console.error("Error converting YouTube URL:", error)
+    console.error("Error converting YouTube URL:", error);
     throw error;
   }
 }

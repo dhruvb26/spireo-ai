@@ -143,7 +143,7 @@ interface EditorSectionProps {
   setValue: (value: Descendant[]) => void;
   editor: CustomEditor;
   handleSave: () => void;
-
+  setFileType: any;
   initialDocumentUrn: string | null;
 }
 
@@ -154,6 +154,7 @@ function EditorSection({
   editor,
   handleSave,
   initialDocumentUrn,
+  setFileType,
 }: EditorSectionProps) {
   const [value, setInternalValue] = useState<Descendant[]>(() => {
     if (typeof initialValue === "string") {
@@ -263,6 +264,7 @@ function EditorSection({
     if (result.success) {
       if (fileType == "pdf") {
         toast.success(`${fileType.toUpperCase()} uploaded successfully`);
+        window.location.reload();
       } else {
         toast.success(`Image uploaded successfully`);
         window.location.reload();
@@ -356,7 +358,7 @@ function EditorSection({
 
   const handleRewrite = useCallback(async () => {
     const { selection } = editor;
-    if (!selection || Editor.string(editor, selection) === '') {
+    if (!selection || Editor.string(editor, selection) === "") {
       toast.error("Please select some text to rewrite.");
       return;
     }

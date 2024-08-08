@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { usePostStore } from "@/store/postStore";
 import { signOut } from "next-auth/react";
@@ -32,9 +32,16 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import WordsCard from "./words-card";
 import FadeSeparator from "./ui/fade-separator";
 import { Badge } from "./ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const Sidebar = ({ children, user }: any) => {
   const [isSavedOpen, setIsSavedOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
   const { addPost } = usePostStore();
@@ -61,6 +68,22 @@ const Sidebar = ({ children, user }: any) => {
     await signOut({ callbackUrl: "https://spireo.ai" });
   }, []);
 
+  const toggleSidebar = useCallback(() => {
+    setIsSidebarCollapsed((prev) => !prev);
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (event: any) => {
+      if (event.metaKey && event.key === 's') {
+        event.preventDefault();
+        toggleSidebar();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [toggleSidebar]);
+
   const renderNavLink = useCallback(
     (
       href: string,
@@ -69,26 +92,47 @@ const Sidebar = ({ children, user }: any) => {
       text: string,
       exact: boolean = false,
       badge?: { text: string; color: string; icon?: React.ReactNode },
-    ) => (
-      <Link
-        href={href}
-        className={`relative flex items-center gap-3 px-6 py-2 text-sm transition-all hover:text-blue-700 ${
-          isLinkActive(href, exact) ? "text-blue-700" : "text-brand-gray-500"
-        }`}
-      >
-        {isLinkActive(href, exact) ? filledIcon : icon}
-        {text}
-        {badge && (
-          <Badge
-            className={`ml-auto space-x-1 bg-${badge.color}-50 font-normal text-${badge.color}-600 hover:bg-${badge.color}-100`}
-          >
-            <span>{badge.text}</span>
-            {badge.icon}
-          </Badge>
-        )}
-      </Link>
-    ),
-    [isLinkActive],
+    ) => {
+      const linkContent = (
+        <Link
+          href={href}
+          className={`relative flex items-center gap-3 px-6 py-2 text-sm transition-all hover:text-blue-700 ${
+            isLinkActive(href, exact) ? 'text-blue-700' : 'text-brand-gray-500'
+          } ${isSidebarCollapsed ? 'justify-center' : ''}`}
+        >
+          <div className={isSidebarCollapsed ? 'w-5 text-center' : ''}>
+            {isLinkActive(href, exact) ? filledIcon : icon}
+          </div>
+          {!isSidebarCollapsed && <span>{text}</span>}
+          {!isSidebarCollapsed && badge && (
+            <Badge
+              className={`ml-auto space-x-1 bg-${badge.color}-50 font-normal text-${badge.color}-600 hover:bg-${badge.color}-100`}
+            >
+              <span>{badge.text}</span>
+              {badge.icon}
+            </Badge>
+          )}
+        </Link>
+      );
+
+      if (isSidebarCollapsed) {
+        return (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                {linkContent}
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                <p>{text}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        );
+      }
+
+      return linkContent;
+    },
+    [isLinkActive, isSidebarCollapsed],
   );
 
   const renderNavigation = () => (
@@ -102,20 +146,36 @@ const Sidebar = ({ children, user }: any) => {
       )}
       <FadeSeparator />
 
-      <h3 className="my-2 px-6 text-xs font-semibold uppercase text-brand-gray-400">
+      <h3 className={`my-2 px-6 text-xs font-semibold uppercase text-brand-gray-400 ${isSidebarCollapsed ? 'hidden' : ''}`}>
         Creation
       </h3>
-      <button
-        onClick={handleCreateDraft}
-        className={`relative flex w-full items-center gap-3 px-6 py-2 text-sm font-normal transition-all hover:text-blue-700 ${
-          isLinkActive("/dashboard/draft")
-            ? "text-blue-700"
-            : "text-brand-gray-500"
-        }`}
-      >
-        <PencilSimpleLine size={20} />
-        New Post
-      </button>
+      {isSidebarCollapsed ? (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={handleCreateDraft}
+                className="relative flex w-full text-brand-gray-500 items-center justify-center gap-3 px-6 py-2 text-sm font-normal transition-all hover:text-blue-700"
+              >
+                <div className='w-5 text-center'>
+                  <PencilSimpleLine weight="duotone"  size={20} />
+                </div>
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="right">
+              <p>New Post</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      ) : (
+        <button
+          onClick={handleCreateDraft}
+          className="relative flex w-full text-brand-gray-500 items-center gap-3 px-6 py-2 text-sm font-normal transition-all hover:text-blue-700"
+        >
+          <PencilSimpleLine weight="duotone" size={20} />
+          <span>New Post</span>
+        </button>
+      )}
       {renderNavLink(
         "/dashboard/post",
         <Sparkle size={20} />,
@@ -148,7 +208,7 @@ const Sidebar = ({ children, user }: any) => {
       )}
 
       <FadeSeparator />
-      <h3 className="my-2 px-6 text-xs font-semibold uppercase text-brand-gray-400">
+      <h3 className={`my-2 px-6 text-xs font-semibold uppercase text-brand-gray-400 ${isSidebarCollapsed ? 'hidden' : ''}`}>
         Management
       </h3>
       {renderNavLink(
@@ -158,48 +218,67 @@ const Sidebar = ({ children, user }: any) => {
         "Scheduler",
       )}
       <div className="relative">
-        <button
-          onClick={() => setIsSavedOpen(!isSavedOpen)}
-          className={`flex w-full items-center justify-between px-6 py-2 text-sm transition-all hover:text-blue-700 ${
-            isLinkActive("/dashboard/saved")
-              ? "bg-brand-gray-100 text-blue-700"
-              : "text-brand-gray-500"
-          }`}
-        >
-          <div className="flex items-center gap-3">
-            {isLinkActive("/dashboard/saved") ? (
-              <Folder weight="duotone" size={20} />
-            ) : (
-              <Folder size={20} />
-            )}
-            Saved
-          </div>
-          <CaretDown
-            className={`h-4 w-4 transition-transform ${
-              isSavedOpen ? "rotate-180" : ""
-            }`}
-          />
-        </button>
-        {isSavedOpen && (
-          <div className="mt-1 space-y-1">
+        {isSidebarCollapsed ? (
+          <>
             {renderNavLink(
               "/dashboard/saved/ideas",
-              <Bookmarks size={20} className="ml-4" />,
-              <Bookmarks weight="duotone" size={20} className="ml-4" />,
-              "Ideas",
+              <Bookmarks size={20} />,
+              <Bookmarks weight="duotone" size={20} />,
+              "Saved Ideas"
             )}
             {renderNavLink(
               "/dashboard/saved/posts",
-              <Note size={20} className="ml-4" />,
-              <Note weight="duotone" size={20} className="ml-4" />,
-              "Posts",
+              <Note size={20} />,
+              <Note weight="duotone" size={20} />,
+              "Saved Posts"
             )}
-          </div>
+          </>
+        ) : (
+          <>
+            <button
+              onClick={() => setIsSavedOpen(!isSavedOpen)}
+              className={`flex w-full items-center justify-between px-6 py-2 text-sm transition-all hover:text-blue-700 ${
+                isLinkActive("/dashboard/saved")
+                  ? "bg-brand-gray-100 text-blue-700"
+                  : "text-brand-gray-500"
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                {isLinkActive("/dashboard/saved") ? (
+                  <Folder weight="duotone" size={20} />
+                ) : (
+                  <Folder size={20} />
+                )}
+                <span>Saved</span>
+              </div>
+              <CaretDown
+                className={`h-4 w-4 transition-transform ${
+                  isSavedOpen ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+            {isSavedOpen && (
+              <div className="mt-1 space-y-1">
+                {renderNavLink(
+                  "/dashboard/saved/ideas",
+                  <Bookmarks size={20} className="ml-4" />,
+                  <Bookmarks weight="duotone" size={20} className="ml-4" />,
+                  "Ideas"
+                )}
+                {renderNavLink(
+                  "/dashboard/saved/posts",
+                  <Note size={20} className="ml-4" />,
+                  <Note weight="duotone" size={20} className="ml-4" />,
+                  "Posts"
+                )}
+              </div>
+            )}
+          </>
         )}
       </div>
 
       <FadeSeparator />
-      <h3 className="my-2 px-6 text-xs font-semibold uppercase text-brand-gray-400">
+      <h3 className={`my-2 px-6 text-xs font-semibold uppercase text-brand-gray-400 ${isSidebarCollapsed ? 'hidden' : ''}`}>
         Account
       </h3>
       {renderNavLink(
@@ -215,13 +294,33 @@ const Sidebar = ({ children, user }: any) => {
         <GearSix weight="duotone" size={20} />,
         "Settings",
       )}
-      <button
-        onClick={handleSignOut}
-        className="relative flex w-full items-center gap-3 px-6 py-2 text-sm text-brand-gray-500 transition-all hover:text-blue-700"
-      >
-        <SignOut size={20} />
-        Log out
-      </button>
+      {isSidebarCollapsed ? (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={handleSignOut}
+                className="relative flex w-full items-center justify-center gap-3 px-6 py-2 text-sm text-brand-gray-500 transition-all hover:text-blue-700"
+              >
+                <div className='w-5 text-center'>
+                  <SignOut size={20} />
+                </div>
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="right">
+              <p>Log out</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      ) : (
+        <button
+          onClick={handleSignOut}
+          className="relative flex w-full items-center gap-3 px-6 py-2 text-sm text-brand-gray-500 transition-all hover:text-blue-700"
+        >
+          <SignOut size={20} />
+          <span>Log out</span>
+        </button>
+      )}
     </nav>
   );
 
@@ -241,12 +340,6 @@ const Sidebar = ({ children, user }: any) => {
             />
             <span className="text-2xl font-black tracking-tighter">Spireo</span>
           </Link>
-          {/* {!specialAccess && (
-            <span className="hidden w-full items-center justify-center text-sm text-brand-purple-600 md:flex">
-              <Timer weight="duotone" size={24} className="mr-2 inline" />{" "}
-              {difference} day(s) left before your free trial runs out!
-            </span>
-          )} */}
         </div>
         <div className="flex flex-row items-center justify-center space-x-4">
           {userImage && (
@@ -274,6 +367,7 @@ const Sidebar = ({ children, user }: any) => {
             <SheetContent side="right" className="flex w-fit flex-col">
               {renderNavigation()}
               <div className="p-4">
+               
                 <WordsCard words={generatedWords} />
               </div>
             </SheetContent>
@@ -282,10 +376,14 @@ const Sidebar = ({ children, user }: any) => {
       </header>
 
       <div className="flex flex-grow overflow-hidden">
-        <aside className="hidden w-64 flex-shrink-0 flex-col border-r border-brand-gray-200 md:flex">
+        <aside
+          className={`hidden transition-all duration-300 ${
+            isSidebarCollapsed ? 'w-16' : 'w-64'
+          } flex-shrink-0 flex-col border-r border-brand-gray-200 md:flex`}
+        >
           <div className="flex h-full flex-col">
             {renderNavigation()}
-            <div className="p-4">
+            <div className={`p-4 ${isSidebarCollapsed ? 'hidden' : ''}`}>
               <WordsCard words={generatedWords} />
             </div>
           </div>

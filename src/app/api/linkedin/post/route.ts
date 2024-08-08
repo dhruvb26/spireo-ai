@@ -1,10 +1,10 @@
-"use server";
 import { NextResponse } from "next/server";
 import { getLinkedInId, getAccessToken } from "@/actions/user";
 import { getDraft, saveDraft } from "@/actions/draft";
 import { drafts } from "@/server/db/schema";
 import { and, eq } from "drizzle-orm";
 import { db } from "@/server/db";
+export const maxDuration = 60;
 
 type Node = {
   type: string;
@@ -302,13 +302,14 @@ export async function POST(request: Request) {
     let mediaType = "NONE";
 
     if (documentUrn) {
+      console.log("Received document URN: ", documentUrn);
       const parts = documentUrn.split(":");
       urnId = parts[parts.length - 1];
 
       if (documentUrn.includes(":image:")) {
         mediaType = "IMAGE";
       } else if (documentUrn.includes(":document:")) {
-        mediaType = "RICH";
+        mediaType = "URN_REFERENCE";
       }
     }
 
@@ -321,7 +322,6 @@ export async function POST(request: Request) {
             text: formattedContent,
             attributes: [],
           },
-
           shareMediaCategory: mediaType,
         },
       },
@@ -330,15 +330,27 @@ export async function POST(request: Request) {
       },
     };
 
-    if (mediaType === "IMAGE" || mediaType === "RICH") {
+    if (mediaType === "IMAGE" || mediaType === "URN_REFERENCE") {
       postBody.specificContent["com.linkedin.ugc.ShareContent"].media = [
         {
           status: "READY",
           media: `urn:li:digitalmediaAsset:${urnId}`,
         },
       ];
-    }
 
+      if (mediaType === "URN_REFERENCE") {
+        postBody.specificContent[
+          "com.linkedin.ugc.ShareContent"
+        ].media[0].title = {
+          text: "PDF Document Title", // You might want to pass this as a parameter
+        };
+        postBody.specificContent[
+          "com.linkedin.ugc.ShareContent"
+        ].media[0].description = {
+          text: "PDF Document Description", // You might want to pass this as a parameter
+        };
+      }
+    }
     const response = await fetch("https://api.linkedin.com/v2/ugcPosts", {
       method: "POST",
       headers: {
@@ -358,6 +370,12 @@ export async function POST(request: Request) {
         { status: response.status },
       );
     }
+    const postData = await response.json();
+    console.log("Post Data Received: ", postData);
+    const ugcPostUrn = postData.id;
+
+    // Wait for a minute to allow the API to process the post
+    await new Promise((resolve) => setTimeout(resolve, 60000)); // 60 seconds
 
     await db
       .update(drafts)
@@ -374,7 +392,6 @@ export async function POST(request: Request) {
       );
 
     console.log("Draft published successfully");
-
     return NextResponse.json({ message: "Draft published successfully" });
   } catch (error) {
     console.error("Failed to post:", error);

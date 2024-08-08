@@ -88,7 +88,7 @@ const FileAttachmentButton = ({
           <Paperclip className="h-4 w-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent aria-describedby="Upload">
+      <DialogContent aria-description="Upload" aria-describedby={"Upload"}>
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold tracking-tight">
             Attach File

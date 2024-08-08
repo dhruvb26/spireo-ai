@@ -30,6 +30,8 @@ export default function EditDraft() {
   const id = params.id as string;
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
   const [value, setValue] = useState<Descendant[]>(initialValue);
+  const [fileType, setFileType] = useState(null);
+
   const [documentUrn, setDocumentUrn] = useState<string | null>(null);
   const [device, setDevice] = useState<"mobile" | "tablet" | "desktop">(
     "mobile",
@@ -107,10 +109,11 @@ export default function EditDraft() {
                 editor={editor}
                 handleSave={handleSave}
                 initialDocumentUrn={documentUrn}
+                setFileType={setFileType}
               />
             </div>
           </div>
-          <div className="w-full rounded bg-blue-50 pb-4 lg:w-1/2">
+          <div className="w-full rounded bg-blue-50 p-4 lg:w-1/2">
             <div className="mb-4 mt-7 flex items-center justify-center">
               <div className="flex gap-2">
                 <button

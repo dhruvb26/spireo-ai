@@ -20,6 +20,8 @@ const WordsCard: React.FC<WordsCardProps> = ({ words }) => {
   };
 
   return (
+    <>
+    <p className="text-xs text-center text-brand-gray-500 mb-2">Press <span className="inline-flex items-center">⌘<span className="mx-0.5">+</span>S</span> to collapse</p>
     <Card>
       <CardHeader className="p-2 pt-2 md:p-4">
         <CardTitle className="mb-2 flex items-center justify-between">
@@ -40,6 +42,7 @@ const WordsCard: React.FC<WordsCardProps> = ({ words }) => {
         </CardDescription>
       </CardHeader>
     </Card>
+    </>
   );
 };
 

@@ -1,32 +1,23 @@
-"use server";
 import { NextResponse } from "next/server";
-import { getAccessToken, getLinkedInId } from "@/actions/user";
-import { checkAccess } from "@/actions/user";
+import { getAccessToken, getLinkedInId, checkAccess } from "@/actions/user";
 import { getServerAuthSession } from "@/server/auth";
 import { updateDownloadUrl } from "@/actions/draft";
+export const maxDuration = 60;
 
 export async function POST(req: Request) {
   try {
-    // Get the user session
     const hasAccess = await checkAccess();
-
-    // Check if the user has access
     if (!hasAccess) {
       return NextResponse.json({ error: "Not authorized!" }, { status: 401 });
     }
 
     const session = await getServerAuthSession();
-
     if (!session) {
       return NextResponse.json({ error: "Not authorized!" }, { status: 401 });
     }
 
     const userId = session.user.id;
-
-    // Get the access token
     const accessToken = await getAccessToken(userId);
-
-    // Get the LinkedIn ID
     const linkedInId = await getLinkedInId(userId);
 
     if (!accessToken || !linkedInId) {
@@ -64,9 +55,7 @@ export async function POST(req: Request) {
       value: { uploadUrl, image: imageUrn },
     } = initData;
 
-    // Get the file from the request
     const formData = await req.formData();
-
     const file = formData.get("file") as File;
     const postId = formData.get("postId") as string;
 
@@ -74,7 +63,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    // Upload the file to LinkedIn
     const uploadResponse = await fetch(uploadUrl, {
       method: "PUT",
       headers: {
@@ -89,37 +77,56 @@ export async function POST(req: Request) {
       throw new Error(`Upload failed with status: ${uploadResponse.status}`);
     }
 
-    const getImageUrl = `https://api.linkedin.com/rest/images/${imageUrn}`;
+    // Poll for image status until it's AVAILABLE
+    let imageData;
+    let retries = 0;
+    const maxRetries = 10;
+    const retryInterval = 2000; // 2 seconds
 
-    const completeResponse = await fetch(getImageUrl, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "LinkedIn-Version": "202406",
-      },
-    });
+    while (retries < maxRetries) {
+      const getImageUrl = `https://api.linkedin.com/rest/images/${imageUrn}`;
+      const imageResponse = await fetch(getImageUrl, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "LinkedIn-Version": "202406",
+        },
+      });
 
-    if (!completeResponse.ok) {
-      throw new Error(
-        `GET image failed with status: ${completeResponse.status}`,
-      );
+      if (!imageResponse.ok) {
+        throw new Error(
+          `GET image failed with status: ${imageResponse.status}`,
+        );
+      }
+
+      imageData = await imageResponse.json();
+
+      if (imageData.status === "AVAILABLE") {
+        break;
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, retryInterval));
+      retries++;
     }
 
-    const completeData = await completeResponse.json();
+    if (!imageData || imageData.status !== "AVAILABLE") {
+      throw new Error("Image processing timed out or failed");
+    }
 
-    await updateDownloadUrl(postId, completeData.downloadUrl);
+    if (postId) {
+      await updateDownloadUrl(postId, imageData.downloadUrl);
+    }
 
     return NextResponse.json(
       {
         success: true,
-        message: "File uploaded successfully",
+        message: "Image uploaded successfully",
         imageUrn: imageUrn,
-        downloadUrl: completeData.downloadUrl,
+        downloadUrl: imageData.downloadUrl,
       },
       { status: 200 },
     );
   } catch (err: any) {
-    console.error("Error in POST handler", err);
     return NextResponse.json(
       {
         success: false,
