@@ -28,13 +28,13 @@ export async function POST(req: Request) {
     });
 
     // Convert YouTube Shorts URL to regular URL if necessary
-    const regularUrl = convertToRegularYouTubeUrl(url);
-    console.log(`Converted URL: ${regularUrl}`);
+    // const regularUrl = convertToRegularYouTubeUrl(url);
+    // console.log(`Converted URL: ${regularUrl}`);
 
     // Get transcript
     let transcript;
     try {
-      transcript = await YoutubeTranscript.fetchTranscript(regularUrl);
+      transcript = await YoutubeTranscript.fetchTranscript(url); 
       console.log("Successfully fetched transcript");
     } catch (error) {
       console.error("Error fetching transcript:", error);
