@@ -356,7 +356,7 @@ function EditorSection({
 
   const handleRewrite = useCallback(async () => {
     const { selection } = editor;
-    if (!selection) {
+    if (!selection || Editor.string(editor, selection) === '') {
       toast.error("Please select some text to rewrite.");
       return;
     }

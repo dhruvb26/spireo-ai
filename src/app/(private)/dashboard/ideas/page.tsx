@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/tooltip";
 import { saveIdea } from "@/actions/idea";
 import { v4 as uuid } from "uuid";
-import { PaperPlaneTilt } from "@phosphor-icons/react/dist/ssr";
 import { Loader2 } from "lucide-react";
 
 export default function IdeasPage() {
@@ -44,33 +43,34 @@ export default function IdeasPage() {
 
   return (
     <main>
-      <div className="mb-2 text-left ">
-        <h1 className="text-xl font-semibold tracking-tight text-brand-gray-900 ">
+      <div className="mb-8">
+        <h1 className="text-xl font-semibold tracking-tight text-brand-gray-900">
           Out of Ideas? We've Got You Covered
         </h1>
-        <p className="text-sm  text-brand-gray-500 ">
+        <p className="text-sm text-brand-gray-500">
           Generate fresh ideas for your next blog post, social media campaign,
           or marketing strategy. Our AI-powered idea generator will help you
           break through writer's block and get your creative juices flowing.
         </p>
       </div>
-
-      <section className="py-12">
-        <div className=" flex w-full flex-col items-start justify-center gap-8 md:flex-row">
-          <div className="md:w-1/2">
-            <IdeaForm
-              onIdeasGenerated={handleIdeasGenerated}
-              onLoading={handleLoading}
-            />
-          </div>
-          <div className="flex h-[500px] items-center justify-center rounded-lg border border-brand-gray-200 bg-white p-6  md:w-1/2">
+      <div className="flex w-full flex-grow flex-col gap-8 lg:flex-row">
+        <div className="w-full lg:w-1/2">
+          <IdeaForm
+            onIdeasGenerated={handleIdeasGenerated}
+            onLoading={handleLoading}
+          />
+        </div>
+        <div className="w-full lg:w-1/2">
+          <div className="h-[500px] rounded-lg border border-brand-gray-200 bg-white p-6">
             {isLoading ? (
-              <Loader2 className="ml-1 inline-block h-12 w-12 animate-spin text-blue-600" />
+              <div className="flex h-full items-center justify-center">
+                <Loader2 className="h-12 w-12 animate-spin text-blue-600" />
+              </div>
             ) : ideas.length === 0 ? (
-              <div className="text-center">
+              <div className="flex h-full flex-col items-center justify-center text-center">
                 <HardDrive
                   weight="duotone"
-                  className="mx-auto text-brand-gray-500"
+                  className="mb-2 text-brand-gray-500"
                   size={42}
                 />
                 <p className="text-sm text-brand-gray-500">
@@ -78,7 +78,7 @@ export default function IdeasPage() {
                 </p>
               </div>
             ) : (
-              <ScrollArea className="h-full w-full  pr-4">
+              <ScrollArea className="h-full w-full pr-4">
                 {ideas.map((idea, index) => (
                   <div
                     key={index}
@@ -122,7 +122,7 @@ export default function IdeasPage() {
             )}
           </div>
         </div>
-      </section>
+      </div>
     </main>
   );
 }

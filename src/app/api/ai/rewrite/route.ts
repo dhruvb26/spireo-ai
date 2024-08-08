@@ -47,7 +47,7 @@ export async function POST(req: Request) {
             4. Keep the length similar to the original selected text
             5. If user asks for bolded or italic text use unicode text instead of markdown format.
 
-            Provide only the rewritten text without any additional comments or explanations.
+            Provide the rewritten text within <rewritten_text> tags. Do not include any additional comments or explanations.
           `,
         },
       ],
@@ -56,9 +56,12 @@ export async function POST(req: Request) {
     // Extract text from the generated message
     const content = msg.content[0]?.type === "text" ? msg.content[0].text : "";
 
+    // Extract the rewritten text from within the tags
+    const rewrittenText = content.match(/<rewritten_text>([\s\S]*?)<\/rewritten_text>/)?.[1] || "";
+
     // Return the rewritten content as a response
     return NextResponse.json(
-      { rewrittenText: content.trim() },
+      { rewrittenText: rewrittenText.trim() },
       { status: 200 },
     );
   } catch (error) {
