@@ -5,7 +5,18 @@ import Stripe from "stripe";
 import { users } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 import { env } from "@/env";
-import { plans } from "@/components/navigation/fixed-pricing";
+
+const plans = [
+  {
+    link:
+      env.NEXT_PUBLIC_NODE_ENV === "development"
+        ? "https://buy.stripe.com/test_3cs16B3DI68Ycve001"
+        : "",
+    priceId: "price_1PaxYyRvU50syM0ABpRUVw3R",
+    price: 29,
+    duration: "/month",
+  },
+];
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
   apiVersion: "2024-06-20",
