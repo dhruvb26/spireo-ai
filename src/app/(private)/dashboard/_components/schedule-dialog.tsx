@@ -185,7 +185,7 @@ const ScheduleDialog = ({
                 </SelectContent>
               </Select>
               <Select onValueChange={(value) => setAmPm(value)}>
-                <SelectTrigger className="w-[70px]">
+                <SelectTrigger className="w-[100px]">
                   <SelectValue placeholder="AM/PM" />
                 </SelectTrigger>
                 <SelectContent>

@@ -12,29 +12,20 @@ importers:
         specifier: ^0.24.3
         version: 0.24.3
       '@auth/drizzle-adapter':
-        specifier: ^1.4.1
+        specifier: 1.4.1
         version: 1.4.1
       '@canva/app-ui-kit':
-        specifier: ^3.6.0
-        version: 3.6.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^3.8.0
+        version: 3.8.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@draft-js-plugins/editor':
         specifier: ^4.1.4
         version: 4.1.4(draft-js@0.11.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@hookform/resolvers':
         specifier: ^3.9.0
-        version: 3.9.0(react-hook-form@7.52.1(react@18.3.1))
+        version: 3.9.0(react-hook-form@7.52.2(react@18.3.1))
       '@phosphor-icons/react':
         specifier: ^2.1.7
         version: 2.1.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-date-math':
-        specifier: ^1.5.13
-        version: 1.5.13
-      '@progress/kendo-react-common':
-        specifier: ^8.1.1
-        version: 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-react-scheduler':
-        specifier: ^8.1.1
-        version: 8.1.1(amnn7ol6dcqmg4vjyqremsbxem)
       '@radix-ui/react-avatar':
         specifier: ^1.1.0
         version: 1.1.0(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -94,16 +85,16 @@ importers:
         version: 1.1.2(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@stripe/react-stripe-js':
         specifier: ^2.7.3
-        version: 2.7.3(@stripe/stripe-js@4.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 2.7.3(@stripe/stripe-js@4.2.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@stripe/stripe-js':
-        specifier: ^4.1.0
-        version: 4.1.0
+        specifier: ^4.2.0
+        version: 4.2.0
       '@t3-oss/env-nextjs':
         specifier: ^0.10.1
-        version: 0.10.1(typescript@5.5.3)(zod@3.23.8)
+        version: 0.10.1(typescript@5.5.4)(zod@3.23.8)
       '@tabler/icons-react':
-        specifier: ^3.10.0
-        version: 3.10.0(react@18.3.1)
+        specifier: ^3.11.0
+        version: 3.11.0(react@18.3.1)
       '@toast-ui/react-calendar':
         specifier: ^2.1.3
         version: 2.1.3(react@18.3.1)
@@ -112,21 +103,21 @@ importers:
         version: 21.1.7
       '@uploadthing/react':
         specifier: ^6.7.2
-        version: 6.7.2(next@14.2.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(uploadthing@6.13.2(next@14.2.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(tailwindcss@3.4.4))
+        version: 6.7.2(next@14.2.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(uploadthing@6.13.2(next@14.2.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(tailwindcss@3.4.8))
       '@vercel/analytics':
         specifier: ^1.3.1
         version: 1.3.1(next@14.2.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
       '@vercel/edge-config':
-        specifier: ^1.2.0
-        version: 1.2.0
+        specifier: ^1.2.1
+        version: 1.2.1
       '@vercel/kv':
         specifier: ^2.0.0
         version: 2.0.0
       axios:
-        specifier: ^1.7.2
-        version: 1.7.2
+        specifier: ^1.7.3
+        version: 1.7.3
       bullmq:
-        specifier: ^5.10.3
+        specifier: 5.10.3
         version: 5.10.3
       canvas-confetti:
         specifier: ^1.9.3
@@ -168,8 +159,8 @@ importers:
         specifier: ^0.5.1
         version: 0.5.1(drizzle-orm@0.31.4(@types/react@18.3.3)(pg@8.12.0)(postgres@3.3.5)(react@18.3.1))(zod@3.23.8)
       embla-carousel-react:
-        specifier: ^8.1.6
-        version: 8.1.6(react@18.3.1)
+        specifier: ^8.1.8
+        version: 8.1.8(react@18.3.1)
       emoji-picker:
         specifier: ^0.0.7
         version: 0.0.7
@@ -183,8 +174,8 @@ importers:
         specifier: ^2.0.5
         version: 2.0.5
       framer-motion:
-        specifier: ^11.3.2
-        version: 11.3.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^11.3.23
+        version: 11.3.23(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       geist:
         specifier: ^1.3.1
         version: 1.3.1(next@14.2.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
@@ -207,8 +198,8 @@ importers:
         specifier: ^5.4.1
         version: 5.4.1
       jsdom:
-        specifier: ^24.1.0
-        version: 24.1.0
+        specifier: ^24.1.1
+        version: 24.1.1
       jspdf:
         specifier: ^2.5.1
         version: 2.5.1
@@ -234,14 +225,17 @@ importers:
         specifier: ~3.3.5
         version: 3.3.5
       primereact:
-        specifier: ^10.7.0
-        version: 10.7.0(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^10.8.2
+        version: 10.8.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      punycode:
+        specifier: ^2.3.1
+        version: 2.3.1
       react:
         specifier: ^18.3.1
         version: 18.3.1
       react-big-calendar:
-        specifier: ^1.13.1
-        version: 1.13.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^1.13.2
+        version: 1.13.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-colorful:
         specifier: ^5.6.1
         version: 5.6.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -261,8 +255,8 @@ importers:
         specifier: ^1.0.13
         version: 1.0.13
       react-hook-form:
-        specifier: ^7.52.1
-        version: 7.52.1(react@18.3.1)
+        specifier: ^7.52.2
+        version: 7.52.2(react@18.3.1)
       react-icons:
         specifier: ^5.2.1
         version: 5.2.1(react@18.3.1)
@@ -279,8 +273,8 @@ importers:
         specifier: ^0.14.1
         version: 0.14.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       redis:
-        specifier: ^4.6.15
-        version: 4.6.15
+        specifier: ^4.7.0
+        version: 4.7.0
       slate:
         specifier: ^0.103.0
         version: 0.103.0
@@ -297,23 +291,23 @@ importers:
         specifier: ^1.5.0
         version: 1.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       stripe:
-        specifier: ^16.2.0
-        version: 16.2.0
+        specifier: ^16.6.0
+        version: 16.6.0
       swiper:
-        specifier: ^11.1.5
-        version: 11.1.5
+        specifier: ^11.1.9
+        version: 11.1.9
       tailwind-merge:
         specifier: ^2.4.0
         version: 2.4.0
       tailwindcss-animate:
         specifier: ^1.0.7
-        version: 1.0.7(tailwindcss@3.4.4)
+        version: 1.0.7(tailwindcss@3.4.8)
       tui-calendar:
         specifier: ^1.15.3
         version: 1.15.3
       uploadthing:
         specifier: ^6.13.2
-        version: 6.13.2(next@14.2.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(tailwindcss@3.4.4)
+        version: 6.13.2(next@14.2.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(tailwindcss@3.4.8)
       uuid:
         specifier: ^10.0.0
         version: 10.0.0
@@ -330,24 +324,6 @@ importers:
         specifier: ^4.5.4
         version: 4.5.4(@types/react@18.3.3)(immer@10.1.1)(react@18.3.1)
     devDependencies:
-      '@progress/kendo-licensing':
-        specifier: ^1.3.5
-        version: 1.3.5
-      '@progress/kendo-react-buttons':
-        specifier: ^8.1.1
-        version: 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-react-popup@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-popup-common@1.9.2)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-react-dropdowns':
-        specifier: ^8.1.1
-        version: 8.1.1(gr7gozzqt2p6q7t2komdjlrz7e)
-      '@progress/kendo-react-intl':
-        specifier: ^8.1.1
-        version: 8.1.1(@progress/kendo-intl@3.1.2)(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-react-treeview':
-        specifier: ^8.1.1
-        version: 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-animation@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react-transition-group@4.4.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1))(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-svg-icons':
-        specifier: ^3.0.0
-        version: 3.0.0
       '@toast-ui/calendar':
         specifier: ^2.1.3
         version: 2.1.3
@@ -364,8 +340,11 @@ importers:
         specifier: ^2.0.7
         version: 2.0.7
       '@types/node':
-        specifier: ^20.14.10
-        version: 20.14.10
+        specifier: ^20.14.14
+        version: 20.14.14
+      '@types/punycode':
+        specifier: ^2.1.4
+        version: 2.1.4
       '@types/react':
         specifier: ^18.3.3
         version: 18.3.3
@@ -388,8 +367,8 @@ importers:
         specifier: ^0.22.8
         version: 0.22.8
       postcss:
-        specifier: ^8.4.39
-        version: 8.4.39
+        specifier: ^8.4.41
+        version: 8.4.41
       prettier:
         specifier: ^3.3.3
         version: 3.3.3
@@ -400,11 +379,11 @@ importers:
         specifier: ^2.19.3
         version: 2.19.3(react@18.3.1)
       tailwindcss:
-        specifier: ^3.4.4
-        version: 3.4.4
+        specifier: ^3.4.8
+        version: 3.4.8
       typescript:
-        specifier: ^5.5.3
-        version: 5.5.3
+        specifier: ^5.5.4
+        version: 5.5.4
 
 packages:
 
@@ -432,15 +411,15 @@ packages:
   '@auth/drizzle-adapter@1.4.1':
     resolution: {integrity: sha512-pUC8D0jfANDvThH1CrcUXmjZyF98ccVMY3iEZUQzUTr0U1csuppvRoz5JccOLzjv3tu+Nb9Qd6SvrmmsnuYgSw==}
 
-  '@babel/runtime@7.24.8':
-    resolution: {integrity: sha512-5F7SDGs1T72ZczbRwbGO9lQi0NLjQxzl6i4lJxLxfW9U5UluCSyEJeniWvnhl3/euNiqQVbo8zruhsDfid0esA==}
+  '@babel/runtime@7.25.0':
+    resolution: {integrity: sha512-7dRy4DwXwtzBrPbZflqxnvfxLF8kdZXPkhymtDeFoFqE6ldzjQFgYTtYIFARcLEYDrqfBfYcZt1WqFxRoyC9Rw==}
     engines: {node: '>=6.9.0'}
 
   '@base2/pretty-print-object@1.0.1':
     resolution: {integrity: sha512-4iri8i1AqYHJE2DstZYkyEprg6Pq6sKx3xn5FpySk9sNhH7qN2LLlHJCfDTZRILNwQNPD7mATWM0TBui7uC1pA==}
 
-  '@canva/app-ui-kit@3.6.0':
-    resolution: {integrity: sha512-ZRK4HCf3/DbG9H6x+QeUHCKfLb06kG4eKZbR7PMJnSqhymoeIrhlC8CtKMbYt1NkGGoOBaOaKzv0lr/h8gC45A==}
+  '@canva/app-ui-kit@3.8.0':
+    resolution: {integrity: sha512-mkM+FXCMcXaR4Vra8WM0qCn7oTOmibpaBRrxnPohbjINpZKA/CIlREZQyhZlkyqAwzGNRF+LjDgQ5g3HPzNmlQ==}
     peerDependencies:
       react: ^18.3.1
       react-dom: ^18.3.1
@@ -733,11 +712,11 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@floating-ui/core@1.6.4':
-    resolution: {integrity: sha512-a4IowK4QkXl4SCWTGUR0INAfEOX3wtsYw3rKK5InQEHMGObkR8Xk44qYQD9P4r6HHw0iIfK6GUKECmY8sTkqRA==}
+  '@floating-ui/core@1.6.7':
+    resolution: {integrity: sha512-yDzVT/Lm101nQ5TCVeK65LtdN7Tj4Qpr9RTXJ2vPFLqtLxwOrpoxAHAJI8J3yYWUc40J0BDBheaitK5SJmno2g==}
 
-  '@floating-ui/dom@1.6.7':
-    resolution: {integrity: sha512-wmVfPG5o2xnKDU4jx/m4w5qva9FWHcnZ8BvzEe90D/RpwsJaTAVYPEPdQ8sbr/N8zZTAHlZUTQdqg8ZUbzHmng==}
+  '@floating-ui/dom@1.6.10':
+    resolution: {integrity: sha512-fskgCFv8J8OamCmyun8MfjB1Olfn+uZKjOKZ0vhYF3gRmEUXcGOjxWL8bBr7i4kIuPZ2KD2S3EUIOxnjC8kl2A==}
 
   '@floating-ui/react-dom@2.1.1':
     resolution: {integrity: sha512-4h84MJt3CHrtG18mGsXuLCHMrug49d7DFkU0RMIyshRveBeyV2hmV/pDaF2Uxtu8kgq5r46llp5E5FQiR0K2Yg==}
@@ -745,8 +724,14 @@ packages:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
 
-  '@floating-ui/utils@0.2.4':
-    resolution: {integrity: sha512-dWO2pw8hhi+WrXq1YJy2yCuWoL20PddgGaqTgVe4cOS9Q6qklXCiA1tJEqX6BEwRNSCP84/afac9hd4MS+zEUA==}
+  '@floating-ui/react@0.26.22':
+    resolution: {integrity: sha512-LNv4azPt8SpT4WW7Kku5JNVjLk2GcS0bGGjFTAgqOONRFo9r/aaGHHPpdiIuQbB1t8shmWyWqTTUDmZ9fcNshg==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+
+  '@floating-ui/utils@0.2.7':
+    resolution: {integrity: sha512-X8R8Oj771YRl/w+c1HqAC1szL8zWQRwFvgDwT129k9ACdBoud/+/rX9V0qiMl6LWUdP9voC2nDVZYPMQQsb6eA==}
 
   '@formatjs/ecma402-abstract@2.0.0':
     resolution: {integrity: sha512-rRqXOqdFmk7RYvj4khklyqzcfQl9vEL/usogncBHRZfZBDOwMGuSRNFl02fu5KGHXdbinju+YXyuR+Nk8xlr/g==}
@@ -916,220 +901,6 @@ packages:
 
   '@popperjs/core@2.11.8':
     resolution: {integrity: sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==}
-
-  '@progress/kendo-data-query@1.7.0':
-    resolution: {integrity: sha512-mB+2WZFAZghxRwBhgWiJIysx7qcFkilnbcZWq0AfQ3KXfC3N5IY/EuKJNijhYrTdauYA1eL1GMe2FHsOWAlRHA==}
-
-  '@progress/kendo-date-math@1.5.13':
-    resolution: {integrity: sha512-uMVIbEEs7nyn4IeWXuMdV7lNGfrWgYheXiC2EDx6lpGG9s29QpUmn3NtnAcOOOHWj33/O9IwLIRAcEiFP/7DiA==}
-
-  '@progress/kendo-draggable-common@0.2.3':
-    resolution: {integrity: sha512-e1FraFsT7zwevswzZlQYL//K+fzmRUvkr/4emp51dzkARLDtGd95BtPNSoXYRG5xYHeueKBS75hzVwQI6Dm3Dg==}
-
-  '@progress/kendo-draggable@3.1.0':
-    resolution: {integrity: sha512-S5AHF9uiy44um+06ABJcjZn/wpO3ZwLahd2BhiTd7NeBVPt5lkj2bjdmkd88GEIIBKmT7FOK308WUt5/MmKVTQ==}
-
-  '@progress/kendo-drawing@1.20.1':
-    resolution: {integrity: sha512-1ihKFZ7vMrqaIPlmXooYWm0/nDvrGWvh0Y1AkRhI1OmfzuvLkEFOUG+MgQgg+/P421RV1hhAWPtd8JER/MwDHQ==}
-
-  '@progress/kendo-inputs-common@3.1.1':
-    resolution: {integrity: sha512-OqID8+2DuAnUET0W1j357qqTPvws6hnByt2h5+uVS7uK9Wmt/NHA0gVhdYmh+Jyv6Pw+S2epSk47mDsfyreKYA==}
-    peerDependencies:
-      '@progress/kendo-drawing': ^1.17.0
-
-  '@progress/kendo-intl@3.1.2':
-    resolution: {integrity: sha512-rOtMppQSrScwryMfeQSOdsnRi9Oj1l08HFoEC2ticZ0T2N0/JN9CHt+fuToRx5onXK7QkcbbuNM0D09o8TeeMw==}
-
-  '@progress/kendo-licensing@1.3.5':
-    resolution: {integrity: sha512-HWxM6Ov1g0LvOQN9sp+3N1h+YpF0OKq7rWW2bqoJnkyHy8woC8Ve6ew6KmHdbeaKMgikVOYgyo5NTjef2j+gVQ==}
-    hasBin: true
-
-  '@progress/kendo-popup-common@1.9.2':
-    resolution: {integrity: sha512-Gs50UafJcERiGuSP/47Yg7ftPX3HQXiK5M9zHB8sHSoc1/AEYd0/Sj5wh8UrVVBAM9b0pUTwmEuzQ/D5yDDd2Q==}
-
-  '@progress/kendo-react-animation@8.1.1':
-    resolution: {integrity: sha512-KhwXiZ88pob79/pYL3TLn2sBo1HgiQTNk8YQporCqO2+O5h2weVfYM+7goBaeABapVMV10s7Y1cM3bcAK9LKKQ==}
-    peerDependencies:
-      '@progress/kendo-licensing': ^1.3.4
-      '@progress/kendo-react-common': 8.1.1
-      '@progress/kendo-svg-icons': ^3.0.0
-      react: ^16.8.2 || ^17.0.0 || ^18.0.0
-      react-dom: ^16.8.2 || ^17.0.0 || ^18.0.0
-      react-transition-group: ^4.4.2
-
-  '@progress/kendo-react-buttons@8.1.1':
-    resolution: {integrity: sha512-PIvzyekaPDssCbU0+Y5Q9Pb/LYbDV/LlTTucWZcUCfTep++mZyQWiInZa+JOUZ4IndyDjx6AVspJRb3aHcxOaQ==}
-    peerDependencies:
-      '@progress/kendo-licensing': ^1.3.4
-      '@progress/kendo-react-common': 8.1.1
-      '@progress/kendo-react-popup': 8.1.1
-      '@progress/kendo-svg-icons': ^3.0.0
-      react: ^16.8.2 || ^17.0.0 || ^18.0.0
-      react-dom: ^16.8.2 || ^17.0.0 || ^18.0.0
-
-  '@progress/kendo-react-common@8.1.1':
-    resolution: {integrity: sha512-WvM2or95a6hzj/Qtom5CA/HmMnipKx7/bQAsbjU70fm7QJETPRsN3HV5Fc7d82oZ1QXlmvP2BMbuR1XWW0lUfg==}
-    peerDependencies:
-      '@progress/kendo-licensing': ^1.3.4
-      '@progress/kendo-svg-icons': ^3.0.0
-      react: ^16.8.2 || ^17.0.0 || ^18.0.0
-      react-dom: ^16.8.2 || ^17.0.0 || ^18.0.0
-
-  '@progress/kendo-react-dateinputs@8.1.1':
-    resolution: {integrity: sha512-GYJkENUy4RNRTU8+Mx5oWJjQyN8mtGq87Peg7hKF+hi0V3/LO+7rGwmnVrQBuNaXnYHOWT+aGaWOh9Iq0crpng==}
-    peerDependencies:
-      '@progress/kendo-date-math': ^1.4.0
-      '@progress/kendo-licensing': ^1.3.4
-      '@progress/kendo-react-buttons': 8.1.1
-      '@progress/kendo-react-common': 8.1.1
-      '@progress/kendo-react-intl': 8.1.1
-      '@progress/kendo-react-labels': 8.1.1
-      '@progress/kendo-react-layout': 8.1.1
-      '@progress/kendo-react-popup': 8.1.1
-      '@progress/kendo-svg-icons': ^3.0.0
-      react: ^16.8.2 || ^17.0.0 || ^18.0.0
-      react-dom: ^16.8.2 || ^17.0.0 || ^18.0.0
-
-  '@progress/kendo-react-dialogs@8.1.1':
-    resolution: {integrity: sha512-rD925TIVpvjur/haPsBTSOxZSz9De4gkWufayi6CvlWOBH+D+GM28IR0HccorBd5Xe1GGXZkz+ss5Fip/BHLUw==}
-    peerDependencies:
-      '@progress/kendo-licensing': ^1.3.4
-      '@progress/kendo-react-buttons': 8.1.1
-      '@progress/kendo-react-common': 8.1.1
-      '@progress/kendo-svg-icons': ^3.0.0
-      react: ^16.8.2 || ^17.0.0 || ^18.0.0
-      react-dom: ^16.8.2 || ^17.0.0 || ^18.0.0
-
-  '@progress/kendo-react-dropdowns@8.1.1':
-    resolution: {integrity: sha512-uabnXjOVOmr1uXN94PUA5jbx1ZuObkBzYzldNRtdIsRxkRu7zGnjGPWT0Jcje4ngvtS+jCAEaaGvHWrkXO40AQ==}
-    peerDependencies:
-      '@progress/kendo-licensing': ^1.3.4
-      '@progress/kendo-react-buttons': 8.1.1
-      '@progress/kendo-react-common': 8.1.1
-      '@progress/kendo-react-inputs': 8.1.1
-      '@progress/kendo-react-intl': 8.1.1
-      '@progress/kendo-react-labels': 8.1.1
-      '@progress/kendo-react-layout': 8.1.1
-      '@progress/kendo-react-popup': 8.1.1
-      '@progress/kendo-react-treeview': 8.1.1
-      '@progress/kendo-svg-icons': ^3.0.0
-      react: ^16.8.2 || ^17.0.0 || ^18.0.0
-      react-dom: ^16.8.2 || ^17.0.0 || ^18.0.0
-
-  '@progress/kendo-react-form@8.1.1':
-    resolution: {integrity: sha512-UkAPhaLb9h3KXjVNiheMF/hIX68g78r/zoGHmyGYa9ivBeo2LyU+sJkiJSGdASvGujpUZ1lL+j71daJ05hJ/yA==}
-    peerDependencies:
-      '@progress/kendo-licensing': ^1.3.4
-      '@progress/kendo-react-common': 8.1.1
-      react: ^16.8.2 || ^17.0.0 || ^18.0.0
-      react-dom: ^16.8.2 || ^17.0.0 || ^18.0.0
-
-  '@progress/kendo-react-inputs@8.1.1':
-    resolution: {integrity: sha512-23da6JgHkM3iGnK0gUqZITWEwWXgyAjZwieMmt111onca/3SPSEZJyLvrvUUvwOKQmWgoVWwnmssNtMTFH61/A==}
-    peerDependencies:
-      '@progress/kendo-drawing': ^1.20.1
-      '@progress/kendo-inputs-common': ^3.1.0
-      '@progress/kendo-licensing': ^1.3.4
-      '@progress/kendo-react-animation': 8.1.1
-      '@progress/kendo-react-buttons': 8.1.1
-      '@progress/kendo-react-common': 8.1.1
-      '@progress/kendo-react-dialogs': 8.1.1
-      '@progress/kendo-react-intl': 8.1.1
-      '@progress/kendo-react-labels': 8.1.1
-      '@progress/kendo-react-popup': 8.1.1
-      '@progress/kendo-svg-icons': ^3.0.0
-      react: ^16.8.2 || ^17.0.0 || ^18.0.0
-      react-dom: ^16.8.2 || ^17.0.0 || ^18.0.0
-
-  '@progress/kendo-react-intl@8.1.1':
-    resolution: {integrity: sha512-URCn32M2c4r8JajRA7m+uRTvj+45/NuzdiDlhBEFyg0A3B97Gx2qpkQ6apmqP7ePST+0E8uCbY1WNXcFmnE8kw==}
-    peerDependencies:
-      '@progress/kendo-intl': ^3.1.1
-      '@progress/kendo-licensing': ^1.3.4
-      '@progress/kendo-react-common': 8.1.1
-      react: ^16.8.2 || ^17.0.0 || ^18.0.0
-      react-dom: ^16.8.2 || ^17.0.0 || ^18.0.0
-
-  '@progress/kendo-react-labels@8.1.1':
-    resolution: {integrity: sha512-jhL1+kVNKstJ15WS73fz/0/idoOaiKe5e5ijYYCRgV0eGsIQpWm1fUVOg2z5JxCONS3yPInsfxO8CjUmolJXWw==}
-    peerDependencies:
-      '@progress/kendo-licensing': ^1.3.4
-      '@progress/kendo-react-common': 8.1.1
-      '@progress/kendo-react-intl': 8.1.1
-      react: ^16.8.2 || ^17.0.0 || ^18.0.0
-      react-dom: ^16.8.2 || ^17.0.0 || ^18.0.0
-
-  '@progress/kendo-react-layout@8.1.1':
-    resolution: {integrity: sha512-lVNB0KfOXWXedkwdjRdLHCD5EPnkD/BfWEPhOaH/ZaXLisHaZ4prIb4tfnqROHD1X+2W5qX6e3CuXgAhqS0ueQ==}
-    peerDependencies:
-      '@progress/kendo-licensing': ^1.3.4
-      '@progress/kendo-react-animation': 8.1.1
-      '@progress/kendo-react-common': 8.1.1
-      '@progress/kendo-react-intl': 8.1.1
-      '@progress/kendo-react-popup': 8.1.1
-      '@progress/kendo-react-progressbars': 8.1.1
-      '@progress/kendo-svg-icons': ^3.0.0
-      react: ^16.8.2 || ^17.0.0 || ^18.0.0
-      react-dom: ^16.8.2 || ^17.0.0 || ^18.0.0
-
-  '@progress/kendo-react-popup@8.1.1':
-    resolution: {integrity: sha512-CntAbV1Cu8j+L1LpWPBstD0JgD4SydjI1FdQPWVmWdMlPQ9QCCCv9TTjLQAtDgyLqBE03jGUQs5OXSRZ8VfH+A==}
-    peerDependencies:
-      '@progress/kendo-licensing': ^1.3.4
-      '@progress/kendo-popup-common': ^1.9.0
-      '@progress/kendo-react-common': 8.1.1
-      react: ^16.8.2 || ^17.0.0 || ^18.0.0
-      react-dom: ^16.8.2 || ^17.0.0 || ^18.0.0
-
-  '@progress/kendo-react-progressbars@8.1.1':
-    resolution: {integrity: sha512-+ZrEaeb5PN/ITUetJVm6WIgXBP+8XBIeoXcpELt0+IUCwQRukeS67/3mPtiIrkEOfJM9buE+7msDW0bIO9nXJg==}
-    peerDependencies:
-      '@progress/kendo-licensing': ^1.3.4
-      '@progress/kendo-react-animation': 8.1.1
-      '@progress/kendo-react-common': 8.1.1
-      react: ^16.8.2 || ^17.0.0 || ^18.0.0
-      react-dom: ^16.8.2 || ^17.0.0 || ^18.0.0
-
-  '@progress/kendo-react-scheduler@8.1.1':
-    resolution: {integrity: sha512-KsUQlX9aGWEnK8Tzch5get1gAZYS+6wtQPN38T+GBv09GJBUNQ/ZZ2i9Pf3fvjBcoPCGGJDenze8TZiCIpUFbQ==}
-    peerDependencies:
-      '@progress/kendo-data-query': ^1.5.1
-      '@progress/kendo-date-math': ^1.4.1
-      '@progress/kendo-drawing': ^1.20.1
-      '@progress/kendo-licensing': ^1.3.4
-      '@progress/kendo-react-buttons': 8.1.1
-      '@progress/kendo-react-common': 8.1.1
-      '@progress/kendo-react-dateinputs': 8.1.1
-      '@progress/kendo-react-dialogs': 8.1.1
-      '@progress/kendo-react-dropdowns': 8.1.1
-      '@progress/kendo-react-form': 8.1.1
-      '@progress/kendo-react-inputs': 8.1.1
-      '@progress/kendo-react-intl': 8.1.1
-      '@progress/kendo-react-popup': 8.1.1
-      '@progress/kendo-svg-icons': ^3.0.0
-      react: ^16.8.2 || ^17.0.0 || ^18.0.0
-      react-dom: ^16.8.2 || ^17.0.0 || ^18.0.0
-
-  '@progress/kendo-react-treeview@8.1.1':
-    resolution: {integrity: sha512-zTJpO0cz4QbqsKN+oaoFl7493CRhgdX/OFUNeXnpbT7cTJxAG2ZqDQvSGMNZqM155DlxUYPsJL0NfpliMO9MIQ==}
-    peerDependencies:
-      '@progress/kendo-licensing': ^1.3.4
-      '@progress/kendo-react-animation': 8.1.1
-      '@progress/kendo-react-common': 8.1.1
-      '@progress/kendo-svg-icons': ^3.0.0
-      react: ^16.8.2 || ^17.0.0 || ^18.0.0
-      react-dom: ^16.8.2 || ^17.0.0 || ^18.0.0
-
-  '@progress/kendo-recurrence@1.0.3':
-    resolution: {integrity: sha512-eG4xt3WUBLuxctJN6dWhDI41hqCl60Fe6a7Pb5IX4WIEW3Y5Hhn9AntJ/X1k0oQqU/n1vxdUJJp+9TihbBYgHA==}
-    peerDependencies:
-      '@progress/kendo-date-math': ^1.3.0
-
-  '@progress/kendo-svg-icons@3.0.0':
-    resolution: {integrity: sha512-+Hk0YWhxd9rIvFNX6T+L0P2x9/DJ8Z4baHWY4xT2ntjVK9IasSPgMmfQiAfs58q3vTiyZNkmx7Yfrdg5Mqh8Aw==}
-
-  '@progress/pako-esm@1.0.1':
-    resolution: {integrity: sha512-O4A3b1EuE9Xe1pC3Xz9Tcn1M/CYrL71f4y/5TXeytOVTkmkzBgYW97fYP2f+54H0e0erWRaqV/kUUB/a8Uxfbw==}
 
   '@radix-ui/number@1.1.0':
     resolution: {integrity: sha512-V3gRzhVNU1ldS5XhAPTom1fOIo4ccrjjJgmE+LI2h/WaFpHmx0MQApT+KZHnx8abG6Avtfcz4WoEciMnpFT3HQ==}
@@ -1793,8 +1564,8 @@ packages:
     peerDependencies:
       '@redis/client': ^1.0.0
 
-  '@redis/client@1.5.17':
-    resolution: {integrity: sha512-IPvU9A31qRCZ7lds/x+ksuK/UMndd0EASveAvCvEtFFKIZjZ+m/a4a0L7S28KEWoR5ka8526hlSghDo4Hrc2Hg==}
+  '@redis/client@1.6.0':
+    resolution: {integrity: sha512-aR0uffYI700OEEH4gYnitAnv3vzVGXCFvYfdpu/CJKvk4pHfLPEy/JSZyrpQ+15WhXe1yJRXLtfQ84s4mEXnPg==}
     engines: {node: '>=14'}
 
   '@redis/graph@1.1.1':
@@ -1802,18 +1573,18 @@ packages:
     peerDependencies:
       '@redis/client': ^1.0.0
 
-  '@redis/json@1.0.6':
-    resolution: {integrity: sha512-rcZO3bfQbm2zPRpqo82XbW8zg4G/w4W3tI7X8Mqleq9goQjAGLL7q/1n1ZX4dXEAmORVZ4s1+uKLaUOg7LrUhw==}
+  '@redis/json@1.0.7':
+    resolution: {integrity: sha512-6UyXfjVaTBTJtKNG4/9Z8PSpKE6XgSyEb8iwaqDcy+uKrd/DGYHTWkUdnQDyzm727V7p21WUMhsqz5oy65kPcQ==}
     peerDependencies:
       '@redis/client': ^1.0.0
 
-  '@redis/search@1.1.6':
-    resolution: {integrity: sha512-mZXCxbTYKBQ3M2lZnEddwEAks0Kc7nauire8q20oA0oA/LoA+E/b5Y5KZn232ztPb1FkIGqo12vh3Lf+Vw5iTw==}
+  '@redis/search@1.2.0':
+    resolution: {integrity: sha512-tYoDBbtqOVigEDMAcTGsRlMycIIjwMCgD8eR2t0NANeQmgK/lvxNAvYyb6bZDD4frHRhIHkJu2TBRvB0ERkOmw==}
     peerDependencies:
       '@redis/client': ^1.0.0
 
-  '@redis/time-series@1.0.5':
-    resolution: {integrity: sha512-IFjIgTusQym2B5IZJG3XKr5llka7ey84fw/NOYqESP5WUfQs9zz1ww/9+qoz4ka/S6KcGBodzlCeZ5UImKbscg==}
+  '@redis/time-series@1.1.0':
+    resolution: {integrity: sha512-c1Q99M5ljsIuc4YdaCwfUEXsofakb9c8+Zse2qxTadu8TalLXuAESzLvFAvNVbkmSlvlzIQOLpBCmWI9wTOt+g==}
     peerDependencies:
       '@redis/client': ^1.0.0
 
@@ -1832,8 +1603,8 @@ packages:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
 
-  '@stripe/stripe-js@4.1.0':
-    resolution: {integrity: sha512-HhstGRUz/4JdbZpb26OcOf8Qb/cFR02arvHvgz4sPFLSnI6ZNHC53Jc6JP/FGNwxtrF719YyUnK0gGy4oyhucQ==}
+  '@stripe/stripe-js@4.2.0':
+    resolution: {integrity: sha512-MdTpmXqtm+B9rIAmaSlCkF6qv3793UrghA95SFI4Ge7KGYWZAMYyxbX/z9FXs6XnU5gUbKtGtlVgZQp1T88UfQ==}
     engines: {node: '>=12.16'}
 
   '@swc/counter@0.1.3':
@@ -1860,16 +1631,13 @@ packages:
       typescript:
         optional: true
 
-  '@tabler/icons-react@3.10.0':
-    resolution: {integrity: sha512-FTES0wJLIV+M9Ggng0j/6Kn/j43ZuBukR5n6DNV8Npk4woPCDcRjA+2KzKQyvSdwtPMAM6o1e8fQBPDS337Spg==}
+  '@tabler/icons-react@3.11.0':
+    resolution: {integrity: sha512-xHNBi9mns1slvqos+7LkP3ube4CjWrANMbxMaorzwzO9J/+y1sAEG/sN8CV8FmtpYW/9/gDR+OWCjjLLg0RmAw==}
     peerDependencies:
       react: '>= 16'
 
-  '@tabler/icons@3.10.0':
-    resolution: {integrity: sha512-jCMO+hDTw8Gn1CNb15zIENLQ9b0UplGXtjMnEUhDoKH+Q4fta8tBLUxZpPpFtpV+q+gzGqfM76xNAoD1GBpmnA==}
-
-  '@telerik/kendo-intl@2.3.1':
-    resolution: {integrity: sha512-30iXfS/1Kz3wn0rZLiWzrfJCv/c0Wffr5T42uxjJBTxZQ6XLBmUdfaQ4Jn1Td1W0skZrlP0M3/wNAEYTbxXigQ==}
+  '@tabler/icons@3.11.0':
+    resolution: {integrity: sha512-/vZinJNvCYhdAB+RUsyCpanSPuOEKHHIZi4Uu0Bw7ilewHnQhCWUPrT704uHCRli2ROl7spADPmWzAqOganA5A==}
 
   '@toast-ui/calendar@2.1.3':
     resolution: {integrity: sha512-QxEf6MhcpqQ3dLSv6pxww1i6Ks/Ejp6mqy8GG7INvNYezmoXeo1IUBN4Cy9zLZeIgQHs02GEfusN5UzB+FyPhg==}
@@ -1913,20 +1681,23 @@ packages:
   '@types/jsdom@21.1.7':
     resolution: {integrity: sha512-yOriVnggzrnQ3a9OKOCxaVuSug3w3/SbOj5i7VwXWZEyUNl3bLF9V3MfxGbZKuwqJOQyRfqXyROBB1CoZLFWzA==}
 
-  '@types/lodash@4.17.6':
-    resolution: {integrity: sha512-OpXEVoCKSS3lQqjx9GGGOapBeuW5eUboYHRlHP9urXPX25IKZ6AnP5ZRxtVf63iieUbsHxLn8NQ5Nlftc6yzAA==}
+  '@types/lodash@4.17.7':
+    resolution: {integrity: sha512-8wTvZawATi/lsmNu10/j2hk1KEP0IvjubqPE3cu1Xz7xfXXt5oCq3SNUz4fMIP4XGF9Ky+Ue2tBA3hcS7LSBlA==}
 
   '@types/node-fetch@2.6.11':
     resolution: {integrity: sha512-24xFj9R5+rfQJLRyM56qh+wnVSYhyXC2tkoBndtY0U+vubqNsYXGjufB2nn8Q6gt0LrARwL6UBtMCSVCwl4B1g==}
 
-  '@types/node@18.19.39':
-    resolution: {integrity: sha512-nPwTRDKUctxw3di5b4TfT3I0sWDiWoPQCZjXhvdkINntwr8lcoVCKsTgnXeRubKIlfnV+eN/HYk6Jb40tbcEAQ==}
+  '@types/node@18.19.43':
+    resolution: {integrity: sha512-Mw/YlgXnyJdEwLoFv2dpuJaDFriX+Pc+0qOBJ57jC1H6cDxIj2xc5yUrdtArDVG0m+KV6622a4p2tenEqB3C/g==}
 
-  '@types/node@20.14.10':
-    resolution: {integrity: sha512-MdiXf+nDuMvY0gJKxyfZ7/6UFsETO7mGKF54MVD/ekJS6HdFtpZFBgrh6Pseu64XTb2MLyFPlbW6hj8HYRQNOQ==}
+  '@types/node@20.14.14':
+    resolution: {integrity: sha512-d64f00982fS9YoOgJkAMolK7MN8Iq3TDdVjchbYHdEmjth/DHowx82GnoA+tVUAN+7vxfYUgAzi+JXbKNd2SDQ==}
 
   '@types/prop-types@15.7.12':
     resolution: {integrity: sha512-5zvhXYtRNRluoE/jAp4GVsSduVUzNWKkOZrCDBWYtE7biZywwdC2AcEzg+cSMLFRfVgeAFqpfNabiPjxFddV1Q==}
+
+  '@types/punycode@2.1.4':
+    resolution: {integrity: sha512-trzh6NzBnq8yw5e35f8xe8VTYjqM3NE7bohBtvDVf/dtUer3zYTLK1Ka3DG3p7bdtoaOHZucma6FfVKlQ134pQ==}
 
   '@types/quill@1.3.10':
     resolution: {integrity: sha512-IhW3fPW+bkt9MLNlycw8u8fWb7oO7W5URC9MfZYHBlA24rex9rs23D5DETChu1zvgVdc5ka64ICjJOgQMr6Shw==}
@@ -2003,8 +1774,8 @@ packages:
   '@uploadthing/shared@6.7.8':
     resolution: {integrity: sha512-dLNa9GpdeiCHc/Nd0+BfaJ3wXvWIztBAaWIsNNPoaKiU3qhHoQd+5jDVx4oYKYVANqnv9s2CJW7di8Th5xy7Cw==}
 
-  '@upstash/redis@1.32.0':
-    resolution: {integrity: sha512-KBzCjOgF9mhNcV4HTz7U8g7QTdLVEKi1sSe/97u0E+HkzdPmDt3j9lIPIHEUJz6RrdVH6s4HW4JcPvMLC7w3ew==}
+  '@upstash/redis@1.34.0':
+    resolution: {integrity: sha512-TrXNoJLkysIl8SBc4u9bNnyoFYoILpCcFJcLyWCccb/QSUmaVKdvY0m5diZqc3btExsapcMbaw/s/wh9Sf1pJw==}
 
   '@vercel/analytics@1.3.1':
     resolution: {integrity: sha512-xhSlYgAuJ6Q4WQGkzYTLmXwhYl39sWjoMA3nHxfkvG+WdBT25c563a7QhwwKivEOZtPJXifYHR1m2ihoisbWyA==}
@@ -2020,8 +1791,8 @@ packages:
   '@vercel/edge-config-fs@0.1.0':
     resolution: {integrity: sha512-NRIBwfcS0bUoUbRWlNGetqjvLSwgYH/BqKqDN7vK1g32p7dN96k0712COgaz6VFizAm9b0g6IG6hR6+hc0KCPg==}
 
-  '@vercel/edge-config@1.2.0':
-    resolution: {integrity: sha512-ouX+hJK4KzXE31Wi2Xs7IEXb+6gImcOXgeOT9P48YKsZb7oNG2uyhvKDDkAyOJ739AnCJ5tKxavXjIoit6dWtw==}
+  '@vercel/edge-config@1.2.1':
+    resolution: {integrity: sha512-SsRHAe22GfVXsEVJggvTdwsvAWZTrLNuy6lqb4dNE4IibHKKZplnt2s5aCdeVpLTM45xvj/6xaTYkkXCZsqSrw==}
     engines: {node: '>=14.6'}
     peerDependencies:
       '@opentelemetry/api': ^1.7.0
@@ -2119,8 +1890,8 @@ packages:
     engines: {node: '>= 4.5.0'}
     hasBin: true
 
-  axios@1.7.2:
-    resolution: {integrity: sha512-2A8QhOMrbomlDuiLeK9XibIBzuHeRcqqNOHp0Cyp5EoJ1IFDh+XZH3A6BkXtv0K4gFGCI0Y4BM7B1wOEi0Rmgw==}
+  axios@1.7.3:
+    resolution: {integrity: sha512-Ar7ND9pU99eJ9GpoGQKhKf58GpUOgnzuaB7ueNQ5BMi0p+LZ5oaEnfF999fAArcTIBwXTCHAmGcHOZJaWPq9Nw==}
 
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
@@ -2151,9 +1922,6 @@ packages:
     engines: {node: '>= 0.4.0'}
     hasBin: true
 
-  buffer-equal-constant-time@1.0.1:
-    resolution: {integrity: sha512-zRpUiDwd/xk6ADqPMATG8vc9VPrkck7T07OIx0gnjmJAnHnTVXNQG3vfvWNuiZIkwu9KrKdA1iJKfsfTVxE6NA==}
-
   buffer-from@1.1.2:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
 
@@ -2172,8 +1940,8 @@ packages:
     resolution: {integrity: sha512-QOSvevhslijgYwRx6Rv7zKdMF8lbRmx+uQGx2+vDc+KI/eBnsy9kit5aj23AgGu3pa4t9AgwbnXWqS+iOY+2aA==}
     engines: {node: '>= 6'}
 
-  caniuse-lite@1.0.30001641:
-    resolution: {integrity: sha512-Phv5thgl67bHYo1TtMY/MurjkHhV4EDaCosezRXgZ8jzA/Ub+wjxAvbGvjoFENStinwi5kCyOYV3mi5tOGykwA==}
+  caniuse-lite@1.0.30001650:
+    resolution: {integrity: sha512-fgEc7hP/LB7iicdXHUI9VsBsMZmUmlVJeQP2qqQW+3lkqVhbmjEU8zp+h5stWeilX+G7uXuIUIIlWlDw9jdt8g==}
 
   canvas-confetti@1.9.3:
     resolution: {integrity: sha512-rFfTURMvmVEX1gyXFgn5QMn81bYk70qa0HLzcIOSVEyl57n6o9ItHeBtUSWdvKAPY0xlvBHno4/v3QPrT83q9g==}
@@ -2283,8 +2051,8 @@ packages:
     resolution: {integrity: sha512-ZiPp9pZlgxpWRu0M+YWbm6+aQ84XEfH1JRXvfOc/fILWI0VKhLC2LX13X1NYq4fULzLMq7Hfh43CSo2/aIaUPA==}
     deprecated: core-js@<3.23.3 is no longer maintained and not recommended for usage due to the number of issues. Because of the V8 engine whims, feature detection in old core-js versions could cause a slowdown up to 100x even if nothing is polyfilled. Some versions have web compatibility issues. Please, upgrade your dependencies to the actual version of core-js.
 
-  core-js@3.37.1:
-    resolution: {integrity: sha512-Xn6qmxrQZyB0FFY8E3bgRXei3lWDJHhvI+u0q9TKIYM49G8pAr0FgnnrFRAmsbptZL1yxRADVXn+x5AGsbBfyw==}
+  core-js@3.38.0:
+    resolution: {integrity: sha512-XPpwqEodRljce9KswjZShh95qJ1URisBeKCjUdq27YdenkslVe7OO0ZJhlYXAChW7OhXaRLl8AAba7IBfoIHug==}
 
   core-util-is@1.0.3:
     resolution: {integrity: sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==}
@@ -2342,11 +2110,11 @@ packages:
   date-fns@3.6.0:
     resolution: {integrity: sha512-fRHTG8g/Gif+kSh50gaGEdToemgfj74aRX3swtiouboip5JDLAyDE9F11nHMIcvOaXeOC6D7SpNhi7uFyB7Uww==}
 
-  dayjs@1.11.11:
-    resolution: {integrity: sha512-okzr3f11N6WuqYtZSvm+F776mB41wRZMhKP+hc34YdW+KmtYYK9iqvHSwo2k9FEH3fhGXvOPV6yz2IcSrfRUDg==}
+  dayjs@1.11.12:
+    resolution: {integrity: sha512-Rt2g+nTbLlDWZTwwrIXjy9MeiZmSDI375FvZs72ngxx8PDC6YXOeR3q5LAuPzjZQxhiWdRKac7RKV+YyQYfYIg==}
 
-  debug@4.3.5:
-    resolution: {integrity: sha512-pt0bNEmneDIvdL1Xsd9oDQ/wrQRkXDT4AUWlNZNPKvW5x/jyO9VFXkJUP07vQ2upmw5PlaITaPKc31jK13V+jg==}
+  debug@4.3.6:
+    resolution: {integrity: sha512-O/09Bd4Z1fBrU4VzkhFqVgpPzaGbw6Sm9FEkBT1A/YBXQFGuuSxa1dN2nxgxS34JmKXqYx8CZAwEVoJFImUXIg==}
     engines: {node: '>=6.0'}
     peerDependencies:
       supports-color: '*'
@@ -2529,24 +2297,21 @@ packages:
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
 
-  ecdsa-sig-formatter@1.0.11:
-    resolution: {integrity: sha512-nagl3RYrbNv6kQkeJIpt6NJZy8twLB/2vtz6yN9Z4vRKHN4/QZJIEbqohALSgwKdnksuY3k5Addp5lg8sVoVcQ==}
-
   effect@3.4.5:
     resolution: {integrity: sha512-aTonOH68tUttSdYwMkiuky3hjgn3pu7yInNaE8rU2EDKQ8zr9Me78WcvWBQKe4u1gvbBH77y9dAKqn98lNIfNQ==}
 
-  embla-carousel-react@8.1.6:
-    resolution: {integrity: sha512-DHxwFzF63yVrU95Eo58E9Xr5b6Y9ul6TTsqb/rtwMi+jXudAmIqN1i9iBxQ73i8jKuUVxll/ziNYMmnWvrdQJQ==}
+  embla-carousel-react@8.1.8:
+    resolution: {integrity: sha512-b8DcmC+j1vqVWSM6rU/GYGyY6Kp9LX8OoikZPBKmV6qL8s94sSPGl6jtDLLUtV8TTIQGMYOlOKUgoMAt/0TwOQ==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.1 || ^18.0.0
 
-  embla-carousel-reactive-utils@8.1.6:
-    resolution: {integrity: sha512-Wg+J2YoqLqkaqsXi7fTJaLmXm6BpgDRJ0EfTdvQ4KE/ip5OsUuKGpJsEQDTt4waGXSDyZhIBlfoQtgGJeyYQ1Q==}
+  embla-carousel-reactive-utils@8.1.8:
+    resolution: {integrity: sha512-bwV/23WD3Ecm0YuQ4I6Syzs3tdVJw0Oj3VCZlEODv1kH8LZ5kNDLgX2Uvx5brvoe2hpifBHPBQ8gYlxNL5kMPA==}
     peerDependencies:
-      embla-carousel: 8.1.6
+      embla-carousel: 8.1.8
 
-  embla-carousel@8.1.6:
-    resolution: {integrity: sha512-9n7FVsbPAs1KD+JmO84DnEDOZMXPBQbLujjMQqvsBRN2CDWwgZ9hRSNapztdPnyJfzOIxowGmj0BUQ8ACYAPkA==}
+  embla-carousel@8.1.8:
+    resolution: {integrity: sha512-KuHPA8qcAts6YE6ELtt38XYAb26hnKw8Ga0lSXmrhm1oI97t6oACFkqSsy33dfeZQEhaZB6VwWvaWQJRJVgSgA==}
 
   emoji-annotation-to-unicode@0.2.4:
     resolution: {integrity: sha512-0GAasay1KK/a+Vns0aK1EwRMdLTvvvHO5Jc0SFwfwVhOhroIyT1IqBT8igZFrn3aw0u2b1LRshNsofkiL3jCkA==}
@@ -2597,8 +2362,8 @@ packages:
     resolution: {integrity: sha512-Zf5H2Kxt2xjTvbJvP2ZWLEICxA6j+hAmMzIlypy4xcBg1vKVnx89Wy0GbS+kf5cwCVFFzdCFh2XSCFNULS6csw==}
     engines: {node: '>= 0.4'}
 
-  esbuild-register@3.5.0:
-    resolution: {integrity: sha512-+4G/XmakeBAsvJuDugJvtyF1x+XJT4FMocynNpxrvEBViirpfUn2PgNpCHedfWhF4WokNsO/OvMKrmJOIJsI5A==}
+  esbuild-register@3.6.0:
+    resolution: {integrity: sha512-H2/S7Pm8a9CL1uhp9OvjwrBh5Pvx0H8qVOxNu8Wed9Y7qv56MPtq+GGM8RJpq6glYJn9Wspr8uw7l55uyinNeg==}
     peerDependencies:
       esbuild: '>=0.12 <1'
 
@@ -2657,8 +2422,8 @@ packages:
   extend@3.0.2:
     resolution: {integrity: sha512-fjquC59cD7CyW6urNXK0FBufkZcoiGG80wTuPujX590cB5Ttln20E2UB4S/WARVqhXffZl2LNgS+gQdPIIim/g==}
 
-  fast-check@3.20.0:
-    resolution: {integrity: sha512-pZIjqLpOZgdSLecec4GKC3Zq5702MZ34upMKxojnNVSWA0K64V3pXOBT1Wdsrc3AphLtzRBbsi8bRWF4TUGmUg==}
+  fast-check@3.21.0:
+    resolution: {integrity: sha512-QpmbiqRFRZ+SIlBJh6xi5d/PgXciUc/xWKc4Vi2RWEHHIRx6oM3f0fWNna++zP9VB5HUBTObUK9gTKQP3vVcrQ==}
     engines: {node: '>=8.0.0'}
 
   fast-diff@1.1.2:
@@ -2706,8 +2471,8 @@ packages:
       debug:
         optional: true
 
-  foreground-child@3.2.1:
-    resolution: {integrity: sha512-PXUUyLqrR2XCWICfv6ukppP96sdFwWbNEnfEMt7jNsISjMsvaLNinAHNDYyvkyU+SZG2BTSbT5NjG+vZslfGTA==}
+  foreground-child@3.3.0:
+    resolution: {integrity: sha512-Ld2g8rrAyMYFXBhEqMz8ZAHBi4J4uS1i/CxGMDnjyFWddMXLVcDp051DZfu+t7+ab7Wv6SMqpWmyFIj5UbfFvg==}
     engines: {node: '>=14'}
 
   form-data-encoder@1.7.2:
@@ -2721,8 +2486,8 @@ packages:
     resolution: {integrity: sha512-0iirZp3uVDjVGt9p49aTaqjk84TrglENEDuqfdlZQ1roC9CWlPk6Avf8EEnZNcAqPonwkG35x4n3ww/1THYAeQ==}
     engines: {node: '>= 12.20'}
 
-  framer-motion@11.3.2:
-    resolution: {integrity: sha512-RgjSzrNFZmedWcvmW4MMc84A7UcoY37jocadE3Mbg3o+UMofodfyeNnYD/HR15UhP22/bb5KOebNhYOj4mYkpQ==}
+  framer-motion@11.3.23:
+    resolution: {integrity: sha512-jlUDZmNgB2i5vjze7Yezlne0OBSRVfk9J+5JXsujP3mogwCAhAQO+JBokWCPoO2XkNZOrPf7NuZKJtrNRgc/qQ==}
     peerDependencies:
       '@emotion/is-prop-valid': '*'
       react: ^18.0.0
@@ -2766,8 +2531,8 @@ packages:
     resolution: {integrity: sha512-FJhYRoDaiatfEkUK8HKlicmu/3SGFD51q3itKDGoSTysQJBnfOcxU5GxnhE1E6soB76MbT0MBtnKJuXyAx+96Q==}
     engines: {node: '>=6'}
 
-  get-tsconfig@4.7.5:
-    resolution: {integrity: sha512-ZCuZCnlqNzjb4QprAzXKdpp/gh6KTxSJuw3IBsPnV/7fV4NxC9ckB+vPTt8w7fJA0TaSD7c55BR47JD6MEDyDw==}
+  get-tsconfig@4.7.6:
+    resolution: {integrity: sha512-ZAqrLlu18NbDdRaHq+AKXzAmqIUPswPWKUchfytdAjiRFnCe5ojG2bstg6mRiZabkKfCoL/e98pbBELIV/YCeA==}
 
   glob-parent@5.1.2:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}
@@ -2913,8 +2678,8 @@ packages:
     resolution: {integrity: sha512-ZMERYes6pDydyuGidse7OsHxtbI7WVeUEozgR/g7rd0xUimYNlvZRE/K2MgZTjWy725IfelLeVcEM97mmtRGXw==}
     engines: {node: '>=8'}
 
-  is-core-module@2.14.0:
-    resolution: {integrity: sha512-a5dFJih5ZLYlRtDc0dZWP7RiKr6xIKzmn/oAYCDvdLThadVgyJwlaoQPmRtMSpz+rk0OGAgIu+TcM9HUF0fk1A==}
+  is-core-module@2.15.0:
+    resolution: {integrity: sha512-Dd+Lb2/zvk9SKy1TGCt1wFJFo/MWBPMX5x7KcvLajWTGuomczdQX61PvY5yK6SVACwpoexWo81IfFyoKY2QnTA==}
     engines: {node: '>= 0.4'}
 
   is-date-object@1.0.5:
@@ -2988,8 +2753,8 @@ packages:
       canvas:
         optional: true
 
-  jsdom@24.1.0:
-    resolution: {integrity: sha512-6gpM7pRXCwIOKxX47cgOyvyQDN/Eh0f1MeKySBV2xGdKtqJBLj8P25eY3EVCWo2mglDDzozR2r2MW4T+JiNUZA==}
+  jsdom@24.1.1:
+    resolution: {integrity: sha512-5O1wWV99Jhq4DV7rCLIoZ/UIhyQeDR7wHVyZAHAshbrvZsLs+Xzz7gtwnlJTJDjleiTKh54F4dXrX70vJQTyJQ==}
     engines: {node: '>=18'}
     peerDependencies:
       canvas: ^2.11.2
@@ -2999,10 +2764,6 @@ packages:
 
   json2mq@0.2.0:
     resolution: {integrity: sha512-SzoRg7ux5DWTII9J2qkrZrqV1gt+rTaoufMxEzXbS26Uid0NwaJd123HcoB80TgubEppxxIGdNxCx50fEoEWQA==}
-
-  jsonwebtoken@9.0.2:
-    resolution: {integrity: sha512-PRp66vJ865SSqOlgqS8hujT5U4AOgMfhrwYIuIhfKaoSCZcirrmASQr8CX7cUg+RMih+hgznrjp99o+W4pJLHQ==}
-    engines: {node: '>=12', npm: '>=6'}
 
   jspdf@2.5.1:
     resolution: {integrity: sha512-hXObxz7ZqoyhxET78+XR34Xu2qFGrJJ2I2bE5w4SM8eFaFEkW2xcGRVUss360fYelwRSid/jT078kbNvmoW0QA==}
@@ -3014,12 +2775,6 @@ packages:
 
   jszip@3.10.1:
     resolution: {integrity: sha512-xXDvecyTpGLrqFrvkrUSoxxfJI5AH7U8zxxtVclpsUtMCq4JQ290LY8AW5c7Ggnr/Y/oK+bQMbqK2qmtk3pN4g==}
-
-  jwa@1.4.1:
-    resolution: {integrity: sha512-qiLX/xhEEFKUAJ6FiBMbes3w9ATzyk5W7Hvzpa/SLYdxNtng+gcurvrI7TbACjIXlsJyr05/S1oUhZrc63evQA==}
-
-  jws@3.2.2:
-    resolution: {integrity: sha512-YHlZCB6lMTllWDtSPHz/ZXTsi8S00usEV6v1tjq8tOUZzw7DpSDWVXjXDre6ed1w/pd495ODpHZYSdkRTsa0HA==}
 
   lie@3.3.0:
     resolution: {integrity: sha512-UaiMJzeWRlEujzAuw5LokY1L5ecNQYZKfmyZ9L7wDHb/p5etKaxXhohBcrw0EYby+G/NA52vRSN4N39dxHAIwQ==}
@@ -3047,29 +2802,8 @@ packages:
   lodash.defaults@4.2.0:
     resolution: {integrity: sha512-qjxPLHd3r5DnsdGacqOMU6pb/avJzdh9tFX2ymgoZE27BmjXrNy/y4LoaiTeAb+O3gL8AfpJGtqfX/ae2leYYQ==}
 
-  lodash.includes@4.3.0:
-    resolution: {integrity: sha512-W3Bx6mdkRTGtlJISOvVD/lbqjTlPPUDTMnlXZFnVwi9NKJ6tiAk6LVdlhZMm17VZisqhKcgzpO5Wz91PCt5b0w==}
-
   lodash.isarguments@3.1.0:
     resolution: {integrity: sha512-chi4NHZlZqZD18a0imDHnZPrDeBbTtVN7GXMwuGdRH9qotxAjYs3aVLKc7zNOG9eddR5Ksd8rvFEBc9SsggPpg==}
-
-  lodash.isboolean@3.0.3:
-    resolution: {integrity: sha512-Bz5mupy2SVbPHURB98VAcw+aHh4vRV5IPNhILUCsOzRmsTmSQ17jIuqopAentWoehktxGd9e/hbIXq980/1QJg==}
-
-  lodash.isinteger@4.0.4:
-    resolution: {integrity: sha512-DBwtEWN2caHQ9/imiNeEA5ys1JoRtRfY3d7V9wkqtbycnAmTvRRmbHKDV4a0EYc678/dia0jrte4tjYwVBaZUA==}
-
-  lodash.isnumber@3.0.3:
-    resolution: {integrity: sha512-QYqzpfwO3/CWf3XP+Z+tkQsfaLL/EnUlXWVkIk5FUPc4sBdTehEqZONuyRt2P67PXAk+NXmTBcc97zw9t1FQrw==}
-
-  lodash.isplainobject@4.0.6:
-    resolution: {integrity: sha512-oSXzaWypCMHkPC3NvBEaPHf0KsA5mvPrOPgQWDsbg8n7orZ290M0BmC/jgRZ4vcJ6DTAhjrsSYgdsW/F+MFOBA==}
-
-  lodash.isstring@4.0.1:
-    resolution: {integrity: sha512-0wJxfxH1wgO3GrbuP+dTTk7op+6L41QCXbGINEmD+ny/G/eCqGzxyCsh7159S+mgDDcoarnBw6PC1PS5+wUGgw==}
-
-  lodash.once@4.1.1:
-    resolution: {integrity: sha512-Sb487aTOCr9drQVL8pIxOzVhafOjZN9UU54hiN8PU3uAiSV7lx1yYNpbNmex2PK6dSJoNTSJUUswT651yww3Mg==}
 
   lodash@4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
@@ -3090,8 +2824,8 @@ packages:
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0
 
-  luxon@3.4.4:
-    resolution: {integrity: sha512-zobTr7akeGHnv7eBOXcRgMeCP6+uyYsczwmeRCauvpvaAltgNyTbLH/+VaEAPUeWBT+1GuNmz4wC/6jtQzbbVA==}
+  luxon@3.5.0:
+    resolution: {integrity: sha512-rh+Zjr6DNfUYR3bPwJEnuwDdqMbxZW7LOQfUN4B54+Cl+0o5zaU9RJ6bcidfDtC1cWCZXQ+nvX8bf6bAji37QQ==}
     engines: {node: '>=12'}
 
   make-plural@7.4.0:
@@ -3153,6 +2887,19 @@ packages:
       react-native:
         optional: true
 
+  mobx-react-lite@4.0.7:
+    resolution: {integrity: sha512-RjwdseshK9Mg8On5tyJZHtGD+J78ZnCnRaxeQDSiciKVQDUbfZcXhmld0VMxAwvcTnPEHZySGGewm467Fcpreg==}
+    peerDependencies:
+      mobx: ^6.9.0
+      react: ^16.8.0 || ^17 || ^18
+      react-dom: '*'
+      react-native: '*'
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
+      react-native:
+        optional: true
+
   mobx-react@7.6.0:
     resolution: {integrity: sha512-+HQUNuh7AoQ9ZnU6c4rvbiVVl+wEkb9WqYsVDzGLng+Dqj1XntHu79PvEWKtSMoMj67vFp/ZPXcElosuJO8ckA==}
     peerDependencies:
@@ -3190,8 +2937,8 @@ packages:
     resolution: {integrity: sha512-P0efT1C9jIdVRefqjzOQ9Xml57zpOXnIuS+csaB4MdZbTdmGDLo8XhzBG1N7aO11gKDDkJvBLULeFTo46wwreA==}
     hasBin: true
 
-  msgpackr@1.10.2:
-    resolution: {integrity: sha512-L60rsPynBvNE+8BWipKKZ9jHcSGbtyJYIwjRq0VrIvQ08cRjntGXJYW/tmciZ2IHWIY8WEW32Qa2xbh5+SKBZA==}
+  msgpackr@1.11.0:
+    resolution: {integrity: sha512-I8qXuuALqJe5laEBYoFykChhSXLikZmUhccjGsPuSJ/7uPip2TJ7lwdIQwWSAi0jGZDXv4WOP8Qg65QZRuXxXw==}
 
   mz@2.7.0:
     resolution: {integrity: sha512-z81GNO7nnYMEhrGh9LeymoE4+Yr0Wn5McHIZMK5cfQCl+NDX08sCZgUc9/6MHni9IWuFLm1Z3HTCXu2z9fN62Q==}
@@ -3389,10 +3136,6 @@ packages:
     resolution: {integrity: sha512-saLsH7WeYYPiD25LDuLRRY/i+6HaPYr6G1OUlN39otzkSTxKnubR9RTxS3/Kk50s1g2JTgFwWQDQyplC5/SHZg==}
     engines: {node: '>= 6'}
 
-  popper.js@1.16.1:
-    resolution: {integrity: sha512-Wb4p1J4zyFTbM+u6WuO4XstYx4Ky9Cewe4DWrel7B0w6VVICvPwdOpotjzcf6eD8TsckVnIMNONQyPIUFOUbCQ==}
-    deprecated: You can find the new Popper v2 at @popperjs/core, this package is dedicated to the legacy v1
-
   postcss-import@15.1.0:
     resolution: {integrity: sha512-hpr+J05B2FVYUAXHeK1YyI267J/dDDhMU6B6civm8hSY1jYJnBXxzKDKDswzJmtLHryrjhnDjqqp/49t8FALew==}
     engines: {node: '>=14.0.0'}
@@ -3417,8 +3160,8 @@ packages:
       ts-node:
         optional: true
 
-  postcss-nested@6.0.1:
-    resolution: {integrity: sha512-mEp4xPMi5bSWiMbsgoPfcP74lsWLHkQbZc3sY+jWYd65CUwXrUaTp0fmNpa01ZcETKlIgUdFN/MpS2xZtqL9dQ==}
+  postcss-nested@6.2.0:
+    resolution: {integrity: sha512-HQbt28KulC5AJzG+cZtj9kvKB93CFCdLvog1WFLf1D+xmMvPGlBstkpTEZfK5+AN9hfJocyBFCNiqyS48bpgzQ==}
     engines: {node: '>=12.0'}
     peerDependencies:
       postcss: ^8.2.14
@@ -3434,8 +3177,8 @@ packages:
     resolution: {integrity: sha512-PS08Iboia9mts/2ygV3eLpY5ghnUcfLV/EXTOW1E2qYxJKGGBUtNjN76FYHnMs36RmARn41bC0AZmn+rR0OVpQ==}
     engines: {node: ^10 || ^12 || >=14}
 
-  postcss@8.4.39:
-    resolution: {integrity: sha512-0vzE+lAiG7hZl1/9I8yzKLx3aR9Xbof3fBHKunvMfOCYAtMhrsnccJY2iTURb9EZd5+pLuiNV9/c/GZJOHsgIw==}
+  postcss@8.4.41:
+    resolution: {integrity: sha512-TesUflQ0WKZqAvg52PWL6kHgLKP6xB6heTOdoYM0Wt2UHyxNa4K25EZZMgKns3BH1RLVbZCREPpLY0rhnNoHVQ==}
     engines: {node: ^10 || ^12 || >=14}
 
   postgres-array@2.0.0:
@@ -3470,8 +3213,8 @@ packages:
   preact@10.11.3:
     resolution: {integrity: sha512-eY93IVpod/zG3uMF22Unl8h9KkrcKIRs2EGar8hwLZZDU1lkjph303V9HZBwufh2s736U6VXuhD109LYqPoffg==}
 
-  preact@10.22.1:
-    resolution: {integrity: sha512-jRYbDDgMpIb5LHq3hkI0bbl+l/TQ9UnkdQ0ww+lp+4MMOdqaUYdFc5qeyP+IV8FAd/2Em7drVPeKdQxsiWCf/A==}
+  preact@10.23.1:
+    resolution: {integrity: sha512-O5UdRsNh4vdZaTieWe3XOgSpdMAmkIYBCT3VhQDlKrzyCm8lUYsk0fmVEvoQQifoOjFRTaHZO69ylrzTW2BH+A==}
 
   prettier-plugin-tailwindcss@0.5.14:
     resolution: {integrity: sha512-Puaz+wPUAhFp8Lo9HuciYKM2Y2XExESjeT+9NQoVFXZsPPnc9VYss2SpxdQ6vbatmt8/4+SN0oe0I1cPDABg9Q==}
@@ -3533,8 +3276,8 @@ packages:
   pretty-format@3.8.0:
     resolution: {integrity: sha512-WuxUnVtlWL1OfZFQFuqvnvs6MiAGk9UNsBostyBOB0Is9wb5uRESevA6rnl/rkksXaGX3GzZhPup5d6Vp1nFew==}
 
-  primereact@10.7.0:
-    resolution: {integrity: sha512-Rx0JaNF7WM+vcSy4sUeLA9nnEAxm5N1P2RhRXEwFpoo9527429kvwZcNanlcJiqY8JCwCaiSnGGPYgVKtGcZCw==}
+  primereact@10.8.2:
+    resolution: {integrity: sha512-bf7vktogGh0PmKT9WLDcJQoQNqqFqcAlP2crUqccnlTu63FNnQV82qEYyaFvE12Qd5qhm3EYmpsHjpf6/+olTQ==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       '@types/react': ^17.0.0 || ^18.0.0 || ^19.0.0
@@ -3578,8 +3321,8 @@ packages:
 
       (For a CapTP with native promises, see @endo/eventual-send and @endo/captp)
 
-  qs@6.12.3:
-    resolution: {integrity: sha512-AWJm14H1vVaO/iNZ4/hO+HyaTehuy9nRqVdkTqlJt0HWvBiBIEXFmb4C0DGeYo3Xes9rrEW+TxHsaigCbN5ICQ==}
+  qs@6.13.0:
+    resolution: {integrity: sha512-+38qI9SOr8tfZ4QmJNplMUxqjbe7LKvvZgWdExBOmd+egZTtjLB67Gu0HRX3u/XOq7UU2Nx6nsjvS16Z9uwfpg==}
     engines: {node: '>=0.6'}
 
   querystringify@2.2.0:
@@ -3598,8 +3341,8 @@ packages:
   raf@3.4.1:
     resolution: {integrity: sha512-Sq4CW4QhwOHE8ucn6J34MqtZCeWFP2aQSmrlroYgqAV1PjStIhJXxYuTgUIfkEk7zTLjmIjLmU5q+fbD1NnOJA==}
 
-  react-big-calendar@1.13.1:
-    resolution: {integrity: sha512-6qg2ivBPnGPE+iJTJ6nNG/Kol0XElNzywWkwjjN0GtXjooHcS+9/UnpiCDuKzbele3iB6fWeobkSHWhI6xxKYw==}
+  react-big-calendar@1.13.2:
+    resolution: {integrity: sha512-yzeVRM1I+JloeJXytrZx2lJWKUfLAi5bsgGuBjh3aFSHZrdFcGnfA7LE6pBacdyOG+NGP+332m2MziszkmQWcw==}
     peerDependencies:
       react: ^16.14.0 || ^17 || ^18
       react-dom: ^16.14.0 || ^17 || ^18
@@ -3653,9 +3396,9 @@ packages:
   react-emoji@0.4.4:
     resolution: {integrity: sha512-NQUk+QgF3af2poGioW9Dv6kQg9nJCEZVxRsYRYLa1H2XTelEkLVMeeTNU8Y5cMjQRuVnAfl7TzJ4zSix/qxDiQ==}
 
-  react-hook-form@7.52.1:
-    resolution: {integrity: sha512-uNKIhaoICJ5KQALYZ4TOaOLElyM+xipord+Ha3crEFhTntdLvWZqVY49Wqd/0GiVCA/f9NjemLeiNPjG7Hpurg==}
-    engines: {node: '>=12.22.0'}
+  react-hook-form@7.52.2:
+    resolution: {integrity: sha512-pqfPEbERnxxiNMPd0bzmt1tuaPcVccywFDpyk2uV5xCIBphHV5T8SVnX9/o3kplPE1zzKt77+YIoq+EMwJp56A==}
+    engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18 || ^19
 
@@ -3800,8 +3543,8 @@ packages:
     resolution: {integrity: sha512-DJnGAeenTdpMEH6uAJRK/uiyEIH9WVsUmoLwzudwGJUwZPp80PDBWPHXSAGNPwNvIXAbe7MSUB1zQFugFml66A==}
     engines: {node: '>=4'}
 
-  redis@4.6.15:
-    resolution: {integrity: sha512-2NtuOpMW3tnYzBw6S8mbXSX7RPzvVFCA2wFJq9oErushO2UeBkxObk+uvo7gv7n0rhWeOj/IzrHO8TjcFlRSOg==}
+  redis@4.7.0:
+    resolution: {integrity: sha512-zvmkHEAdGMn+hMRXuMBtu4Vo5P6rHQjLoHftu+lBqq8ZTA3RCVC/WzD790bkKKiNFp7d5/9PcSD19fJyyRvOdQ==}
 
   redux@4.2.1:
     resolution: {integrity: sha512-LAUYz4lc+Do8/g7aeRa8JkyDErK6ekstQaqWQrNRW//MY1TvCEpMtpTWvlQ+FPbWCx+Xixu/6SHt5N0HR+SB4w==}
@@ -3849,9 +3592,6 @@ packages:
   safe-buffer@5.1.2:
     resolution: {integrity: sha512-Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g==}
 
-  safe-buffer@5.2.1:
-    resolution: {integrity: sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ==}
-
   safer-buffer@2.1.2:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
 
@@ -3868,8 +3608,8 @@ packages:
   seedrandom@3.0.5:
     resolution: {integrity: sha512-8OwmbklUNzwezjGInmZ+2clQmExQPvomqjL7LFqOYqtmuxRgQYqOD3mHaU+MvZn5FLUeVxVfQjwLZW/n/JFuqg==}
 
-  semver@7.6.2:
-    resolution: {integrity: sha512-FNAIBWCx9qcRhoHcgcJ0gvU7SN1lYU2ZXuSfl04bSC5OpvDHFyJCjdNHomPXxjQlCBU67YW64PzY7/VIEH7F2w==}
+  semver@7.6.3:
+    resolution: {integrity: sha512-oVekP1cKtI+CTDvHWYFUcMtsK/00wmAEfyqKfNdARm8u1wNVhSgaX7A8d4UuIlUI5e84iEwOhs7ZPYRmzU9U6A==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -3994,8 +3734,8 @@ packages:
     resolution: {integrity: sha512-iq6eVVI64nQQTRYq2KtEg2d2uU7LElhTJwsH4YzIHZshxlgZms/wIc4VoDQTlG/IvVIrBKG06CrZnp0qv7hkcQ==}
     engines: {node: '>=12'}
 
-  stripe@16.2.0:
-    resolution: {integrity: sha512-kNHb5x6mlQJ8V92Afn+F+uyHG3U0+Mc1pOYxDkbEh/kI3oF63URnUt6dwTQthELYWBy04arerm2XjwgtzEPDEA==}
+  stripe@16.6.0:
+    resolution: {integrity: sha512-6hWEt6n7InVyP4p2MfMpyl1GwKRJA2w4VAwxJUbXA9xhT7ToWOdrTXqTz2EnyJkw4PMM03twi3eOWQAXN/+uEg==}
     engines: {node: '>=12.*'}
 
   styled-jsx@5.1.1:
@@ -4024,12 +3764,15 @@ packages:
     resolution: {integrity: sha512-qsjeeq5YjBZ5eMdFuUa4ZosMLxgr5RZ+F+Y1OrDhuOCEInRMA3x74XdBtggJcj9kOeInz0WE+LgCPDkZFlBYJw==}
     engines: {node: '>=12.0.0'}
 
-  swiper@11.1.5:
-    resolution: {integrity: sha512-JJQWFXdxiMGC2j6ZGTYat5Z7NN9JORJBgHp0/joX9uPod+cRj0wr5H5VnWSNIz9JeAamQvYKaG7aFrGHIF9OEg==}
+  swiper@11.1.9:
+    resolution: {integrity: sha512-rflu8zvfGa3x1v/aeSufk4zRJffhOQowyvtJlp46sUBnOqAuk1Rdv5Ldj0AWWBV595iZ+ZMk7VB35ZRtRUomtA==}
     engines: {node: '>= 4.7.0'}
 
   symbol-tree@3.2.4:
     resolution: {integrity: sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==}
+
+  tabbable@6.2.0:
+    resolution: {integrity: sha512-Cat63mxsVJlzYvN51JmVXIgNoUokrIaT2zLclCXjRd8boZ0004U4KCs/sToJ75C6sdlByWxpYnb5Boif1VSFew==}
 
   tailwind-merge@2.4.0:
     resolution: {integrity: sha512-49AwoOQNKdqKPd9CViyH5wJoSKsCDjUlzL8DxuGp3P1FsGY36NJDAa18jLZcaHAUUuTj+JB8IAo8zWgBNvBF7A==}
@@ -4039,8 +3782,8 @@ packages:
     peerDependencies:
       tailwindcss: '>=3.0.0 || insiders'
 
-  tailwindcss@3.4.4:
-    resolution: {integrity: sha512-ZoyXOdJjISB7/BcLTR6SEsLgKtDStYyYZVLsUtWChO4Ps20CBad7lfJKVDiejocV4ME1hLmyY0WJE3hSDcmQ2A==}
+  tailwindcss@3.4.8:
+    resolution: {integrity: sha512-GkP17r9GQkxgZ9FKHJQEnjJuKBcbFhMFzKu5slmN6NjlCuFnYJMQ8N4AZ6VrUyiRXlDtPKHkesuQ/MS913Nvdg==}
     engines: {node: '>=14.0.0'}
     hasBin: true
 
@@ -4088,9 +3831,6 @@ packages:
   ts-interface-checker@0.1.13:
     resolution: {integrity: sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==}
 
-  tslib@1.14.1:
-    resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
-
   tslib@2.6.3:
     resolution: {integrity: sha512-xNvxJEOUiWPGhUuUdQgAJPKOOJfGnIyKySOc09XkKsgdUV/3E2zvwZYdejjmRgPCgcym1juLH3226yA7sEFJKQ==}
 
@@ -4106,8 +3846,8 @@ packages:
   tui-time-picker@2.1.6:
     resolution: {integrity: sha512-4Jmo3wjGS+Ii4/qQgt5DaFEohHpB3U6BzWeTODVVFHD9sx3NOsbomY9K0xMobSLODi+tQEH7wfOtNU0IJmcQ6Q==}
 
-  typescript@5.5.3:
-    resolution: {integrity: sha512-/hreyEujaB0w76zKo6717l3L0o/qEUtRgdvUBvlkhoWeOVMjMuHNHk0BRBzikzuGDqNmPQbg5ifMEqsHLiIUcQ==}
+  typescript@5.5.4:
+    resolution: {integrity: sha512-Mtq29sKDAEYP7aljRgtPOpTvOfbwRWlS6dPRzwjdE+C0R4brX/GUyhHSecbHMFLNBLcJIPt9nl9yG5TZ1weH+Q==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -4175,6 +3915,11 @@ packages:
 
   use-sync-external-store@1.2.0:
     resolution: {integrity: sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+
+  use-sync-external-store@1.2.2:
+    resolution: {integrity: sha512-PElTlVMwpblvbNqQ82d2n6RjStvdSoNe9FG28kNfz3WiXilJm4DdNkEzRhCZuIDwY8U08WVihhGR5iRqAwfDiw==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
 
@@ -4304,8 +4049,8 @@ packages:
   yallist@4.0.0:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
 
-  yaml@2.4.5:
-    resolution: {integrity: sha512-aBx2bnqDzVOyNKfsysjA2ms5ZlnjSAW2eG3/L5G/CSujfjLJTJsEw1bGw8kCf04KodQWk1pxlGnZ56CRxiawmg==}
+  yaml@2.5.0:
+    resolution: {integrity: sha512-2wWLbGbYDiSqqIKoPjar3MPgB94ErzCtrNE1FdqGuaO0pi2JGjmE8aW8TDZwzU7vuxcGRdL/4gPQwQ7hD5AMSw==}
     engines: {node: '>= 14'}
     hasBin: true
 
@@ -4341,7 +4086,7 @@ snapshots:
 
   '@anthropic-ai/sdk@0.24.3':
     dependencies:
-      '@types/node': 18.19.39
+      '@types/node': 18.19.43
       '@types/node-fetch': 2.6.11
       abort-controller: 3.0.0
       agentkeepalive: 4.5.0
@@ -4370,14 +4115,15 @@ snapshots:
       - '@simplewebauthn/server'
       - nodemailer
 
-  '@babel/runtime@7.24.8':
+  '@babel/runtime@7.25.0':
     dependencies:
       regenerator-runtime: 0.14.1
 
   '@base2/pretty-print-object@1.0.1': {}
 
-  '@canva/app-ui-kit@3.6.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@canva/app-ui-kit@3.8.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
+      '@floating-ui/react': 0.26.22(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@seznam/compose-react-refs': 1.0.6
       classnames: 2.5.1
       intl-messageformat: 10.5.14
@@ -4385,9 +4131,9 @@ snapshots:
       make-plural: 7.4.0
       mobx: 6.12.4
       mobx-react: 7.6.0(mobx@6.12.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      mobx-react-lite: 4.0.7(mobx@6.12.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       mobx-utils: 6.0.8(mobx@6.12.4)
       normalize-scroll-left: 0.2.1
-      popper.js: 1.16.1
       react: 18.3.1
       react-dnd: 7.7.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-dnd-html5-backend: 7.7.0
@@ -4412,7 +4158,7 @@ snapshots:
   '@effect/schema@0.68.12(effect@3.4.5)':
     dependencies:
       effect: 3.4.5
-      fast-check: 3.20.0
+      fast-check: 3.21.0
 
   '@esbuild-kit/core-utils@3.3.2':
     dependencies:
@@ -4422,7 +4168,7 @@ snapshots:
   '@esbuild-kit/esm-loader@2.6.5':
     dependencies:
       '@esbuild-kit/core-utils': 3.3.2
-      get-tsconfig: 4.7.5
+      get-tsconfig: 4.7.6
 
   '@esbuild/aix-ppc64@0.19.12':
     optional: true
@@ -4559,22 +4305,30 @@ snapshots:
   '@esbuild/win32-x64@0.19.12':
     optional: true
 
-  '@floating-ui/core@1.6.4':
+  '@floating-ui/core@1.6.7':
     dependencies:
-      '@floating-ui/utils': 0.2.4
+      '@floating-ui/utils': 0.2.7
 
-  '@floating-ui/dom@1.6.7':
+  '@floating-ui/dom@1.6.10':
     dependencies:
-      '@floating-ui/core': 1.6.4
-      '@floating-ui/utils': 0.2.4
+      '@floating-ui/core': 1.6.7
+      '@floating-ui/utils': 0.2.7
 
   '@floating-ui/react-dom@2.1.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@floating-ui/dom': 1.6.7
+      '@floating-ui/dom': 1.6.10
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@floating-ui/utils@0.2.4': {}
+  '@floating-ui/react@0.26.22(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@floating-ui/react-dom': 2.1.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@floating-ui/utils': 0.2.7
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      tabbable: 6.2.0
+
+  '@floating-ui/utils@0.2.7': {}
 
   '@formatjs/ecma402-abstract@2.0.0':
     dependencies:
@@ -4600,9 +4354,9 @@ snapshots:
     dependencies:
       tslib: 2.6.3
 
-  '@hookform/resolvers@3.9.0(react-hook-form@7.52.1(react@18.3.1))':
+  '@hookform/resolvers@3.9.0(react-hook-form@7.52.2(react@18.3.1))':
     dependencies:
-      react-hook-form: 7.52.1(react@18.3.1)
+      react-hook-form: 7.52.2(react@18.3.1)
 
   '@icons/material@0.2.4(react@18.3.1)':
     dependencies:
@@ -4709,228 +4463,11 @@ snapshots:
 
   '@popperjs/core@2.11.8': {}
 
-  '@progress/kendo-data-query@1.7.0':
-    dependencies:
-      tslib: 1.14.1
-
-  '@progress/kendo-date-math@1.5.13':
-    dependencies:
-      tslib: 1.14.1
-
-  '@progress/kendo-draggable-common@0.2.3':
-    dependencies:
-      tslib: 1.14.1
-
-  '@progress/kendo-draggable@3.1.0': {}
-
-  '@progress/kendo-drawing@1.20.1':
-    dependencies:
-      '@progress/pako-esm': 1.0.1
-
-  '@progress/kendo-inputs-common@3.1.1(@progress/kendo-drawing@1.20.1)':
-    dependencies:
-      '@progress/kendo-drawing': 1.20.1
-      tslib: 2.6.3
-
-  '@progress/kendo-intl@3.1.2': {}
-
-  '@progress/kendo-licensing@1.3.5':
-    dependencies:
-      jsonwebtoken: 9.0.2
-
-  '@progress/kendo-popup-common@1.9.2': {}
-
-  '@progress/kendo-react-animation@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react-transition-group@4.4.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      '@progress/kendo-licensing': 1.3.5
-      '@progress/kendo-react-common': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-svg-icons': 3.0.0
-      prop-types: 15.8.1
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-      react-transition-group: 4.4.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-
-  '@progress/kendo-react-buttons@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-react-popup@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-popup-common@1.9.2)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      '@progress/kendo-licensing': 1.3.5
-      '@progress/kendo-react-common': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-react-popup': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-popup-common@1.9.2)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-svg-icons': 3.0.0
-      prop-types: 15.8.1
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-
-  '@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      '@progress/kendo-draggable-common': 0.2.3
-      '@progress/kendo-licensing': 1.3.5
-      '@progress/kendo-svg-icons': 3.0.0
-      prop-types: 15.8.1
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-
-  '@progress/kendo-react-dateinputs@8.1.1(5x4yu5t3aklf6b33bcefdaxg2e)':
-    dependencies:
-      '@progress/kendo-date-math': 1.5.13
-      '@progress/kendo-licensing': 1.3.5
-      '@progress/kendo-react-buttons': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-react-popup@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-popup-common@1.9.2)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-react-common': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-react-intl': 8.1.1(@progress/kendo-intl@3.1.2)(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-react-labels': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-react-intl@8.1.1(@progress/kendo-intl@3.1.2)(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-react-layout': 8.1.1(asz25eq6lbvrgbqjnnsytvj5sm)
-      '@progress/kendo-react-popup': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-popup-common@1.9.2)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-svg-icons': 3.0.0
-      prop-types: 15.8.1
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-
-  '@progress/kendo-react-dialogs@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-buttons@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-react-popup@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-popup-common@1.9.2)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      '@progress/kendo-licensing': 1.3.5
-      '@progress/kendo-react-buttons': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-react-popup@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-popup-common@1.9.2)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-react-common': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-svg-icons': 3.0.0
-      prop-types: 15.8.1
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-
-  '@progress/kendo-react-dropdowns@8.1.1(gr7gozzqt2p6q7t2komdjlrz7e)':
-    dependencies:
-      '@progress/kendo-licensing': 1.3.5
-      '@progress/kendo-react-buttons': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-react-popup@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-popup-common@1.9.2)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-react-common': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-react-inputs': 8.1.1(z5a6yikbqeeuuq57d2fxk2beuq)
-      '@progress/kendo-react-intl': 8.1.1(@progress/kendo-intl@3.1.2)(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-react-labels': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-react-intl@8.1.1(@progress/kendo-intl@3.1.2)(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-react-layout': 8.1.1(asz25eq6lbvrgbqjnnsytvj5sm)
-      '@progress/kendo-react-popup': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-popup-common@1.9.2)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-react-treeview': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-animation@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react-transition-group@4.4.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1))(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-svg-icons': 3.0.0
-      prop-types: 15.8.1
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-
-  '@progress/kendo-react-form@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      '@progress/kendo-licensing': 1.3.5
-      '@progress/kendo-react-common': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      prop-types: 15.8.1
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-
-  '@progress/kendo-react-inputs@8.1.1(z5a6yikbqeeuuq57d2fxk2beuq)':
-    dependencies:
-      '@progress/kendo-drawing': 1.20.1
-      '@progress/kendo-inputs-common': 3.1.1(@progress/kendo-drawing@1.20.1)
-      '@progress/kendo-licensing': 1.3.5
-      '@progress/kendo-react-animation': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react-transition-group@4.4.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-react-buttons': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-react-popup@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-popup-common@1.9.2)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-react-common': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-react-dialogs': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-buttons@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-react-popup@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-popup-common@1.9.2)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-react-intl': 8.1.1(@progress/kendo-intl@3.1.2)(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-react-labels': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-react-intl@8.1.1(@progress/kendo-intl@3.1.2)(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-react-popup': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-popup-common@1.9.2)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-svg-icons': 3.0.0
-      prop-types: 15.8.1
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-
-  '@progress/kendo-react-intl@8.1.1(@progress/kendo-intl@3.1.2)(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      '@progress/kendo-intl': 3.1.2
-      '@progress/kendo-licensing': 1.3.5
-      '@progress/kendo-react-common': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      prop-types: 15.8.1
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-
-  '@progress/kendo-react-labels@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-react-intl@8.1.1(@progress/kendo-intl@3.1.2)(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      '@progress/kendo-licensing': 1.3.5
-      '@progress/kendo-react-common': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-react-intl': 8.1.1(@progress/kendo-intl@3.1.2)(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      prop-types: 15.8.1
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-
-  '@progress/kendo-react-layout@8.1.1(asz25eq6lbvrgbqjnnsytvj5sm)':
-    dependencies:
-      '@progress/kendo-licensing': 1.3.5
-      '@progress/kendo-react-animation': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react-transition-group@4.4.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-react-common': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-react-intl': 8.1.1(@progress/kendo-intl@3.1.2)(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-react-popup': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-popup-common@1.9.2)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-react-progressbars': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-animation@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react-transition-group@4.4.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1))(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-svg-icons': 3.0.0
-      prop-types: 15.8.1
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-
-  '@progress/kendo-react-popup@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-popup-common@1.9.2)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      '@progress/kendo-licensing': 1.3.5
-      '@progress/kendo-popup-common': 1.9.2
-      '@progress/kendo-react-common': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      prop-types: 15.8.1
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-
-  '@progress/kendo-react-progressbars@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-animation@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react-transition-group@4.4.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1))(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      '@progress/kendo-licensing': 1.3.5
-      '@progress/kendo-react-animation': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react-transition-group@4.4.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-react-common': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      prop-types: 15.8.1
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-
-  '@progress/kendo-react-scheduler@8.1.1(amnn7ol6dcqmg4vjyqremsbxem)':
-    dependencies:
-      '@progress/kendo-data-query': 1.7.0
-      '@progress/kendo-date-math': 1.5.13
-      '@progress/kendo-draggable': 3.1.0
-      '@progress/kendo-drawing': 1.20.1
-      '@progress/kendo-licensing': 1.3.5
-      '@progress/kendo-react-buttons': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-react-popup@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-popup-common@1.9.2)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-react-common': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-react-dateinputs': 8.1.1(5x4yu5t3aklf6b33bcefdaxg2e)
-      '@progress/kendo-react-dialogs': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-buttons@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-react-popup@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-popup-common@1.9.2)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-react-dropdowns': 8.1.1(gr7gozzqt2p6q7t2komdjlrz7e)
-      '@progress/kendo-react-form': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-react-inputs': 8.1.1(z5a6yikbqeeuuq57d2fxk2beuq)
-      '@progress/kendo-react-intl': 8.1.1(@progress/kendo-intl@3.1.2)(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-react-popup': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-popup-common@1.9.2)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-recurrence': 1.0.3(@progress/kendo-date-math@1.5.13)
-      '@progress/kendo-svg-icons': 3.0.0
-      prop-types: 15.8.1
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-
-  '@progress/kendo-react-treeview@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-animation@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react-transition-group@4.4.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1))(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      '@progress/kendo-licensing': 1.3.5
-      '@progress/kendo-react-animation': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-react-common@8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react-transition-group@4.4.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-react-common': 8.1.1(@progress/kendo-licensing@1.3.5)(@progress/kendo-svg-icons@3.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@progress/kendo-svg-icons': 3.0.0
-      prop-types: 15.8.1
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-
-  '@progress/kendo-recurrence@1.0.3(@progress/kendo-date-math@1.5.13)':
-    dependencies:
-      '@progress/kendo-date-math': 1.5.13
-      '@telerik/kendo-intl': 2.3.1
-      tslib: 1.14.1
-
-  '@progress/kendo-svg-icons@3.0.0': {}
-
-  '@progress/pako-esm@1.0.1': {}
-
   '@radix-ui/number@1.1.0': {}
 
   '@radix-ui/primitive@1.0.1':
     dependencies:
-      '@babel/runtime': 7.24.8
+      '@babel/runtime': 7.25.0
 
   '@radix-ui/primitive@1.1.0': {}
 
@@ -4985,7 +4522,7 @@ snapshots:
 
   '@radix-ui/react-compose-refs@1.0.1(@types/react@18.3.3)(react@18.3.1)':
     dependencies:
-      '@babel/runtime': 7.24.8
+      '@babel/runtime': 7.25.0
       react: 18.3.1
     optionalDependencies:
       '@types/react': 18.3.3
@@ -4998,7 +4535,7 @@ snapshots:
 
   '@radix-ui/react-context@1.0.1(@types/react@18.3.3)(react@18.3.1)':
     dependencies:
-      '@babel/runtime': 7.24.8
+      '@babel/runtime': 7.25.0
       react: 18.3.1
     optionalDependencies:
       '@types/react': 18.3.3
@@ -5011,7 +4548,7 @@ snapshots:
 
   '@radix-ui/react-dialog@1.0.5(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@babel/runtime': 7.24.8
+      '@babel/runtime': 7.25.0
       '@radix-ui/primitive': 1.0.1
       '@radix-ui/react-compose-refs': 1.0.1(@types/react@18.3.3)(react@18.3.1)
       '@radix-ui/react-context': 1.0.1(@types/react@18.3.3)(react@18.3.1)
@@ -5062,7 +4599,7 @@ snapshots:
 
   '@radix-ui/react-dismissable-layer@1.0.5(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@babel/runtime': 7.24.8
+      '@babel/runtime': 7.25.0
       '@radix-ui/primitive': 1.0.1
       '@radix-ui/react-compose-refs': 1.0.1(@types/react@18.3.3)(react@18.3.1)
       '@radix-ui/react-primitive': 1.0.3(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -5104,7 +4641,7 @@ snapshots:
 
   '@radix-ui/react-focus-guards@1.0.1(@types/react@18.3.3)(react@18.3.1)':
     dependencies:
-      '@babel/runtime': 7.24.8
+      '@babel/runtime': 7.25.0
       react: 18.3.1
     optionalDependencies:
       '@types/react': 18.3.3
@@ -5117,7 +4654,7 @@ snapshots:
 
   '@radix-ui/react-focus-scope@1.0.4(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@babel/runtime': 7.24.8
+      '@babel/runtime': 7.25.0
       '@radix-ui/react-compose-refs': 1.0.1(@types/react@18.3.3)(react@18.3.1)
       '@radix-ui/react-primitive': 1.0.3(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-use-callback-ref': 1.0.1(@types/react@18.3.3)(react@18.3.1)
@@ -5144,7 +4681,7 @@ snapshots:
 
   '@radix-ui/react-id@1.0.1(@types/react@18.3.3)(react@18.3.1)':
     dependencies:
-      '@babel/runtime': 7.24.8
+      '@babel/runtime': 7.25.0
       '@radix-ui/react-use-layout-effect': 1.0.1(@types/react@18.3.3)(react@18.3.1)
       react: 18.3.1
     optionalDependencies:
@@ -5257,7 +4794,7 @@ snapshots:
 
   '@radix-ui/react-portal@1.0.4(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@babel/runtime': 7.24.8
+      '@babel/runtime': 7.25.0
       '@radix-ui/react-primitive': 1.0.3(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
@@ -5277,7 +4814,7 @@ snapshots:
 
   '@radix-ui/react-presence@1.0.1(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@babel/runtime': 7.24.8
+      '@babel/runtime': 7.25.0
       '@radix-ui/react-compose-refs': 1.0.1(@types/react@18.3.3)(react@18.3.1)
       '@radix-ui/react-use-layout-effect': 1.0.1(@types/react@18.3.3)(react@18.3.1)
       react: 18.3.1
@@ -5298,7 +4835,7 @@ snapshots:
 
   '@radix-ui/react-primitive@1.0.3(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@babel/runtime': 7.24.8
+      '@babel/runtime': 7.25.0
       '@radix-ui/react-slot': 1.0.2(@types/react@18.3.3)(react@18.3.1)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
@@ -5417,7 +4954,7 @@ snapshots:
 
   '@radix-ui/react-slot@1.0.2(@types/react@18.3.3)(react@18.3.1)':
     dependencies:
-      '@babel/runtime': 7.24.8
+      '@babel/runtime': 7.25.0
       '@radix-ui/react-compose-refs': 1.0.1(@types/react@18.3.3)(react@18.3.1)
       react: 18.3.1
     optionalDependencies:
@@ -5509,7 +5046,7 @@ snapshots:
 
   '@radix-ui/react-use-callback-ref@1.0.1(@types/react@18.3.3)(react@18.3.1)':
     dependencies:
-      '@babel/runtime': 7.24.8
+      '@babel/runtime': 7.25.0
       react: 18.3.1
     optionalDependencies:
       '@types/react': 18.3.3
@@ -5522,7 +5059,7 @@ snapshots:
 
   '@radix-ui/react-use-controllable-state@1.0.1(@types/react@18.3.3)(react@18.3.1)':
     dependencies:
-      '@babel/runtime': 7.24.8
+      '@babel/runtime': 7.25.0
       '@radix-ui/react-use-callback-ref': 1.0.1(@types/react@18.3.3)(react@18.3.1)
       react: 18.3.1
     optionalDependencies:
@@ -5537,7 +5074,7 @@ snapshots:
 
   '@radix-ui/react-use-escape-keydown@1.0.3(@types/react@18.3.3)(react@18.3.1)':
     dependencies:
-      '@babel/runtime': 7.24.8
+      '@babel/runtime': 7.25.0
       '@radix-ui/react-use-callback-ref': 1.0.1(@types/react@18.3.3)(react@18.3.1)
       react: 18.3.1
     optionalDependencies:
@@ -5552,7 +5089,7 @@ snapshots:
 
   '@radix-ui/react-use-layout-effect@1.0.1(@types/react@18.3.3)(react@18.3.1)':
     dependencies:
-      '@babel/runtime': 7.24.8
+      '@babel/runtime': 7.25.0
       react: 18.3.1
     optionalDependencies:
       '@types/react': 18.3.3
@@ -5594,31 +5131,31 @@ snapshots:
 
   '@radix-ui/rect@1.1.0': {}
 
-  '@redis/bloom@1.2.0(@redis/client@1.5.17)':
+  '@redis/bloom@1.2.0(@redis/client@1.6.0)':
     dependencies:
-      '@redis/client': 1.5.17
+      '@redis/client': 1.6.0
 
-  '@redis/client@1.5.17':
+  '@redis/client@1.6.0':
     dependencies:
       cluster-key-slot: 1.1.2
       generic-pool: 3.9.0
       yallist: 4.0.0
 
-  '@redis/graph@1.1.1(@redis/client@1.5.17)':
+  '@redis/graph@1.1.1(@redis/client@1.6.0)':
     dependencies:
-      '@redis/client': 1.5.17
+      '@redis/client': 1.6.0
 
-  '@redis/json@1.0.6(@redis/client@1.5.17)':
+  '@redis/json@1.0.7(@redis/client@1.6.0)':
     dependencies:
-      '@redis/client': 1.5.17
+      '@redis/client': 1.6.0
 
-  '@redis/search@1.1.6(@redis/client@1.5.17)':
+  '@redis/search@1.2.0(@redis/client@1.6.0)':
     dependencies:
-      '@redis/client': 1.5.17
+      '@redis/client': 1.6.0
 
-  '@redis/time-series@1.0.5(@redis/client@1.5.17)':
+  '@redis/time-series@1.1.0(@redis/client@1.6.0)':
     dependencies:
-      '@redis/client': 1.5.17
+      '@redis/client': 1.6.0
 
   '@restart/hooks@0.4.16(react@18.3.1)':
     dependencies:
@@ -5627,14 +5164,14 @@ snapshots:
 
   '@seznam/compose-react-refs@1.0.6': {}
 
-  '@stripe/react-stripe-js@2.7.3(@stripe/stripe-js@4.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@stripe/react-stripe-js@2.7.3(@stripe/stripe-js@4.2.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@stripe/stripe-js': 4.1.0
+      '@stripe/stripe-js': 4.2.0
       prop-types: 15.8.1
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@stripe/stripe-js@4.1.0': {}
+  '@stripe/stripe-js@4.2.0': {}
 
   '@swc/counter@0.1.3': {}
 
@@ -5643,34 +5180,32 @@ snapshots:
       '@swc/counter': 0.1.3
       tslib: 2.6.3
 
-  '@t3-oss/env-core@0.10.1(typescript@5.5.3)(zod@3.23.8)':
+  '@t3-oss/env-core@0.10.1(typescript@5.5.4)(zod@3.23.8)':
     dependencies:
       zod: 3.23.8
     optionalDependencies:
-      typescript: 5.5.3
+      typescript: 5.5.4
 
-  '@t3-oss/env-nextjs@0.10.1(typescript@5.5.3)(zod@3.23.8)':
+  '@t3-oss/env-nextjs@0.10.1(typescript@5.5.4)(zod@3.23.8)':
     dependencies:
-      '@t3-oss/env-core': 0.10.1(typescript@5.5.3)(zod@3.23.8)
+      '@t3-oss/env-core': 0.10.1(typescript@5.5.4)(zod@3.23.8)
       zod: 3.23.8
     optionalDependencies:
-      typescript: 5.5.3
+      typescript: 5.5.4
 
-  '@tabler/icons-react@3.10.0(react@18.3.1)':
+  '@tabler/icons-react@3.11.0(react@18.3.1)':
     dependencies:
-      '@tabler/icons': 3.10.0
+      '@tabler/icons': 3.11.0
       react: 18.3.1
 
-  '@tabler/icons@3.10.0': {}
-
-  '@telerik/kendo-intl@2.3.1': {}
+  '@tabler/icons@3.11.0': {}
 
   '@toast-ui/calendar@2.1.3':
     dependencies:
       immer: 9.0.21
       isomorphic-dompurify: 0.20.0
-      preact: 10.22.1
-      preact-render-to-string: 5.2.6(preact@10.22.1)
+      preact: 10.23.1
+      preact-render-to-string: 5.2.6(preact@10.23.1)
       tui-date-picker: 4.3.3
       tui-time-picker: 2.1.6
     transitivePeerDependencies:
@@ -5721,26 +5256,28 @@ snapshots:
 
   '@types/jsdom@21.1.7':
     dependencies:
-      '@types/node': 20.14.10
+      '@types/node': 20.14.14
       '@types/tough-cookie': 4.0.5
       parse5: 7.1.2
 
-  '@types/lodash@4.17.6': {}
+  '@types/lodash@4.17.7': {}
 
   '@types/node-fetch@2.6.11':
     dependencies:
-      '@types/node': 20.14.10
+      '@types/node': 20.14.14
       form-data: 4.0.0
 
-  '@types/node@18.19.39':
+  '@types/node@18.19.43':
     dependencies:
       undici-types: 5.26.5
 
-  '@types/node@20.14.10':
+  '@types/node@20.14.14':
     dependencies:
       undici-types: 5.26.5
 
   '@types/prop-types@15.7.12': {}
+
+  '@types/punycode@2.1.4': {}
 
   '@types/quill@1.3.10':
     dependencies:
@@ -5801,14 +5338,14 @@ snapshots:
 
   '@uploadthing/mime-types@0.2.10': {}
 
-  '@uploadthing/react@6.7.2(next@14.2.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(uploadthing@6.13.2(next@14.2.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(tailwindcss@3.4.4))':
+  '@uploadthing/react@6.7.2(next@14.2.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(uploadthing@6.13.2(next@14.2.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(tailwindcss@3.4.8))':
     dependencies:
       '@uploadthing/dropzone': 0.4.1(react@18.3.1)
       '@uploadthing/shared': 6.7.8
       file-selector: 0.6.0
       react: 18.3.1
       tailwind-merge: 2.4.0
-      uploadthing: 6.13.2(next@14.2.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(tailwindcss@3.4.4)
+      uploadthing: 6.13.2(next@14.2.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(tailwindcss@3.4.8)
     optionalDependencies:
       next: 14.2.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     transitivePeerDependencies:
@@ -5822,7 +5359,7 @@ snapshots:
       effect: 3.4.5
       std-env: 3.7.0
 
-  '@upstash/redis@1.32.0':
+  '@upstash/redis@1.34.0':
     dependencies:
       crypto-js: 4.2.0
 
@@ -5835,13 +5372,13 @@ snapshots:
 
   '@vercel/edge-config-fs@0.1.0': {}
 
-  '@vercel/edge-config@1.2.0':
+  '@vercel/edge-config@1.2.1':
     dependencies:
       '@vercel/edge-config-fs': 0.1.0
 
   '@vercel/kv@2.0.0':
     dependencies:
-      '@upstash/redis': 1.32.0
+      '@upstash/redis': 1.34.0
 
   abab@2.0.6: {}
 
@@ -5864,13 +5401,13 @@ snapshots:
 
   agent-base@6.0.2:
     dependencies:
-      debug: 4.3.5
+      debug: 4.3.6
     transitivePeerDependencies:
       - supports-color
 
   agent-base@7.1.1:
     dependencies:
-      debug: 4.3.5
+      debug: 4.3.6
     transitivePeerDependencies:
       - supports-color
 
@@ -5911,7 +5448,7 @@ snapshots:
 
   atob@2.1.2: {}
 
-  axios@1.7.2:
+  axios@1.7.3:
     dependencies:
       follow-redirects: 1.15.6
       form-data: 4.0.0
@@ -5942,17 +5479,15 @@ snapshots:
 
   btoa@1.2.1: {}
 
-  buffer-equal-constant-time@1.0.1: {}
-
   buffer-from@1.1.2: {}
 
   bullmq@5.10.3:
     dependencies:
       cron-parser: 4.9.0
       ioredis: 5.4.1
-      msgpackr: 1.10.2
+      msgpackr: 1.11.0
       node-abort-controller: 3.1.1
-      semver: 7.6.2
+      semver: 7.6.3
       tslib: 2.6.3
       uuid: 9.0.1
     transitivePeerDependencies:
@@ -5972,15 +5507,15 @@ snapshots:
 
   camelcase-css@2.0.1: {}
 
-  caniuse-lite@1.0.30001641: {}
+  caniuse-lite@1.0.30001650: {}
 
   canvas-confetti@1.9.3: {}
 
   canvg@3.0.10:
     dependencies:
-      '@babel/runtime': 7.24.8
+      '@babel/runtime': 7.25.0
       '@types/raf': 3.4.3
-      core-js: 3.37.1
+      core-js: 3.38.0
       raf: 3.4.1
       regenerator-runtime: 0.13.11
       rgbcolor: 1.0.1
@@ -6071,7 +5606,7 @@ snapshots:
   confetti@2.0.3:
     dependencies:
       node-fetch: 2.7.0
-      qs: 6.12.3
+      qs: 6.13.0
       yayson: 3.0.0
     transitivePeerDependencies:
       - encoding
@@ -6084,13 +5619,13 @@ snapshots:
 
   core-js@1.2.7: {}
 
-  core-js@3.37.1: {}
+  core-js@3.38.0: {}
 
   core-util-is@1.0.3: {}
 
   cron-parser@4.9.0:
     dependencies:
-      luxon: 3.4.4
+      luxon: 3.5.0
 
   cross-fetch@3.1.8:
     dependencies:
@@ -6141,9 +5676,9 @@ snapshots:
 
   date-fns@3.6.0: {}
 
-  dayjs@1.11.11: {}
+  dayjs@1.11.12: {}
 
-  debug@4.3.5:
+  debug@4.3.6:
     dependencies:
       ms: 2.1.2
 
@@ -6202,7 +5737,7 @@ snapshots:
 
   dom-helpers@5.2.1:
     dependencies:
-      '@babel/runtime': 7.24.8
+      '@babel/runtime': 7.25.0
       csstype: 3.1.3
 
   domexception@4.0.0:
@@ -6227,7 +5762,7 @@ snapshots:
     dependencies:
       '@esbuild-kit/esm-loader': 2.6.5
       esbuild: 0.19.12
-      esbuild-register: 3.5.0(esbuild@0.19.12)
+      esbuild-register: 3.6.0(esbuild@0.19.12)
     transitivePeerDependencies:
       - supports-color
 
@@ -6245,23 +5780,19 @@ snapshots:
 
   eastasianwidth@0.2.0: {}
 
-  ecdsa-sig-formatter@1.0.11:
-    dependencies:
-      safe-buffer: 5.2.1
-
   effect@3.4.5: {}
 
-  embla-carousel-react@8.1.6(react@18.3.1):
+  embla-carousel-react@8.1.8(react@18.3.1):
     dependencies:
-      embla-carousel: 8.1.6
-      embla-carousel-reactive-utils: 8.1.6(embla-carousel@8.1.6)
+      embla-carousel: 8.1.8
+      embla-carousel-reactive-utils: 8.1.8(embla-carousel@8.1.8)
       react: 18.3.1
 
-  embla-carousel-reactive-utils@8.1.6(embla-carousel@8.1.6):
+  embla-carousel-reactive-utils@8.1.8(embla-carousel@8.1.8):
     dependencies:
-      embla-carousel: 8.1.6
+      embla-carousel: 8.1.8
 
-  embla-carousel@8.1.6: {}
+  embla-carousel@8.1.8: {}
 
   emoji-annotation-to-unicode@0.2.4: {}
 
@@ -6299,9 +5830,9 @@ snapshots:
 
   es-errors@1.3.0: {}
 
-  esbuild-register@3.5.0(esbuild@0.19.12):
+  esbuild-register@3.6.0(esbuild@0.19.12):
     dependencies:
-      debug: 4.3.5
+      debug: 4.3.6
       esbuild: 0.19.12
     transitivePeerDependencies:
       - supports-color
@@ -6385,7 +5916,7 @@ snapshots:
 
   extend@3.0.2: {}
 
-  fast-check@3.20.0:
+  fast-check@3.21.0:
     dependencies:
       pure-rand: 6.1.0
 
@@ -6415,7 +5946,7 @@ snapshots:
 
   fbjs@2.0.0:
     dependencies:
-      core-js: 3.37.1
+      core-js: 3.38.0
       cross-fetch: 3.1.8
       fbjs-css-vars: 1.0.2
       loose-envify: 1.4.0
@@ -6442,7 +5973,7 @@ snapshots:
 
   follow-redirects@1.15.6: {}
 
-  foreground-child@3.2.1:
+  foreground-child@3.3.0:
     dependencies:
       cross-spawn: 7.0.3
       signal-exit: 4.1.0
@@ -6460,7 +5991,7 @@ snapshots:
       node-domexception: 1.0.0
       web-streams-polyfill: 4.0.0-beta.3
 
-  framer-motion@11.3.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  framer-motion@11.3.23(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       tslib: 2.6.3
     optionalDependencies:
@@ -6492,7 +6023,7 @@ snapshots:
 
   get-nonce@1.0.1: {}
 
-  get-tsconfig@4.7.5:
+  get-tsconfig@4.7.6:
     dependencies:
       resolve-pkg-maps: 1.0.0
 
@@ -6506,7 +6037,7 @@ snapshots:
 
   glob@10.4.5:
     dependencies:
-      foreground-child: 3.2.1
+      foreground-child: 3.3.0
       jackspeak: 3.4.3
       minimatch: 9.0.5
       minipass: 7.1.2
@@ -6566,28 +6097,28 @@ snapshots:
     dependencies:
       '@tootallnate/once': 2.0.0
       agent-base: 6.0.2
-      debug: 4.3.5
+      debug: 4.3.6
     transitivePeerDependencies:
       - supports-color
 
   http-proxy-agent@7.0.2:
     dependencies:
       agent-base: 7.1.1
-      debug: 4.3.5
+      debug: 4.3.6
     transitivePeerDependencies:
       - supports-color
 
   https-proxy-agent@5.0.1:
     dependencies:
       agent-base: 6.0.2
-      debug: 4.3.5
+      debug: 4.3.6
     transitivePeerDependencies:
       - supports-color
 
   https-proxy-agent@7.0.5:
     dependencies:
       agent-base: 7.1.1
-      debug: 4.3.5
+      debug: 4.3.6
     transitivePeerDependencies:
       - supports-color
 
@@ -6658,7 +6189,7 @@ snapshots:
     dependencies:
       '@ioredis/commands': 1.2.0
       cluster-key-slot: 1.1.2
-      debug: 4.3.5
+      debug: 4.3.6
       denque: 2.1.0
       lodash.defaults: 4.2.0
       lodash.isarguments: 3.1.0
@@ -6677,7 +6208,7 @@ snapshots:
     dependencies:
       binary-extensions: 2.3.0
 
-  is-core-module@2.14.0:
+  is-core-module@2.15.0:
     dependencies:
       hasown: 2.0.2
 
@@ -6770,7 +6301,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  jsdom@24.1.0:
+  jsdom@24.1.1:
     dependencies:
       cssstyle: 4.0.1
       data-urls: 5.0.0
@@ -6802,28 +6333,15 @@ snapshots:
     dependencies:
       string-convert: 0.2.1
 
-  jsonwebtoken@9.0.2:
-    dependencies:
-      jws: 3.2.2
-      lodash.includes: 4.3.0
-      lodash.isboolean: 3.0.3
-      lodash.isinteger: 4.0.4
-      lodash.isnumber: 3.0.3
-      lodash.isplainobject: 4.0.6
-      lodash.isstring: 4.0.1
-      lodash.once: 4.1.1
-      ms: 2.1.3
-      semver: 7.6.2
-
   jspdf@2.5.1:
     dependencies:
-      '@babel/runtime': 7.24.8
+      '@babel/runtime': 7.25.0
       atob: 2.1.2
       btoa: 1.2.1
       fflate: 0.4.8
     optionalDependencies:
       canvg: 3.0.10
-      core-js: 3.37.1
+      core-js: 3.38.0
       dompurify: 2.5.6
       html2canvas: 1.4.1
 
@@ -6841,17 +6359,6 @@ snapshots:
       pako: 1.0.11
       readable-stream: 2.3.8
       setimmediate: 1.0.5
-
-  jwa@1.4.1:
-    dependencies:
-      buffer-equal-constant-time: 1.0.1
-      ecdsa-sig-formatter: 1.0.11
-      safe-buffer: 5.2.1
-
-  jws@3.2.2:
-    dependencies:
-      jwa: 1.4.1
-      safe-buffer: 5.2.1
 
   lie@3.3.0:
     dependencies:
@@ -6871,21 +6378,7 @@ snapshots:
 
   lodash.defaults@4.2.0: {}
 
-  lodash.includes@4.3.0: {}
-
   lodash.isarguments@3.1.0: {}
-
-  lodash.isboolean@3.0.3: {}
-
-  lodash.isinteger@4.0.4: {}
-
-  lodash.isnumber@3.0.3: {}
-
-  lodash.isplainobject@4.0.6: {}
-
-  lodash.isstring@4.0.1: {}
-
-  lodash.once@4.1.1: {}
 
   lodash@4.17.21: {}
 
@@ -6903,7 +6396,7 @@ snapshots:
     dependencies:
       react: 18.3.1
 
-  luxon@3.4.4: {}
+  luxon@3.5.0: {}
 
   make-plural@7.4.0: {}
 
@@ -6949,6 +6442,14 @@ snapshots:
     optionalDependencies:
       react-dom: 18.3.1(react@18.3.1)
 
+  mobx-react-lite@4.0.7(mobx@6.12.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+    dependencies:
+      mobx: 6.12.4
+      react: 18.3.1
+      use-sync-external-store: 1.2.2(react@18.3.1)
+    optionalDependencies:
+      react-dom: 18.3.1(react@18.3.1)
+
   mobx-react@7.6.0(mobx@6.12.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       mobx: 6.12.4
@@ -6985,7 +6486,7 @@ snapshots:
       '@msgpackr-extract/msgpackr-extract-win32-x64': 3.0.3
     optional: true
 
-  msgpackr@1.10.2:
+  msgpackr@1.11.0:
     optionalDependencies:
       msgpackr-extract: 3.0.3
 
@@ -6999,15 +6500,15 @@ snapshots:
 
   next-auth@4.24.7(next@14.2.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
-      '@babel/runtime': 7.24.8
+      '@babel/runtime': 7.25.0
       '@panva/hkdf': 1.2.1
       cookie: 0.5.0
       jose: 4.15.9
       next: 14.2.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       oauth: 0.9.15
       openid-client: 5.6.5
-      preact: 10.22.1
-      preact-render-to-string: 5.2.6(preact@10.22.1)
+      preact: 10.23.1
+      preact-render-to-string: 5.2.6(preact@10.23.1)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
       uuid: 8.3.2
@@ -7022,7 +6523,7 @@ snapshots:
       '@next/env': 14.2.5
       '@swc/helpers': 0.5.5
       busboy: 1.6.0
-      caniuse-lite: 1.0.30001641
+      caniuse-lite: 1.0.30001650
       graceful-fs: 4.2.11
       postcss: 8.4.31
       react: 18.3.1
@@ -7169,30 +6670,28 @@ snapshots:
 
   pirates@4.0.6: {}
 
-  popper.js@1.16.1: {}
-
-  postcss-import@15.1.0(postcss@8.4.39):
+  postcss-import@15.1.0(postcss@8.4.41):
     dependencies:
-      postcss: 8.4.39
+      postcss: 8.4.41
       postcss-value-parser: 4.2.0
       read-cache: 1.0.0
       resolve: 1.22.8
 
-  postcss-js@4.0.1(postcss@8.4.39):
+  postcss-js@4.0.1(postcss@8.4.41):
     dependencies:
       camelcase-css: 2.0.1
-      postcss: 8.4.39
+      postcss: 8.4.41
 
-  postcss-load-config@4.0.2(postcss@8.4.39):
+  postcss-load-config@4.0.2(postcss@8.4.41):
     dependencies:
       lilconfig: 3.1.2
-      yaml: 2.4.5
+      yaml: 2.5.0
     optionalDependencies:
-      postcss: 8.4.39
+      postcss: 8.4.41
 
-  postcss-nested@6.0.1(postcss@8.4.39):
+  postcss-nested@6.2.0(postcss@8.4.41):
     dependencies:
-      postcss: 8.4.39
+      postcss: 8.4.41
       postcss-selector-parser: 6.1.1
 
   postcss-selector-parser@6.1.1:
@@ -7208,7 +6707,7 @@ snapshots:
       picocolors: 1.0.1
       source-map-js: 1.2.0
 
-  postcss@8.4.39:
+  postcss@8.4.41:
     dependencies:
       nanoid: 3.3.7
       picocolors: 1.0.1
@@ -7235,14 +6734,14 @@ snapshots:
       preact: 10.11.3
       pretty-format: 3.8.0
 
-  preact-render-to-string@5.2.6(preact@10.22.1):
+  preact-render-to-string@5.2.6(preact@10.23.1):
     dependencies:
-      preact: 10.22.1
+      preact: 10.23.1
       pretty-format: 3.8.0
 
   preact@10.11.3: {}
 
-  preact@10.22.1: {}
+  preact@10.23.1: {}
 
   prettier-plugin-tailwindcss@0.5.14(prettier@3.3.3):
     dependencies:
@@ -7252,7 +6751,7 @@ snapshots:
 
   pretty-format@3.8.0: {}
 
-  primereact@10.7.0(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  primereact@10.8.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@types/react-transition-group': 4.4.10
       react: 18.3.1
@@ -7285,7 +6784,7 @@ snapshots:
 
   q@1.5.1: {}
 
-  qs@6.12.3:
+  qs@6.13.0:
     dependencies:
       side-channel: 1.0.6
 
@@ -7313,18 +6812,18 @@ snapshots:
       performance-now: 2.1.0
     optional: true
 
-  react-big-calendar@1.13.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  react-big-calendar@1.13.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
-      '@babel/runtime': 7.24.8
+      '@babel/runtime': 7.25.0
       clsx: 1.2.1
       date-arithmetic: 4.1.0
-      dayjs: 1.11.11
+      dayjs: 1.11.12
       dom-helpers: 5.2.1
       globalize: 0.1.1
       invariant: 2.2.4
       lodash: 4.17.21
       lodash-es: 4.17.21
-      luxon: 3.4.4
+      luxon: 3.5.0
       memoize-one: 6.0.0
       moment: 2.30.1
       moment-timezone: 0.5.45
@@ -7403,7 +6902,7 @@ snapshots:
       lodash.compact: 3.0.1
       object-assign: 2.1.1
 
-  react-hook-form@7.52.1(react@18.3.1):
+  react-hook-form@7.52.2(react@18.3.1):
     dependencies:
       react: 18.3.1
 
@@ -7425,7 +6924,7 @@ snapshots:
 
   react-measure@2.5.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
-      '@babel/runtime': 7.24.8
+      '@babel/runtime': 7.25.0
       get-node-dimensions: 1.2.1
       prop-types: 15.8.1
       react: 18.3.1
@@ -7434,7 +6933,7 @@ snapshots:
 
   react-overlays@5.2.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
-      '@babel/runtime': 7.24.8
+      '@babel/runtime': 7.25.0
       '@popperjs/core': 2.11.8
       '@restart/hooks': 0.4.16(react@18.3.1)
       '@types/warning': 3.0.3
@@ -7509,7 +7008,7 @@ snapshots:
 
   react-transition-group@4.4.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
-      '@babel/runtime': 7.24.8
+      '@babel/runtime': 7.25.0
       dom-helpers: 5.2.1
       loose-envify: 1.4.0
       prop-types: 15.8.1
@@ -7518,7 +7017,7 @@ snapshots:
 
   react-window@1.8.10(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
-      '@babel/runtime': 7.24.8
+      '@babel/runtime': 7.25.0
       memoize-one: 5.2.1
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
@@ -7568,18 +7067,18 @@ snapshots:
     dependencies:
       redis-errors: 1.2.0
 
-  redis@4.6.15:
+  redis@4.7.0:
     dependencies:
-      '@redis/bloom': 1.2.0(@redis/client@1.5.17)
-      '@redis/client': 1.5.17
-      '@redis/graph': 1.1.1(@redis/client@1.5.17)
-      '@redis/json': 1.0.6(@redis/client@1.5.17)
-      '@redis/search': 1.1.6(@redis/client@1.5.17)
-      '@redis/time-series': 1.0.5(@redis/client@1.5.17)
+      '@redis/bloom': 1.2.0(@redis/client@1.6.0)
+      '@redis/client': 1.6.0
+      '@redis/graph': 1.1.1(@redis/client@1.6.0)
+      '@redis/json': 1.0.7(@redis/client@1.6.0)
+      '@redis/search': 1.2.0(@redis/client@1.6.0)
+      '@redis/time-series': 1.1.0(@redis/client@1.6.0)
 
   redux@4.2.1:
     dependencies:
-      '@babel/runtime': 7.24.8
+      '@babel/runtime': 7.25.0
 
   regenerator-runtime@0.13.11:
     optional: true
@@ -7601,7 +7100,7 @@ snapshots:
 
   resolve@1.22.8:
     dependencies:
-      is-core-module: 2.14.0
+      is-core-module: 2.15.0
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
 
@@ -7620,8 +7119,6 @@ snapshots:
 
   safe-buffer@5.1.2: {}
 
-  safe-buffer@5.2.1: {}
-
   safer-buffer@2.1.2: {}
 
   saxes@6.0.0:
@@ -7638,7 +7135,7 @@ snapshots:
 
   seedrandom@3.0.5: {}
 
-  semver@7.6.2: {}
+  semver@7.6.3: {}
 
   server-only@0.0.1: {}
 
@@ -7686,7 +7183,7 @@ snapshots:
     dependencies:
       '@juggle/resize-observer': 3.4.0
       '@types/is-hotkey': 0.1.10
-      '@types/lodash': 4.17.6
+      '@types/lodash': 4.17.7
       direction: 1.0.4
       is-hotkey: 0.2.0
       is-plain-object: 5.0.0
@@ -7767,10 +7264,10 @@ snapshots:
     dependencies:
       ansi-regex: 6.0.1
 
-  stripe@16.2.0:
+  stripe@16.6.0:
     dependencies:
-      '@types/node': 20.14.10
-      qs: 6.12.3
+      '@types/node': 20.14.14
+      qs: 6.13.0
 
   styled-jsx@5.1.1(react@18.3.1):
     dependencies:
@@ -7792,17 +7289,19 @@ snapshots:
   svg-pathdata@6.0.3:
     optional: true
 
-  swiper@11.1.5: {}
+  swiper@11.1.9: {}
 
   symbol-tree@3.2.4: {}
 
+  tabbable@6.2.0: {}
+
   tailwind-merge@2.4.0: {}
 
-  tailwindcss-animate@1.0.7(tailwindcss@3.4.4):
+  tailwindcss-animate@1.0.7(tailwindcss@3.4.8):
     dependencies:
-      tailwindcss: 3.4.4
+      tailwindcss: 3.4.8
 
-  tailwindcss@3.4.4:
+  tailwindcss@3.4.8:
     dependencies:
       '@alloc/quick-lru': 5.2.0
       arg: 5.0.2
@@ -7818,11 +7317,11 @@ snapshots:
       normalize-path: 3.0.0
       object-hash: 3.0.0
       picocolors: 1.0.1
-      postcss: 8.4.39
-      postcss-import: 15.1.0(postcss@8.4.39)
-      postcss-js: 4.0.1(postcss@8.4.39)
-      postcss-load-config: 4.0.2(postcss@8.4.39)
-      postcss-nested: 6.0.1(postcss@8.4.39)
+      postcss: 8.4.41
+      postcss-import: 15.1.0(postcss@8.4.41)
+      postcss-js: 4.0.1(postcss@8.4.41)
+      postcss-load-config: 4.0.2(postcss@8.4.41)
+      postcss-nested: 6.2.0(postcss@8.4.41)
       postcss-selector-parser: 6.1.1
       resolve: 1.22.8
       sucrase: 3.35.0
@@ -7872,8 +7371,6 @@ snapshots:
 
   ts-interface-checker@0.1.13: {}
 
-  tslib@1.14.1: {}
-
   tslib@2.6.3: {}
 
   tui-calendar@1.15.3:
@@ -7891,13 +7388,13 @@ snapshots:
 
   tui-time-picker@2.1.6: {}
 
-  typescript@5.5.3: {}
+  typescript@5.5.4: {}
 
   ua-parser-js@0.7.38: {}
 
   uncontrollable@7.2.1(react@18.3.1):
     dependencies:
-      '@babel/runtime': 7.24.8
+      '@babel/runtime': 7.25.0
       '@types/react': 18.3.3
       invariant: 2.2.4
       react: 18.3.1
@@ -7907,7 +7404,7 @@ snapshots:
 
   universalify@0.2.0: {}
 
-  uploadthing@6.13.2(next@14.2.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(tailwindcss@3.4.4):
+  uploadthing@6.13.2(next@14.2.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(tailwindcss@3.4.8):
     dependencies:
       '@effect/schema': 0.68.12(effect@3.4.5)
       '@uploadthing/mime-types': 0.2.10
@@ -7917,7 +7414,7 @@ snapshots:
       std-env: 3.7.0
     optionalDependencies:
       next: 14.2.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      tailwindcss: 3.4.4
+      tailwindcss: 3.4.8
 
   url-parse@1.5.10:
     dependencies:
@@ -7940,6 +7437,10 @@ snapshots:
       '@types/react': 18.3.3
 
   use-sync-external-store@1.2.0(react@18.3.1):
+    dependencies:
+      react: 18.3.1
+
+  use-sync-external-store@1.2.2(react@18.3.1):
     dependencies:
       react: 18.3.1
 
@@ -8044,7 +7545,7 @@ snapshots:
 
   yallist@4.0.0: {}
 
-  yaml@2.4.5: {}
+  yaml@2.5.0: {}
 
   yayson@3.0.0: {}
 

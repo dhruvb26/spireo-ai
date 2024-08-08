@@ -9,7 +9,7 @@ export async function POST(req: Request) {
     });
 
     const stream = await anthropic.messages.create({
-      model: env.MODEL,
+      model: "claude-3-haiku-20240307",
       max_tokens: 300,
       stream: true,
       messages: [
@@ -25,7 +25,7 @@ export async function POST(req: Request) {
             5. Hashtag usage
             6. Call-to-action for engagement
 
-            Your prompt should be concise, around 50 words, and in paragraph style without bullet points. Enclose the entire prompt within <generated></generated> tags.
+            Your prompt should be concise, around 50 words, and in paragraph style without bullet points. Enclose the entire prompt within <generated></generated> tags, but in your response, only include the content within these tags without the tags themselves.
 
             Remember, you are acting as a human giving instructions to an AI, not as the AI itself.
           `,
@@ -54,7 +54,7 @@ export async function POST(req: Request) {
             }
 
             if (buffer.includes("</generated>")) {
-              isWithinTags = false;
+              isWithinTags = true;
               text = buffer.split("</generated>")[0] as any;
               controller.enqueue(encoder.encode(text));
               controller.close();

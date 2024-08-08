@@ -1,10 +1,9 @@
-"use server";
-
 import { NextResponse } from "next/server";
 import { db } from "@/server/db";
 import { users } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 import { getServerAuthSession } from "@/server/auth";
+export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
   try {

@@ -7,7 +7,17 @@ await import("./src/env.js");
 /** @type {import("next").NextConfig} */
 const config = {
   experimental: {
-    missingSuspenseWithCSRBailout: false,
+    // missingSuspenseWithCSRBailout: false,
+    serverComponentsExternalPackages: ["bullmq"],
+  },
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        punycode: false,
+      };
+    }
+    return config;
   },
   images: {
     remotePatterns: [
