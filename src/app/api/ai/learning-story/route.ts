@@ -1,8 +1,9 @@
-"use server";
+
 import Anthropic from "@anthropic-ai/sdk";
 import { env } from "@/env";
 import { checkAccess, updateGeneratedWords } from "@/actions/user";
 import { NextResponse } from "next/server";
+export const maxDuration = 60;
 
 export async function POST(req: Request) {
   // Get the user session

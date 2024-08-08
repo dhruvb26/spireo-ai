@@ -7,7 +7,6 @@ await import("./src/env.js");
 /** @type {import("next").NextConfig} */
 const config = {
   experimental: {
-    // missingSuspenseWithCSRBailout: false,
     serverComponentsExternalPackages: ["bullmq"],
   },
   webpack: (config, { isServer }) => {
@@ -19,6 +18,7 @@ const config = {
     }
     return config;
   },
+
   images: {
     remotePatterns: [
       {

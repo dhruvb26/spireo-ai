@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { env } from "@/env";
+export const maxDuration = 60;
 
 export async function POST(req: Request) {
   try {

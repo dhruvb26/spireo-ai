@@ -1,33 +1,13 @@
-"use server";
 import Anthropic from "@anthropic-ai/sdk";
 import { env } from "@/env";
 import { NextResponse } from "next/server";
 import {
   checkAccess,
-  getAccessToken,
   getUserId,
   updateGeneratedWords,
 } from "@/actions/user";
+export const maxDuration = 60;
 
-// function extractLinkedInPostId(url: string): string {
-//   const regex = /activity-(\d+)/;
-
-//   const match = url.match(regex) as any;
-
-//   if (match) {
-//     return match[1];
-//   }
-//   return "";
-// }
-// function extractCommentary(response: any): string {
-//   try {
-//     const commentary = response.response.elements[0].commentary.text.text;
-//     return commentary;
-//   } catch (error) {
-//     console.error("Error extracting commentary:", error);
-//     return "";
-//   }
-// }
 
 export async function POST(req: Request) {
   // Get the user session
@@ -49,40 +29,6 @@ export async function POST(req: Request) {
   if (!userId) {
     return NextResponse.json({ ideas: "User not found!" }, { status: 404 });
   }
-  const accessToken = await getAccessToken(userId);
-
-  // const postId = extractLinkedInPostId(linkedInPostUrl);
-  // let postData = null;
-  // let postText = "";
-
-  // if (postId) {
-  //   try {
-  //     const encodedPostId = encodeURIComponent(`urn:li:ugcPost:${postId}`);
-  //     const response = await fetch(
-  //       `https://api.linkedin.com/v2/ugcPosts/${encodedPostId}?viewContext=AUTHOR`,
-  //       {
-  //         method: "GET",
-  //         headers: {
-  //           Authorization: `Bearer ${accessToken}`,
-  //           "X-Restli-Protocol-Version": "2.0.0",
-  //           "LinkedIn-Version": "202406",
-  //         },
-  //       },
-  //     );
-
-  //     if (!response.ok) {
-  //       throw new Error(`HTTP error! status: ${response.status}`);
-  //     }
-
-  //     postData = await response.json();
-  //     postText =
-  //       postData.specificContent?.["com.linkedin.ugc.ShareContent"]
-  //         ?.shareCommentary?.text || "";
-  //     console.log(postText);
-  //   } catch (error) {
-  //     console.error("Error fetching post data from LinkedIn:", error);
-  //   }
-  // }
 
   const stream = await anthropic.messages.create({
     model: env.MODEL,
@@ -134,9 +80,11 @@ export async function POST(req: Request) {
 
           10. If user asks for bolded or italic text use unicode text instead of markdown format.
 
+          11. Generate a suitable amount of words for a LinkedIn post (typically between 150-300 words) unless the custom instructions specify a different length. Aim for a comprehensive yet concise post that fully addresses the topic without being overly lengthy.
+
           Write your final LinkedIn story directly without any surrounding tags. Ensure that your story adheres to all the guidelines provided, including topic, tone, post format (if given), and any custom instructions.
 
-          Remember, the goal is to create a story that is engaging, professional, and tailored specifically for a LinkedIn audience while strictly following all provided instructions.
+          Remember, the goal is to create a story that is engaging, professional, and tailored specifically for a LinkedIn audience while strictly following all provided instructions and generating an appropriate amount of content.
           `,
       },
     ],
