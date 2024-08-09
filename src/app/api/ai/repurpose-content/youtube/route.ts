@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { VideoCaptions, Client } from "youtubei";
+import { VideoCaptions, Client, Video } from "youtubei";
 
 import Anthropic from "@anthropic-ai/sdk";
 import { env } from "@/env";
@@ -38,24 +38,22 @@ export async function POST(req: Request) {
         try {
           const youtube = new Client();
           const videoId = extractVideoId(regularUrl);
-          const video = await youtube.getVideo(videoId);
+          const video = await youtube.getVideo<Video>(videoId);
 
           if (!video) {
             throw new Error("Video not found");
           }
 
-          const captions = video.captions;
-
-          if (!captions || captions.languages.length === 0) {
+          if (!video.captions || video.captions.languages.length === 0) {
             throw new Error("No captions found for this video");
           }
 
           // Get the first available language or 'en' if available
           const languageCode =
-            captions.languages.find((lang) => lang.code === "en")?.code ||
-            captions.languages[0]?.code;
+            video.captions.languages.find((lang) => lang.code === "en")?.code ||
+            video.captions.languages[0]?.code;
 
-          const captionData = await captions.get(languageCode);
+          const captionData = await video.captions.get(languageCode);
 
           if (!captionData) {
             throw new Error("Failed to fetch captions");
