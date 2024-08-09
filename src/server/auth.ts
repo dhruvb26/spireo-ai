@@ -44,19 +44,22 @@ declare module "next-auth/jwt" {
 
 async function refreshAccessToken(token: JWT): Promise<JWT> {
   try {
-    const response = await fetch("https://www.linkedin.com/oauth/v2/accessToken", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
+    const response = await fetch(
+      "https://www.linkedin.com/oauth/v2/accessToken",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+          grant_type: "authorization_code",
+          code: token.refreshToken!, // Using refreshToken as the authorization code
+          client_id: env.LINKEDIN_CLIENT_ID,
+          client_secret: env.LINKEDIN_CLIENT_SECRET,
+          redirect_uri: `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/callback/linkedin`,
+        }),
       },
-      body: new URLSearchParams({
-        grant_type: "authorization_code",
-        code: token.refreshToken!, // Using refreshToken as the authorization code
-        client_id: env.LINKEDIN_CLIENT_ID,
-        client_secret: env.LINKEDIN_CLIENT_SECRET,
-        // redirect_uri: `${env.NEXTAUTH_URL}/api/auth/callback/linkedin`,
-      }),
-    });
+    );
 
     const refreshedTokens = await response.json();
 
@@ -157,7 +160,8 @@ export const authOptions: NextAuthOptions = {
 
   providers: [
     LinkedInProvider({
-      wellKnown: "https://www.linkedin.com/oauth/.well-known/openid-configuration",
+      wellKnown:
+        "https://www.linkedin.com/oauth/.well-known/openid-configuration",
       issuer: "https://www.linkedin.com",
       client: { token_endpoint_auth_method: "client_secret_post" },
       clientId: env.LINKEDIN_CLIENT_ID,
