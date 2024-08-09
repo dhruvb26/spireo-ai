@@ -60,11 +60,16 @@ const LinkedInPostPreview: React.FC<LinkedInPostPreviewProps> = ({
           setDownloadUrl(result.data as string);
 
           const response = await fetch(result.data as string, {
-            method: "HEAD",
+            method: "GET",
           });
           const type = response.headers.get("Content-Type");
-          setContentType(type);
-          console.log("Content type: ", type);
+          if (type) {
+            setContentType(type);
+            console.log("Content type: ", type);
+          } else {
+            console.error("Content-Type header is missing");
+            setContentType("unknown");
+          }
         } else {
           setError(result.message);
         }
@@ -76,6 +81,33 @@ const LinkedInPostPreview: React.FC<LinkedInPostPreviewProps> = ({
 
     fetchData();
   }, [postId]);
+
+  const renderContent = () => {
+    if (!downloadUrl) return null;
+
+    console.log("Rendering content. Content type:", contentType);
+
+    if (contentType?.startsWith("image/")) {
+      return (
+        <img
+          src={downloadUrl}
+          alt="Content"
+          className={`h-auto ${
+            device === "mobile"
+              ? "max-w-[320px]"
+              : device === "tablet"
+                ? "max-w-[480px]"
+                : "max-w-[560px]"
+          }`}
+        />
+      );
+    } else if (contentType === "application/pdf") {
+      return <PdfViewerComponent file={downloadUrl} device={device} />;
+    } else {
+      console.log("Unhandled content type:", contentType);
+      return null;
+    }
+  };
 
   return (
     <div className="flex w-full justify-center">
@@ -113,20 +145,7 @@ const LinkedInPostPreview: React.FC<LinkedInPostPreviewProps> = ({
 
         {downloadUrl && (
           <div className="mt-2 flex items-center justify-center">
-            <img
-              src={downloadUrl}
-              alt="Content"
-              className={`h-auto ${
-                device === "mobile"
-                  ? "max-w-[320px]"
-                  : device === "tablet"
-                    ? "max-w-[480px]"
-                    : "max-w-[560px]"
-              }`}
-            />
-            {/* // (
-            //   <PdfViewerComponent file={downloadUrl} device={device} />
-            // ) */}
+            {renderContent()}
           </div>
         )}
 

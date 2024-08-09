@@ -187,65 +187,65 @@ export async function getAccessToken(userId: string) {
     throw new Error("No account found for user");
   }
 
-  if (
-    account.expires_at &&
-    account.expires_at < Math.floor(Date.now() / 1000)
-  ) {
-    // Token is expired, refresh it
-    return refreshAccessToken(userId);
-  }
+  // if (
+  //   account.expires_at &&
+  //   account.expires_at < Math.floor(Date.now() / 1000)
+  // ) {
+  //   // Token is expired, refresh it
+  //   return refreshAccessToken(userId);
+  // }
 
   return account.access_token;
 }
 
-export async function refreshAccessToken(userId: string) {
-  const account = await db.query.accounts.findFirst({
-    where: eq(accounts.userId, userId),
-    columns: {
-      refresh_token: true,
-    },
-  });
+// export async function refreshAccessToken(userId: string) {
+//   const account = await db.query.accounts.findFirst({
+//     where: eq(accounts.userId, userId),
+//     columns: {
+//       refresh_token: true,
+//     },
+//   });
 
-  if (!account?.refresh_token) {
-    throw new Error("No refresh token found");
-  }
+//   if (!account?.refresh_token) {
+//     throw new Error("No refresh token found");
+//   }
 
-  try {
-    const response = await fetch(
-      "https://www.linkedin.com/oauth/v2/accessToken",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({
-          grant_type: "refresh_token",
-          refresh_token: account.refresh_token,
-          client_id: env.LINKEDIN_CLIENT_ID,
-          client_secret: env.LINKEDIN_CLIENT_SECRET,
-        }),
-      },
-    );
+//   try {
+//     const response = await fetch(
+//       "https://www.linkedin.com/oauth/v2/accessToken",
+//       {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/x-www-form-urlencoded",
+//         },
+//         body: new URLSearchParams({
+//           grant_type: "refresh_token",
+//           refresh_token: account.refresh_token,
+//           client_id: env.LINKEDIN_CLIENT_ID,
+//           client_secret: env.LINKEDIN_CLIENT_SECRET,
+//         }),
+//       },
+//     );
 
-    const data = await response.json();
+//     const data = await response.json();
 
-    if (!response.ok) {
-      throw new Error("Failed to refresh token");
-    }
+//     if (!response.ok) {
+//       throw new Error("Failed to refresh token");
+//     }
 
-    // Update the account with the new tokens
-    await db
-      .update(accounts)
-      .set({
-        access_token: data.access_token,
-        expires_at: Math.floor(Date.now() / 1000 + data.expires_in),
-        refresh_token: data.refresh_token ?? account.refresh_token,
-      })
-      .where(eq(accounts.userId, userId));
+//     // Update the account with the new tokens
+//     await db
+//       .update(accounts)
+//       .set({
+//         access_token: data.access_token,
+//         expires_at: Math.floor(Date.now() / 1000 + data.expires_in),
+//         refresh_token: data.refresh_token ?? account.refresh_token,
+//       })
+//       .where(eq(accounts.userId, userId));
 
-    return data.access_token;
-  } catch (error) {
-    console.error("Error refreshing access token:", error);
-    throw error;
-  }
-}
+//     return data.access_token;
+//   } catch (error) {
+//     console.error("Error refreshing access token:", error);
+//     throw error;
+//   }
+// }

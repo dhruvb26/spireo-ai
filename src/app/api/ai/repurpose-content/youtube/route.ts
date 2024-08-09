@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { YoutubeTranscript } from "youtube-transcript";
+import { VideoCaptions, Client } from "youtubei";
+
 import Anthropic from "@anthropic-ai/sdk";
 import { env } from "@/env";
 import { checkAccess, updateGeneratedWords } from "@/actions/user";
@@ -27,13 +28,47 @@ export async function POST(req: Request) {
     });
 
     // Convert YouTube Shorts URL to regular URL if necessary
-    // const regularUrl = convertToRegularYouTubeUrl(url);
-    // console.log(`Converted URL: ${regularUrl}`);
+    const regularUrl = convertToRegularYouTubeUrl(url);
+    console.log(`Converted URL: ${regularUrl}`);
 
     // Get transcript
     let transcript;
     try {
-      transcript = await YoutubeTranscript.fetchTranscript(url);
+      const fetchTranscript = async (): Promise<string[]> => {
+        try {
+          const youtube = new Client();
+          const videoId = extractVideoId(regularUrl);
+          const video = await youtube.getVideo(videoId);
+
+          if (!video) {
+            throw new Error("Video not found");
+          }
+
+          const captions = video.captions;
+
+          if (!captions || captions.languages.length === 0) {
+            throw new Error("No captions found for this video");
+          }
+
+          // Get the first available language or 'en' if available
+          const languageCode =
+            captions.languages.find((lang) => lang.code === "en")?.code ||
+            captions.languages[0]?.code;
+
+          const captionData = await captions.get(languageCode);
+
+          if (!captionData) {
+            throw new Error("Failed to fetch captions");
+          }
+
+          return captionData.map((caption) => caption.text);
+        } catch (error) {
+          console.error("Error fetching transcript:", error);
+          throw error;
+        }
+      };
+
+      transcript = await fetchTranscript();
       console.log("Successfully fetched transcript");
     } catch (error) {
       console.error("Error fetching transcript:", error);
@@ -154,10 +189,9 @@ export async function POST(req: Request) {
   }
 }
 
-function combineTranscriptText(transcriptData: any[]): string {
+function combineTranscriptText(transcriptData: string[]): string {
   try {
     return transcriptData
-      .map((item) => item.text)
       .join(" ")
       .replace(/&amp;#39;/g, "'")
       .replace(/\s+/g, " ")
@@ -186,4 +220,14 @@ function convertToRegularYouTubeUrl(url: string): string {
     console.error("Error converting YouTube URL:", error);
     throw error;
   }
+}
+
+function extractVideoId(url: string): string {
+  const regex =
+    /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+  const match = url.match(regex);
+  if (match && match[1]) {
+    return match[1];
+  }
+  throw new Error("Invalid YouTube URL");
 }

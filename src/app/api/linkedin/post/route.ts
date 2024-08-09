@@ -342,12 +342,8 @@ export async function POST(request: Request) {
         postBody.specificContent[
           "com.linkedin.ugc.ShareContent"
         ].media[0].title = {
-          text: "PDF Document Title", // You might want to pass this as a parameter
-        };
-        postBody.specificContent[
-          "com.linkedin.ugc.ShareContent"
-        ].media[0].description = {
-          text: "PDF Document Description", // You might want to pass this as a parameter
+          text: "PDF Document Title",
+          attributes: [],
         };
       }
     }
@@ -362,20 +358,19 @@ export async function POST(request: Request) {
       body: JSON.stringify(postBody),
     });
 
+    const responseData = await response.json();
+    console.log(
+      "LinkedIn API response:",
+      JSON.stringify(responseData, null, 2),
+    );
+
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error("Error publishing draft", response.status, errorText);
+      console.error("Error publishing draft", response.status, responseData);
       return NextResponse.json(
-        { error: `Error publishing draft: ${errorText}` },
+        { error: `Error publishing draft: ${JSON.stringify(responseData)}` },
         { status: response.status },
       );
     }
-    const postData = await response.json();
-    console.log("Post Data Received: ", postData);
-    const ugcPostUrn = postData.id;
-
-    // Wait for a minute to allow the API to process the post
-    await new Promise((resolve) => setTimeout(resolve, 60000)); // 60 seconds
 
     await db
       .update(drafts)
