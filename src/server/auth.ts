@@ -10,8 +10,6 @@ import { env } from "@/env";
 import { db } from "@/server/db";
 import { accounts, users } from "@/server/db/schema";
 import { v4 as uuidv4 } from "uuid";
-import { JWT } from "next-auth/jwt";
-import { type User } from "next-auth";
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
@@ -20,7 +18,6 @@ declare module "next-auth" {
       hasAccess?: boolean;
       trialEndsAt?: Date;
     } & DefaultSession["user"];
-    error?: "RefreshAccessTokenError";
   }
 
   interface User {
@@ -35,50 +32,6 @@ declare module "next-auth/jwt" {
     id: string;
     hasAccess?: boolean;
     trialEndsAt?: Date;
-    accessToken?: string;
-    refreshToken?: string;
-    expiresAt?: number;
-    error?: "RefreshAccessTokenError";
-  }
-}
-
-async function refreshAccessToken(token: JWT): Promise<JWT> {
-  try {
-    const response = await fetch(
-      "https://www.linkedin.com/oauth/v2/accessToken",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({
-          grant_type: "authorization_code",
-          code: token.refreshToken!, // Using refreshToken as the authorization code
-          client_id: env.LINKEDIN_CLIENT_ID,
-          client_secret: env.LINKEDIN_CLIENT_SECRET,
-          redirect_uri: `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/callback/linkedin`,
-        }),
-      },
-    );
-
-    const refreshedTokens = await response.json();
-
-    if (!response.ok) {
-      throw refreshedTokens;
-    }
-
-    return {
-      ...token,
-      accessToken: refreshedTokens.access_token,
-      expiresAt: Math.floor(Date.now() / 1000 + refreshedTokens.expires_in),
-      refreshToken: refreshedTokens.refresh_token ?? token.refreshToken, // Fall back to old refresh token
-    };
-  } catch (error) {
-    console.error("Error refreshing access token", error);
-    return {
-      ...token,
-      error: "RefreshAccessTokenError",
-    };
   }
 }
 
@@ -90,35 +43,19 @@ export const authOptions: NextAuthOptions = {
   },
 
   callbacks: {
-    jwt: async ({ token, account, user }) => {
-      if (account && user) {
-        // Initial sign in
-        token.id = user.id;
-        token.accessToken = account.access_token;
-        token.refreshToken = account.refresh_token;
-        token.expiresAt = account.expires_at;
-        token.hasAccess = (user as User).hasAccess;
-        token.trialEndsAt = (user as User).trialEndsAt;
-      }
-
-      // Return previous token if the access token has not expired yet
-      if (Date.now() < (token.expiresAt ?? 0) * 1000) {
-        return token;
-      }
-
-      // Access token has expired, try to update it
-      return refreshAccessToken(token);
-    },
     session: ({ session, token }) => ({
       ...session,
       user: {
         ...session.user,
         id: token.id,
-        hasAccess: token.hasAccess,
-        trialEndsAt: token.trialEndsAt,
       },
-      error: token.error,
     }),
+    jwt: ({ token, user }) => {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
     redirect: async ({ url, baseUrl }) => {
       // If the user is already logged in and tries to access the signin page,
       // redirect them to the home page or dashboard
@@ -131,7 +68,6 @@ export const authOptions: NextAuthOptions = {
       return url;
     },
   },
-
   adapter: {
     ...DrizzleAdapter(db, {
       usersTable: users,
@@ -157,7 +93,6 @@ export const authOptions: NextAuthOptions = {
       return result[0];
     },
   } as Adapter,
-
   providers: [
     LinkedInProvider({
       wellKnown:
@@ -175,13 +110,10 @@ export const authOptions: NextAuthOptions = {
       authorization: {
         params: {
           scope: "openid profile email w_member_social r_basicprofile",
-          access_type: "offline",
-          prompt: "consent",
         },
       },
     }),
   ],
-
   pages: {
     signIn: "/signin",
   },
