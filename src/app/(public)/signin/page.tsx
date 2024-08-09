@@ -6,11 +6,11 @@ import SparklesText from "@/components/ui/sparkles-text";
 import { redirect } from "next/navigation";
 import LinkedInSignInButton from "@/components/auth/linkedin-signin-button";
 export default async function SignIn() {
-  // const session = await getServerAuthSession();
+  const session = await getServerAuthSession();
 
-  // if (session) {
-  //   redirect("/dashboard/post");
-  // }
+  if (session) {
+    redirect("/dashboard/post");
+  }
 
   const avatarUrls = [
     "https://avatars.githubusercontent.com/u/16860528",
