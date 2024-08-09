@@ -177,9 +177,12 @@ const ScheduleDialog = ({
                   <SelectValue placeholder="MM" />
                 </SelectTrigger>
                 <SelectContent>
-                  {Array.from({ length: 60 }, (_, i) => (
-                    <SelectItem key={i} value={i.toString().padStart(2, "0")}>
-                      {i.toString().padStart(2, "0")}
+                  {Array.from({ length: 12 }, (_, i) => (
+                    <SelectItem
+                      key={i}
+                      value={(i * 5).toString().padStart(2, "0")}
+                    >
+                      {(i * 5).toString().padStart(2, "0")}
                     </SelectItem>
                   ))}
                 </SelectContent>

@@ -74,14 +74,14 @@ const Sidebar = ({ children, user }: any) => {
 
   useEffect(() => {
     const handleKeyDown = (event: any) => {
-      if (event.metaKey && event.key === 's') {
+      if (event.metaKey && event.key === "s") {
         event.preventDefault();
         toggleSidebar();
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [toggleSidebar]);
 
   const renderNavLink = useCallback(
@@ -97,10 +97,10 @@ const Sidebar = ({ children, user }: any) => {
         <Link
           href={href}
           className={`relative flex items-center gap-3 px-6 py-2 text-sm transition-all hover:text-blue-700 ${
-            isLinkActive(href, exact) ? 'text-blue-700' : 'text-brand-gray-500'
-          } ${isSidebarCollapsed ? 'justify-center' : ''}`}
+            isLinkActive(href, exact) ? "text-blue-700" : "text-brand-gray-500"
+          } ${isSidebarCollapsed ? "justify-center" : ""}`}
         >
-          <div className={isSidebarCollapsed ? 'w-5 text-center' : ''}>
+          <div className={isSidebarCollapsed ? "w-5 text-center" : ""}>
             {isLinkActive(href, exact) ? filledIcon : icon}
           </div>
           {!isSidebarCollapsed && <span>{text}</span>}
@@ -119,9 +119,7 @@ const Sidebar = ({ children, user }: any) => {
         return (
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger asChild>
-                {linkContent}
-              </TooltipTrigger>
+              <TooltipTrigger asChild>{linkContent}</TooltipTrigger>
               <TooltipContent side="right">
                 <p>{text}</p>
               </TooltipContent>
@@ -146,7 +144,9 @@ const Sidebar = ({ children, user }: any) => {
       )}
       <FadeSeparator />
 
-      <h3 className={`my-2 px-6 text-xs font-semibold uppercase text-brand-gray-400 ${isSidebarCollapsed ? 'hidden' : ''}`}>
+      <h3
+        className={`my-2 px-6 text-xs font-semibold uppercase text-brand-gray-400 ${isSidebarCollapsed ? "hidden" : ""}`}
+      >
         Creation
       </h3>
       {isSidebarCollapsed ? (
@@ -155,10 +155,10 @@ const Sidebar = ({ children, user }: any) => {
             <TooltipTrigger asChild>
               <button
                 onClick={handleCreateDraft}
-                className="relative flex w-full text-brand-gray-500 items-center justify-center gap-3 px-6 py-2 text-sm font-normal transition-all hover:text-blue-700"
+                className="relative flex w-full items-center justify-center gap-3 px-6 py-2 text-sm font-normal text-brand-gray-500 transition-all hover:text-blue-700"
               >
-                <div className='w-5 text-center'>
-                  <PencilSimpleLine weight="duotone"  size={20} />
+                <div className="w-5 text-center">
+                  <PencilSimpleLine weight="duotone" size={20} />
                 </div>
               </button>
             </TooltipTrigger>
@@ -170,7 +170,7 @@ const Sidebar = ({ children, user }: any) => {
       ) : (
         <button
           onClick={handleCreateDraft}
-          className="relative flex w-full text-brand-gray-500 items-center gap-3 px-6 py-2 text-sm font-normal transition-all hover:text-blue-700"
+          className="relative flex w-full items-center gap-3 px-6 py-2 text-sm font-normal text-brand-gray-500 transition-all hover:text-blue-700"
         >
           <PencilSimpleLine weight="duotone" size={20} />
           <span>New Post</span>
@@ -208,7 +208,9 @@ const Sidebar = ({ children, user }: any) => {
       )}
 
       <FadeSeparator />
-      <h3 className={`my-2 px-6 text-xs font-semibold uppercase text-brand-gray-400 ${isSidebarCollapsed ? 'hidden' : ''}`}>
+      <h3
+        className={`my-2 px-6 text-xs font-semibold uppercase text-brand-gray-400 ${isSidebarCollapsed ? "hidden" : ""}`}
+      >
         Management
       </h3>
       {renderNavLink(
@@ -224,13 +226,13 @@ const Sidebar = ({ children, user }: any) => {
               "/dashboard/saved/ideas",
               <Bookmarks size={20} />,
               <Bookmarks weight="duotone" size={20} />,
-              "Saved Ideas"
+              "Saved Ideas",
             )}
             {renderNavLink(
               "/dashboard/saved/posts",
               <Note size={20} />,
               <Note weight="duotone" size={20} />,
-              "Saved Posts"
+              "Saved Posts",
             )}
           </>
         ) : (
@@ -263,13 +265,13 @@ const Sidebar = ({ children, user }: any) => {
                   "/dashboard/saved/ideas",
                   <Bookmarks size={20} className="ml-4" />,
                   <Bookmarks weight="duotone" size={20} className="ml-4" />,
-                  "Ideas"
+                  "Ideas",
                 )}
                 {renderNavLink(
                   "/dashboard/saved/posts",
                   <Note size={20} className="ml-4" />,
                   <Note weight="duotone" size={20} className="ml-4" />,
-                  "Posts"
+                  "Posts",
                 )}
               </div>
             )}
@@ -278,7 +280,9 @@ const Sidebar = ({ children, user }: any) => {
       </div>
 
       <FadeSeparator />
-      <h3 className={`my-2 px-6 text-xs font-semibold uppercase text-brand-gray-400 ${isSidebarCollapsed ? 'hidden' : ''}`}>
+      <h3
+        className={`my-2 px-6 text-xs font-semibold uppercase text-brand-gray-400 ${isSidebarCollapsed ? "hidden" : ""}`}
+      >
         Account
       </h3>
       {renderNavLink(
@@ -302,7 +306,7 @@ const Sidebar = ({ children, user }: any) => {
                 onClick={handleSignOut}
                 className="relative flex w-full items-center justify-center gap-3 px-6 py-2 text-sm text-brand-gray-500 transition-all hover:text-blue-700"
               >
-                <div className='w-5 text-center'>
+                <div className="w-5 text-center">
                   <SignOut size={20} />
                 </div>
               </button>
@@ -367,7 +371,6 @@ const Sidebar = ({ children, user }: any) => {
             <SheetContent side="right" className="flex w-fit flex-col">
               {renderNavigation()}
               <div className="p-4">
-               
                 <WordsCard words={generatedWords} />
               </div>
             </SheetContent>
@@ -378,12 +381,12 @@ const Sidebar = ({ children, user }: any) => {
       <div className="flex flex-grow overflow-hidden">
         <aside
           className={`hidden transition-all duration-300 ${
-            isSidebarCollapsed ? 'w-16' : 'w-64'
+            isSidebarCollapsed ? "w-16" : "w-64"
           } flex-shrink-0 flex-col border-r border-brand-gray-200 md:flex`}
         >
           <div className="flex h-full flex-col">
             {renderNavigation()}
-            <div className={`p-4 ${isSidebarCollapsed ? 'hidden' : ''}`}>
+            <div className={`p-4 ${isSidebarCollapsed ? "hidden" : ""}`}>
               <WordsCard words={generatedWords} />
             </div>
           </div>

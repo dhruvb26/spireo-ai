@@ -1,19 +1,16 @@
 import { NextResponse } from "next/server";
-import { VideoCaptions, Client, Video } from "youtubei";
-
 import Anthropic from "@anthropic-ai/sdk";
 import { env } from "@/env";
 import { checkAccess, updateGeneratedWords } from "@/actions/user";
+import { getSubtitles } from "youtube-captions-scraper";
+
 export const maxDuration = 60;
 
 export async function POST(req: Request) {
   try {
     console.log("Starting POST request processing");
 
-    // Get the user session
     const hasAccess = await checkAccess();
-
-    // Check if the user has access
     if (!hasAccess) {
       console.log("User not authorized");
       return NextResponse.json({ ideas: "Not authorized!" }, { status: 401 });
@@ -27,60 +24,35 @@ export async function POST(req: Request) {
       apiKey: env.SPIREO_SECRET_KEY,
     });
 
-    // Convert YouTube Shorts URL to regular URL if necessary
-    const regularUrl = convertToRegularYouTubeUrl(url);
-    console.log(`Converted URL: ${regularUrl}`);
-
-    // Get transcript
-    let transcript;
-    try {
-      const fetchTranscript = async (): Promise<string[]> => {
-        try {
-          const youtube = new Client();
-          const videoId = extractVideoId(regularUrl);
-          const video = await youtube.getVideo<Video>(videoId);
-
-          if (!video) {
-            throw new Error("Video not found");
-          }
-
-          if (!video.captions || video.captions.languages.length === 0) {
-            throw new Error("No captions found for this video");
-          }
-
-          // Get the first available language or 'en' if available
-          const languageCode =
-            video.captions.languages.find((lang) => lang.code === "en")?.code ||
-            video.captions.languages[0]?.code;
-
-          const captionData = await video.captions.get(languageCode);
-
-          if (!captionData) {
-            throw new Error("Failed to fetch captions");
-          }
-
-          return captionData.map((caption) => caption.text);
-        } catch (error) {
-          console.error("Error fetching transcript:", error);
-          throw error;
-        }
-      };
-
-      transcript = await fetchTranscript();
-      console.log("Successfully fetched transcript");
-    } catch (error) {
-      console.error("Error fetching transcript:", error);
+    // Extract video ID from URL
+    const videoId = extractVideoId(url);
+    if (!videoId) {
       return NextResponse.json(
-        { error: "Failed to fetch transcript" },
+        { error: "Invalid YouTube URL" },
+        { status: 400 },
+      );
+    }
+
+    // Get captions using youtube-captions-scraper
+    let captions;
+    try {
+      captions = await getSubtitles({
+        videoID: videoId,
+        lang: "en", // default to English
+      });
+      console.log("Successfully fetched captions");
+    } catch (error) {
+      console.error("Error fetching captions:", error);
+      return NextResponse.json(
+        { error: "Failed to fetch captions" },
         { status: 500 },
       );
     }
 
-    // Combine transcript text
-    const plainText = combineTranscriptText(transcript);
-    console.log("Transcript combined");
+    // Combine caption text
+    const plainText = captions.map((caption) => caption.text).join(" ");
+    console.log("Captions combined");
 
-    // Here you can add any additional processing based on instructions and formatTemplate
     let stream;
     try {
       stream = await anthropic.messages.create({
@@ -152,7 +124,6 @@ export async function POST(req: Request) {
               const text = chunk.delta.text;
               controller.enqueue(encoder.encode(text));
 
-              // Count words in this chunk
               const wordsInChunk = text
                 .split(/\s+/)
                 .filter((word) => word.length > 0).length;
@@ -161,7 +132,6 @@ export async function POST(req: Request) {
           }
           controller.close();
 
-          // Call the updateGeneratedWords action with the total word count
           await updateGeneratedWords(wordCount);
           console.log(`Total words generated: ${wordCount}`);
         } catch (error) {
@@ -186,46 +156,9 @@ export async function POST(req: Request) {
     );
   }
 }
-
-function combineTranscriptText(transcriptData: string[]): string {
-  try {
-    return transcriptData
-      .join(" ")
-      .replace(/&amp;#39;/g, "'")
-      .replace(/\s+/g, " ")
-      .trim();
-  } catch (error) {
-    console.error("Error combining transcript text:", error);
-    throw error;
-  }
-}
-
-function convertToRegularYouTubeUrl(url: string): string {
-  try {
-    // Regular expression to match YouTube Shorts URL
-    const shortsRegex =
-      /^https?:\/\/(?:www\.)?youtube\.com\/shorts\/([a-zA-Z0-9_-]+)/i;
-    const match = url.match(shortsRegex);
-
-    if (match && match[1]) {
-      // If it's a Shorts URL, convert it to a regular YouTube URL
-      return `https://www.youtube.com/watch?v=${match[1]}`;
-    }
-
-    // If it's not a Shorts URL, return the original URL
-    return url;
-  } catch (error) {
-    console.error("Error converting YouTube URL:", error);
-    throw error;
-  }
-}
-
-function extractVideoId(url: string): string {
+function extractVideoId(url: string): string | null {
   const regex =
     /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
   const match = url.match(regex);
-  if (match && match[1]) {
-    return match[1];
-  }
-  throw new Error("Invalid YouTube URL");
+  return match ? (match[1] ?? null) : null;
 }

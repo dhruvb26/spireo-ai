@@ -136,7 +136,7 @@ export function GeneratedContent({
 
   if (error) {
     return (
-      <div className="flex h-[600px] items-center justify-center rounded-lg  p-6 shadow-lg">
+      <div className="flex h-[600px] items-center justify-center rounded-lg border border-brand-gray-200 bg-white p-6">
         <p className="text-sm text-red-500">{error}</p>
       </div>
     );
