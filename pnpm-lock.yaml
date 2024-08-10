@@ -332,6 +332,9 @@ importers:
       youtube-dl-exec:
         specifier: ^3.0.7
         version: 3.0.7
+      youtube-transcript:
+        specifier: ^1.2.1
+        version: 1.2.1
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -4575,6 +4578,10 @@ packages:
     resolution: {integrity: sha512-QryQPdT01LtRvAPod8O1HCWWcpgP3+Jdm20Yhl0NZuW0nKD3BQ2OKRSwW1TpH4s8oquafsWT+3rOfN+2deahRg==}
     engines: {node: '>= 18'}
 
+  youtube-transcript@1.2.1:
+    resolution: {integrity: sha512-TvEGkBaajKw+B6y91ziLuBLsa5cawgowou+Bk0ciGpjELDfAzSzTGXaZmeSSkUeknCPpEr/WGApOHDwV7V+Y9Q==}
+    engines: {node: '>=18.0.0'}
+
   zod@3.23.8:
     resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
 
@@ -8718,6 +8725,8 @@ snapshots:
       tinyspawn: 1.3.2
     transitivePeerDependencies:
       - supports-color
+
+  youtube-transcript@1.2.1: {}
 
   zod@3.23.8: {}
 

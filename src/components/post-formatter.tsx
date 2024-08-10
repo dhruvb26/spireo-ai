@@ -101,7 +101,6 @@ const postFormats: PostFormat[] = [
 const categories = Array.from(
   new Set(postFormats.map((format) => format.category)),
 );
-
 export function PostFormatSelector({
   onSelectFormat,
 }: {
@@ -110,11 +109,14 @@ export function PostFormatSelector({
   const [selectedFormat, setSelectedFormat] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
 
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
+
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-      <div className="flex items-center justify-start space-x-2">
+      <div className="relative flex items-center justify-start space-x-2">
         <DialogTrigger asChild>
           <Button
+            ref={buttonRef}
             className="rounded-lg bg-blue-600 text-sm text-white hover:bg-blue-700 hover:text-white"
             onClick={() => setIsDialogOpen(true)}
           >
@@ -122,10 +124,12 @@ export function PostFormatSelector({
           </Button>
         </DialogTrigger>
 
-        <TipButton
-          heading="Why use a post format?"
-          content="Selecting a post format can help structure your content and make it more engaging. Try one out to enhance your post!"
-        />
+        <div className="relative">
+          <TipButton
+            heading="Why use a post format?"
+            content="Selecting a post format can help structure your content and make it more engaging. Try one out to enhance your post!"
+          />
+        </div>
       </div>
       <DialogContent className="min-h-[80vh] sm:max-w-[800px]">
         <DialogHeader></DialogHeader>
