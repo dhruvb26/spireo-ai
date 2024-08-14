@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 import {
   Descendant,
   BaseEditor,
@@ -14,7 +14,7 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from "@/components/ui/tooltip";
-import { Slate, Editable, ReactEditor, useSlate, withReact } from "slate-react";
+import { Slate, Editable, ReactEditor, useSlate } from "slate-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
@@ -22,11 +22,9 @@ import ScheduleDialog from "./schedule-dialog";
 import { toast } from "sonner";
 import EmojiPicker, { SkinTonePickerLocation } from "emoji-picker-react";
 import { getUserId } from "@/actions/user";
-import Router from "next/router";
 import {
   Brain,
   Smiley,
-  Sparkle,
   TextB,
   TextItalic,
   TextUnderline,
@@ -40,7 +38,6 @@ import {
 } from "@/actions/draft";
 import FileAttachmentButton from "./file-attachment-button";
 import { Loader2, Send } from "lucide-react";
-import { withHistory } from "slate-history";
 import { HistoryEditor } from "slate-history";
 
 export const serializeContent = (nodes: Descendant[]): string => {
@@ -82,50 +79,45 @@ declare module "slate" {
 
 const CustomEditor = {
   isBoldMarkActive(editor: CustomEditor) {
-    const [match] = Editor.nodes(editor, {
-      match: (n) => Text.isText(n) && n.bold === true,
-      universal: true,
-    });
-    return !!match;
+    const marks = Editor.marks(editor);
+    return marks ? marks.bold === true : false;
   },
 
   toggleBoldMark(editor: CustomEditor) {
     const isActive = CustomEditor.isBoldMarkActive(editor);
-    Transforms.setNodes(
-      editor,
-      { bold: isActive ? undefined : true },
-      { match: (n) => Text.isText(n), split: true },
-    );
+    if (isActive) {
+      Editor.removeMark(editor, "bold");
+    } else {
+      Editor.addMark(editor, "bold", true);
+    }
   },
+
   isItalicMarkActive(editor: CustomEditor) {
-    const [match] = Editor.nodes(editor, {
-      match: (n) => Text.isText(n) && n.italic === true,
-      universal: true,
-    });
-    return !!match;
+    const marks = Editor.marks(editor);
+    return marks ? marks.italic === true : false;
   },
+
   toggleItalicMark(editor: CustomEditor) {
     const isActive = CustomEditor.isItalicMarkActive(editor);
-    Transforms.setNodes(
-      editor,
-      { italic: isActive ? undefined : true },
-      { match: (n) => Text.isText(n), split: true },
-    );
+    if (isActive) {
+      Editor.removeMark(editor, "italic");
+    } else {
+      Editor.addMark(editor, "italic", true);
+    }
   },
+
   isUnderlineMarkActive(editor: CustomEditor) {
-    const [match] = Editor.nodes(editor, {
-      match: (n) => Text.isText(n) && n.underline === true,
-      universal: true,
-    });
-    return !!match;
+    const marks = Editor.marks(editor);
+    return marks ? marks.underline === true : false;
   },
+
   toggleUnderlineMark(editor: CustomEditor) {
     const isActive = CustomEditor.isUnderlineMarkActive(editor);
-    Transforms.setNodes(
-      editor,
-      { underline: isActive ? undefined : true },
-      { match: (n) => Text.isText(n), split: true },
-    );
+    if (isActive) {
+      Editor.removeMark(editor, "underline");
+    } else {
+      Editor.addMark(editor, "underline", true);
+    }
   },
 };
 
@@ -145,6 +137,7 @@ interface EditorSectionProps {
   handleSave: () => void;
   setFileType: any;
   initialDocumentUrn: string | null;
+  updateAt: Date | null;
 }
 
 function EditorSection({
@@ -155,6 +148,7 @@ function EditorSection({
   handleSave,
   initialDocumentUrn,
   setFileType,
+  updateAt,
 }: EditorSectionProps) {
   const [value, setInternalValue] = useState<Descendant[]>(() => {
     if (typeof initialValue === "string") {
@@ -466,6 +460,7 @@ function EditorSection({
             </TooltipProvider>
           </div>
         )}
+
         <Slate editor={editor} initialValue={value} onChange={handleChange}>
           <div className="my-2 flex space-x-2">
             <ToolbarButton format="bold" icon={<TextB className="h-4 w-4" />} />
@@ -542,8 +537,17 @@ function EditorSection({
             />
           </div>
         </Slate>
-        <div className="mt-2 w-full text-right text-xs text-gray-500">
-          {charCount}/3000 characters
+        <div className="mt-2 flex w-full justify-between text-xs text-gray-500">
+          <span>
+            {updateAt ? (
+              `Last saved at: ${updateAt.toLocaleString()} (${Intl.DateTimeFormat().resolvedOptions().timeZone})`
+            ) : (
+              <span className="font-medium text-rose-600">
+                This draft has not been saved yet.
+              </span>
+            )}
+          </span>
+          <span>{charCount}/3000 characters</span>
         </div>
       </div>
       <div className="flex items-center justify-between border-gray-200 py-4">

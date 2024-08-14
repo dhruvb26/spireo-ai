@@ -53,10 +53,9 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
         },
         body: new URLSearchParams({
           grant_type: "authorization_code",
-          code: token.refreshToken!, // Using refreshToken as the authorization code
+          code: token.refreshToken!,
           client_id: env.LINKEDIN_CLIENT_ID,
           client_secret: env.LINKEDIN_CLIENT_SECRET,
-          // redirect_uri: `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/callback/linkedin`,
         }),
       },
     );
@@ -120,12 +119,11 @@ export const authOptions: NextAuthOptions = {
       error: token.error,
     }),
     redirect: async ({ url, baseUrl }) => {
-      // If the user is already logged in and tries to access the signin page,
-      // redirect them to the home page or dashboard
+      // If the user is already logged in and tries to access the signin page, redirect to the dashboard
       if (url.startsWith(baseUrl + "/signin")) {
         const session = await getServerSession(authOptions);
         if (session) {
-          return baseUrl + "/dashboard/post"; // or wherever you want to redirect logged-in users
+          return baseUrl + "/dashboard/getting-started";
         }
       }
       return url;

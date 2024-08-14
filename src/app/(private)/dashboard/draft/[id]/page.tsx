@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { createEditor, Descendant } from "slate";
 import { withReact } from "slate-react";
 import { usePostStore } from "@/store/postStore";
 import { getDraft, saveDraft } from "@/actions/draft";
-import { MdSmartphone, MdTablet, MdLaptop } from "react-icons/md";
 import LinkedInPostPreview from "../../_components/linkedin-post";
 import { toast } from "sonner";
 import EditorSection from "../../_components/editor-section";
@@ -37,6 +36,7 @@ export default function EditDraft() {
     "mobile",
   );
   const [isLoading, setIsLoading] = useState(true);
+  const [updatedAt, setUpdatedAt] = useState<Date | null>(null);
 
   useEffect(() => {
     const fetchDraft = async () => {
@@ -61,12 +61,15 @@ export default function EditDraft() {
           editor.onChange();
           setValue(newValue);
           updatePost(id, draft.data.content || "");
-
           setDocumentUrn(draft.data.documentUrn || null);
+          setUpdatedAt(
+            draft.data.updatedAt ? new Date(draft.data.updatedAt) : null,
+          );
         } else {
           setValue(initialValue);
           updatePost(id, "");
           setDocumentUrn(null);
+          setUpdatedAt(null);
         }
       } catch (error) {
         console.error("Error fetching draft:", error);
@@ -79,19 +82,42 @@ export default function EditDraft() {
     fetchDraft();
   }, [id, updatePost, editor]);
 
-  const handleSave = async () => {
-    try {
-      const result = await saveDraft(id, value);
-      if (result.success) {
-        toast.success("Draft saved successfully");
-      } else {
-        toast.error("Failed to save draft");
+  const saveContent = useCallback(
+    async (showToast: boolean = false) => {
+      try {
+        const result = await saveDraft(id, value);
+        if (result.success) {
+          setUpdatedAt(new Date());
+          if (showToast) {
+            toast.success("Draft saved successfully");
+          }
+        } else {
+          if (showToast) {
+            toast.error("Failed to save draft");
+          }
+        }
+      } catch (error) {
+        console.error("Error saving draft:", error);
+        if (showToast) {
+          toast.error("An error occurred while saving the draft");
+        }
       }
-    } catch (error) {
-      console.error("Error saving draft:", error);
-      toast.error("An error occurred while saving the draft");
-    }
-  };
+    },
+    [id, value],
+  );
+
+  const handleSave = () => saveContent(true);
+
+  useEffect(() => {
+    const autoSave = () => {
+      saveContent();
+    };
+
+    const autoSaveInterval = setInterval(autoSave, 60000); // Auto-save every minute
+
+    return () => clearInterval(autoSaveInterval);
+  }, [saveContent]);
+
   return (
     <main className="flex">
       {isLoading ? (
@@ -110,32 +136,12 @@ export default function EditDraft() {
                 handleSave={handleSave}
                 initialDocumentUrn={documentUrn}
                 setFileType={setFileType}
+                updateAt={updatedAt}
               />
             </div>
           </div>
+
           <div className="w-full rounded bg-blue-50 p-4 lg:w-1/2">
-            <div className="mb-4 mt-7 flex items-center justify-center">
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setDevice("mobile")}
-                  className={`rounded-full p-2 ${device === "mobile" ? "text-brand-purple-600" : "text-brand-gray-500"}`}
-                >
-                  <MdSmartphone size={24} />
-                </button>
-                <button
-                  onClick={() => setDevice("tablet")}
-                  className={`rounded-full p-2 ${device === "tablet" ? "text-brand-purple-600" : "text-brand-gray-500"}`}
-                >
-                  <MdTablet size={24} />
-                </button>
-                <button
-                  onClick={() => setDevice("desktop")}
-                  className={`rounded-full p-2 ${device === "desktop" ? "text-brand-purple-600" : "text-brand-gray-500"}`}
-                >
-                  <MdLaptop size={24} />
-                </button>
-              </div>
-            </div>
             <LinkedInPostPreview postId={id} content={value} device={device} />
           </div>
         </div>

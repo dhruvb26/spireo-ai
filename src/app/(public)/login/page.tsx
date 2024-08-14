@@ -107,8 +107,8 @@ export default function SignUp() {
 
             <div className="flex items-center">
               <label htmlFor="terms" className="text-xs text-brand-gray-500">
-                By signing up, you are creating a Spireo account, and you agree
-                to Spireo's{" "}
+                You are going to access your Spireo account and your use of
+                Spireo is subject to our{" "}
                 <Link
                   href="https://www.spireo.ai/terms-of-service"
                   target="_blank"
@@ -129,15 +129,15 @@ export default function SignUp() {
             </div>
 
             <button className="w-full rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700">
-              Create an account
+              Login
             </button>
           </div>
-          {/* <p className="mt-6 text-center text-xs text-brand-gray-500">
-            Already have an account?{" "}
-            <Link href="/login" className="text-blue-600 hover:underline">
-              Login here
+          <p className="mt-6 text-center text-xs text-brand-gray-500">
+            Don't already have an account?{" "}
+            <Link href="/signin" className="text-blue-600 hover:underline">
+              Signup here
             </Link>
-          </p> */}
+          </p>
         </div>
       </div>
     </div>

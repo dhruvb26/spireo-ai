@@ -57,6 +57,7 @@ const ScheduleDialog = ({
 
     try {
       interface ScheduleData {
+        name: string;
         userId: string | undefined;
         postId: string;
         content: string;
@@ -75,6 +76,7 @@ const ScheduleDialog = ({
       scheduledDate.setHours(hours, parseInt(minute));
 
       const scheduleData: ScheduleData = {
+        name: postName,
         userId: userId,
         postId: id,
         content: postContent,

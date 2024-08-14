@@ -1,5 +1,28 @@
 "use client";
-import React, { useState, useCallback, useEffect } from "react";
+
+import Link from "next/link";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import WordsCard from "./words-card";
+import FadeSeparator from "./ui/fade-separator";
+import { Badge } from "./ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
+} from "./ui/dropdown-menu";
+import { useState, useCallback, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { usePostStore } from "@/store/postStore";
 import { signOut } from "next-auth/react";
@@ -24,28 +47,44 @@ import {
   ArrowCircleUpRight,
   GearSix,
   ExclamationMark,
+  CreditCard,
+  UserCircleCheck,
+  CalendarBlank,
 } from "@phosphor-icons/react";
-import Link from "next/link";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import WordsCard from "./words-card";
-import FadeSeparator from "./ui/fade-separator";
-import { Badge } from "./ui/badge";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tour } from "@frigade/react";
 
 const Sidebar = ({ children, user }: any) => {
   const [isSavedOpen, setIsSavedOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isInitialRender, setIsInitialRender] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
   const { addPost } = usePostStore();
-  const { image: userImage, trialEndsAt, specialAccess, generatedWords } = user;
+  const {
+    image: userImage,
+    trialEndsAt,
+    specialAccess,
+    email,
+    generatedWords,
+    name,
+  } = user;
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedState = localStorage.getItem("sidebarCollapsed");
+      setIsSidebarCollapsed(savedState ? JSON.parse(savedState) : false);
+    }
+    setIsInitialRender(false);
+  }, []);
+
+  const validityInfo = specialAccess ? (
+    <Badge className="ml-auto space-x-1 bg-purple-50 text-xs font-normal text-purple-600 hover:bg-purple-100">
+      <span>Special</span>
+      <UserCircleCheck />
+    </Badge>
+  ) : (
+    <></>
+  );
 
   const difference = differenceInDays(trialEndsAt, new Date());
 
@@ -69,11 +108,15 @@ const Sidebar = ({ children, user }: any) => {
   }, []);
 
   const toggleSidebar = useCallback(() => {
-    setIsSidebarCollapsed((prev) => !prev);
+    setIsSidebarCollapsed((prev: boolean) => {
+      const newState = !prev;
+      localStorage.setItem("sidebarCollapsed", JSON.stringify(newState));
+      return newState;
+    });
   }, []);
 
   useEffect(() => {
-    const handleKeyDown = (event: any) => {
+    const handleKeyDown = (event: KeyboardEvent) => {
       if (event.metaKey && event.key === "s") {
         event.preventDefault();
         toggleSidebar();
@@ -96,9 +139,10 @@ const Sidebar = ({ children, user }: any) => {
       const linkContent = (
         <Link
           href={href}
-          className={`relative flex items-center gap-3 px-6 py-2 text-sm transition-all hover:text-blue-700 ${
+          className={`relative flex items-center gap-3 rounded px-6 py-2 text-sm transition-all hover:text-blue-700 ${
             isLinkActive(href, exact) ? "text-blue-700" : "text-brand-gray-500"
           } ${isSidebarCollapsed ? "justify-center" : ""}`}
+          id={text === "Post Generator" ? "tour-1" : undefined}
         >
           <div className={isSidebarCollapsed ? "w-5 text-center" : ""}>
             {isLinkActive(href, exact) ? filledIcon : icon}
@@ -215,8 +259,8 @@ const Sidebar = ({ children, user }: any) => {
       </h3>
       {renderNavLink(
         "/dashboard/scheduler",
-        <Calendar size={20} />,
-        <Calendar weight="duotone" size={20} />,
+        <CalendarBlank size={20} />,
+        <CalendarBlank weight="duotone" size={20} />,
         "Scheduler",
       )}
       <div className="relative">
@@ -226,13 +270,13 @@ const Sidebar = ({ children, user }: any) => {
               "/dashboard/saved/ideas",
               <Bookmarks size={20} />,
               <Bookmarks weight="duotone" size={20} />,
-              "Saved Ideas",
+              " Ideas",
             )}
             {renderNavLink(
               "/dashboard/saved/posts",
               <Note size={20} />,
               <Note weight="duotone" size={20} />,
-              "Saved Posts",
+              " Posts",
             )}
           </>
         ) : (
@@ -312,28 +356,30 @@ const Sidebar = ({ children, user }: any) => {
               </button>
             </TooltipTrigger>
             <TooltipContent side="right">
-              <p>Log out</p>
+              <p>Logout</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
       ) : (
-        <button
-          onClick={handleSignOut}
-          className="relative flex w-full items-center gap-3 px-6 py-2 text-sm text-brand-gray-500 transition-all hover:text-blue-700"
-        >
-          <SignOut size={20} />
-          <span>Log out</span>
-        </button>
+        <></>
       )}
     </nav>
   );
 
+  if (isInitialRender) {
+    return null;
+  }
+
   return (
     <div className="flex h-screen flex-col overflow-hidden">
+      <Tour
+        className="[&_.fr-title]:text-md [&_.fr-button-primary:hover]:bg-blue-700 [&_.fr-button-primary]:rounded-lg [&_.fr-button-primary]:bg-blue-600 [&_.fr-title]:font-semibold [&_.fr-title]:tracking-tight [&_.fr-title]:text-brand-gray-900"
+        flowId="flow_wqlim5Vq"
+      />
       <header className="flex min-h-14 w-screen items-center justify-between border-b border-brand-gray-200 px-4 md:px-8">
         <div className="flex w-full items-center justify-between md:w-auto">
           <Link
-            href="/dashboard"
+            href="/dashboard/post"
             className="flex items-center justify-center font-semibold md:ml-0"
           >
             <Image
@@ -348,13 +394,46 @@ const Sidebar = ({ children, user }: any) => {
         <div className="flex flex-row items-center justify-center space-x-4">
           {userImage && (
             <div className="hidden md:block">
-              <Image
-                src={userImage}
-                width={32}
-                height={32}
-                alt="User profile"
-                className="rounded-full"
-              />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Avatar className="cursor-pointer">
+                    <AvatarImage src={userImage} alt="User profile" />
+                    <AvatarFallback>{name?.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-[200px]">
+                  <DropdownMenuLabel className="flex flex-col space-y-1 text-sm font-medium text-brand-gray-900">
+                    <span className="flex flex-row space-x-1">{name}</span>
+                    <span className="text-xs font-normal text-blue-600">
+                      {email}
+                    </span>
+                  </DropdownMenuLabel>
+                  <Link
+                    className="text-sm text-brand-gray-600"
+                    href="/dashboard/preferences"
+                  >
+                    <DropdownMenuItem>
+                      <GearSix size={16} className="mr-2 inline" /> Settings
+                    </DropdownMenuItem>
+                  </Link>
+                  <Link
+                    className="text-sm text-brand-gray-600"
+                    href="/dashboard/settings"
+                  >
+                    <DropdownMenuItem>
+                      <CreditCard size={16} className="mr-2 inline" />{" "}
+                      Subscription
+                    </DropdownMenuItem>
+                  </Link>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    className="text-sm text-brand-gray-600"
+                    onClick={handleSignOut}
+                  >
+                    <SignOut size={16} className="mr-2 inline" /> Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           )}
           <Sheet>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import TipButton from "./tip-button";
+import { DialogTitle } from "@radix-ui/react-dialog";
+import PostFormatTip from "./frigade/post-format-tip";
 
 interface PostFormat {
   templates: string[];
@@ -103,89 +105,110 @@ const categories = Array.from(
 );
 export function PostFormatSelector({
   onSelectFormat,
+  triggerDialog,
 }: {
   onSelectFormat: (format: string) => void;
+  triggerDialog?: boolean;
 }) {
   const [selectedFormat, setSelectedFormat] = useState<string | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  useEffect(() => {
+    if (triggerDialog) {
+      setIsDialogOpen(true);
+    }
+  }, [triggerDialog]);
 
   const buttonRef = React.useRef<HTMLButtonElement>(null);
 
   return (
-    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-      <div className="relative flex items-center justify-start space-x-2">
-        <DialogTrigger asChild>
-          <Button
-            ref={buttonRef}
-            className="rounded-lg bg-blue-600 text-sm text-white hover:bg-blue-700 hover:text-white"
-            onClick={() => setIsDialogOpen(true)}
-          >
-            Post Format
-          </Button>
-        </DialogTrigger>
-
-        <div className="relative">
-          <TipButton
-            heading="Why use a post format?"
-            content="Selecting a post format can help structure your content and make it more engaging. Try one out to enhance your post!"
-          />
-        </div>
-      </div>
-      <DialogContent className="min-h-[80vh] sm:max-w-[800px]">
-        <DialogHeader></DialogHeader>
-        <Tabs defaultValue={categories[0]} className="w-full">
-          <TabsList className="grid h-fit w-full grid-cols-5">
-            {categories.map((category) => (
-              <TabsTrigger className="text-sm" key={category} value={category}>
-                {category}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-          {categories.map((category) => (
-            <TabsContent
-              key={category}
-              value={category}
-              className="h-[500px] w-full"
+    <>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <div className="relative flex items-center justify-start space-x-2">
+          <DialogTrigger asChild>
+            <Button
+              ref={buttonRef}
+              className="rounded-lg bg-blue-600 text-sm text-white hover:bg-blue-700 hover:text-white"
+              onClick={() => setIsDialogOpen(true)}
             >
-              <ScrollArea className="h-full">
-                {postFormats
-                  .find((format) => format.category === category)
-                  ?.templates.map((template, index) => (
-                    <div
-                      key={index}
-                      className={`mb-4 rounded-lg p-4 transition-all duration-200 ${
-                        selectedFormat === template
-                          ? "border-2 border-blue-500 bg-blue-100"
-                          : "border border-gray-200 bg-gray-50 hover:bg-gray-100"
-                      }`}
-                      onClick={() => setSelectedFormat(template)}
-                    >
-                      <div className="mb-2 text-sm font-semibold text-blue-600">
-                        #{index + 1}
-                      </div>
-                      <pre className="whitespace-pre-wrap font-sans ">
-                        {template}
-                      </pre>
-                    </div>
-                  ))}
-              </ScrollArea>
-            </TabsContent>
-          ))}
-        </Tabs>
-        <div className="flex justify-end py-0">
-          <Button
-            className=" rounded-lg bg-brand-gray-800 text-sm text-white hover:bg-brand-gray-900 hover:text-white"
-            onClick={() => {
-              if (selectedFormat) {
-                onSelectFormat(selectedFormat);
-                setIsDialogOpen(false);
-              }
-            }}
-          >
-            Use Format
-          </Button>
+              Post Format
+            </Button>
+          </DialogTrigger>
+
+          <div className="relative">
+            <TipButton
+              heading="Why use a post format?"
+              content="Selecting a post format can help structure your content and make it more engaging. Try one out to enhance your post!"
+            />
+          </div>
         </div>
-      </DialogContent>
-    </Dialog>
+        <DialogContent
+          aria-describedby={undefined}
+          className="min-h-[80vh] sm:max-w-[800px]"
+        >
+          <DialogHeader>
+            <DialogTitle className="text-lg font-semibold tracking-tight">
+              Post Format
+            </DialogTitle>
+          </DialogHeader>
+          <Tabs defaultValue={categories[0]} className="w-full">
+            <TabsList className="grid h-fit w-full grid-cols-5">
+              {categories.map((category) => (
+                <TabsTrigger
+                  className="text-sm"
+                  key={category}
+                  value={category}
+                >
+                  {category}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+            {categories.map((category) => (
+              <TabsContent
+                key={category}
+                value={category}
+                className="h-[500px] w-full"
+              >
+                <ScrollArea className="h-full">
+                  {postFormats
+                    .find((format) => format.category === category)
+                    ?.templates.map((template, index) => (
+                      <div
+                        key={index}
+                        className={`mb-4 rounded-lg p-4 transition-all duration-200 ${
+                          selectedFormat === template
+                            ? "border-2 border-blue-500 bg-blue-100"
+                            : "border border-gray-200 bg-gray-50 hover:bg-gray-100"
+                        }`}
+                        onClick={() => setSelectedFormat(template)}
+                      >
+                        <div className="mb-2 text-sm font-semibold text-blue-600">
+                          #{index + 1}
+                        </div>
+                        <pre className="whitespace-pre-wrap font-sans ">
+                          {template}
+                        </pre>
+                      </div>
+                    ))}
+                </ScrollArea>
+              </TabsContent>
+            ))}
+          </Tabs>
+          <div className="flex justify-end py-0">
+            <Button
+              className=" rounded-lg bg-brand-gray-800 text-sm text-white hover:bg-brand-gray-900 hover:text-white"
+              onClick={() => {
+                if (selectedFormat) {
+                  onSelectFormat(selectedFormat);
+                  setIsDialogOpen(false);
+                }
+              }}
+            >
+              Use Format
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

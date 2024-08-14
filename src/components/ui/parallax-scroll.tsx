@@ -94,39 +94,41 @@ export const ParallaxScroll = ({
         >
           {post.status}
         </Badge>
-        <div className="flex space-x-4">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Link
-                  href={`/dashboard/draft/${post.id}`}
-                  className="text-brand-purple-600 transition-colors hover:text-brand-purple-700"
-                >
-                  <PencilSimpleLine className="h-5 w-5" />
-                </Link>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Edit draft</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+        {post.status !== "published" && (
+          <div className="flex space-x-4">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link
+                    href={`/dashboard/draft/${post.id}`}
+                    className="text-brand-purple-600 transition-colors hover:text-brand-purple-700"
+                  >
+                    <PencilSimpleLine className="h-5 w-5" />
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Edit draft</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
 
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={() => onDeleteDraft(post.id)}
-                  className="text-brand-purple-600 transition-colors hover:text-brand-purple-700"
-                >
-                  <TrashSimple className="h-5 w-5" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Delete draft</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={() => onDeleteDraft(post.id)}
+                    className="text-brand-purple-600 transition-colors hover:text-brand-purple-700"
+                  >
+                    <TrashSimple className="h-5 w-5" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Delete draft</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+        )}
       </div>
     </motion.div>
   );

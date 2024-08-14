@@ -24,6 +24,8 @@ import {
 } from "@/components/ui/select";
 import { PostFormatSelector } from "../post-formatter";
 import { Loader2 } from "lucide-react";
+import { Tour } from "@frigade/react";
+import SuggestedIdeas from "../suggested-ideas";
 
 export const scratchStoryFormSchema = z.object({
   postContent: z.string().min(20, {
@@ -60,6 +62,10 @@ export function ScratchStoryForm({
   initialPostContent = "",
 }: ScratchStoryFormProps) {
   const [selectedFormat, setSelectedFormat] = useState<string | null>(null);
+  const [triggerGenerateInstructions, setTriggerGenerateInstructions] =
+    useState(false);
+  const [triggerSubmit, setTriggerSubmit] = useState(false);
+  const [triggerDialog, setTriggerDialog] = useState(false);
 
   const form = useForm<z.infer<typeof scratchStoryFormSchema>>({
     resolver: zodResolver(scratchStoryFormSchema),
@@ -115,6 +121,26 @@ export function ScratchStoryForm({
     form.setValue("formatTemplate", selectedFormat || "");
   }, [selectedFormat, form]);
 
+  useEffect(() => {
+    if (triggerGenerateInstructions) {
+      handleGenerateInstructions();
+      setTriggerGenerateInstructions(false);
+    }
+  }, [triggerGenerateInstructions]);
+
+  useEffect(() => {
+    if (triggerSubmit) {
+      form.handleSubmit(onSubmit)();
+      setTriggerSubmit(false);
+    }
+  }, [triggerSubmit, form, onSubmit]);
+
+  useEffect(() => {
+    if (triggerDialog) {
+      setTriggerDialog(false);
+    }
+  }, [triggerDialog]);
+
   const handleSelectFormat = (format: string) => {
     setSelectedFormat(format);
   };
@@ -129,152 +155,164 @@ export function ScratchStoryForm({
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <div className="flex items-center justify-start space-x-2">
-          <PostFormatSelector onSelectFormat={handleSelectFormat} />
-        </div>
-        {selectedFormat !== null && (
+    <>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <div
+            className="flex items-center justify-start space-x-2"
+            id="tour-3"
+          >
+            <PostFormatSelector
+              onSelectFormat={handleSelectFormat}
+              triggerDialog={triggerDialog}
+            />
+          </div>
+          <Tour
+            onPrimary={(step) => {
+              if (step.order === 2) {
+                setTriggerDialog(true);
+              }
+              if (step.order === 5) {
+                setTriggerGenerateInstructions(true);
+              }
+              if (step.order === 6) {
+                setTriggerSubmit(true);
+              }
+              return true;
+            }}
+            className="[&_.fr-title]:text-md [&_.fr-button-primary:hover]:bg-blue-700 [&_.fr-button-primary]:rounded-lg [&_.fr-button-primary]:bg-blue-600 [&_.fr-title]:font-semibold [&_.fr-title]:tracking-tight [&_.fr-title]:text-brand-gray-900"
+            flowId="flow_wqlim5Vq"
+          />
+          {selectedFormat !== null && (
+            <FormField
+              control={form.control}
+              name="formatTemplate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Edit Selected Format</FormLabel>
+                  <div className="flex items-start space-x-2">
+                    <FormControl className="flex-grow">
+                      <Textarea
+                        {...field}
+                        value={selectedFormat}
+                        onChange={handleFormatChange}
+                        className="min-h-[200px] text-sm"
+                      />
+                    </FormControl>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={handleClearFormat}
+                      className="flex-shrink-0 rounded-lg"
+                    >
+                      Clear
+                    </Button>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+
           <FormField
             control={form.control}
-            name="formatTemplate"
+            name="postContent"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Edit Selected Format</FormLabel>
-                <div className="flex items-start space-x-2">
-                  <FormControl className="flex-grow">
-                    <Textarea
-                      {...field}
-                      value={selectedFormat}
-                      onChange={handleFormatChange}
-                      className="min-h-[200px] text-sm"
-                    />
-                  </FormControl>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={handleClearFormat}
-                    className="flex-shrink-0 rounded-lg"
-                  >
-                    Clear
-                  </Button>
-                </div>
+              <FormItem id="tour-4">
+                <FormLabel>What do you want to write about?</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Describe the post you want to create."
+                    {...field}
+                  />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-        )}
+          <SuggestedIdeas />
 
-        <FormField
-          control={form.control}
-          name="postContent"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>What do you want to write about?</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Describe the post you want to create."
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="tone"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Select the tone you'd like for your post.</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a tone" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {tones.map((tone) => (
-                    <SelectItem key={tone.value} value={tone.value}>
-                      {tone.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="instructions"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Instructions</FormLabel>
-              <div className="flex items-start space-x-2">
-                <FormControl className="flex-grow">
-                  <Textarea
-                    className="h-[150px] "
-                    autoComplete="off"
-                    placeholder="Add any specific instructions or notes for your post."
-                    {...field}
-                    disabled={isLoading || isGeneratingInstructions}
-                  />
-                </FormControl>
-              </div>
-              <FormDescription>
-                Enter instructions for a more tailored repurpose or{" "}
-                <span
-                  onClick={handleGenerateInstructions}
-                  className={`cursor-pointer text-brand-purple-600 hover:text-brand-purple-700 ${
-                    isLoading || isGeneratingInstructions
-                      ? "pointer-events-none opacity-50"
-                      : ""
-                  }`}
+          <FormField
+            control={form.control}
+            name="tone"
+            render={({ field }) => (
+              <FormItem id="tour-5">
+                <FormLabel>Select the tone you'd like for your post.</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
                 >
-                  {isGeneratingInstructions ? (
-                    <>
-                      generating
-                      <Loader2 className="ml-1 inline-block h-4 w-4 animate-spin" />
-                    </>
-                  ) : (
-                    "generate some using AI."
-                  )}
-                </span>
-              </FormDescription>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a tone" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {tones.map((tone) => (
+                      <SelectItem key={tone.value} value={tone.value}>
+                        {tone.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {/* <FormField
-          control={form.control}
-          name="linkedInPostUrl"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>
-                Make the post sound like any post of your choice.
-              </FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Enter the URL to the LinkedIn post"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
-        <Button
-          className="rounded-lg bg-brand-purple-600 font-light hover:bg-brand-purple-700"
-          type="submit"
-          disabled={isLoading}
-        >
-          {isLoading ? "Generating" : "Generate Post"}
-        </Button>
-      </form>
-    </Form>
+          <FormField
+            control={form.control}
+            name="instructions"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Instructions</FormLabel>
+                <div className="flex items-start space-x-2">
+                  <FormControl className="flex-grow">
+                    <Textarea
+                      className="h-[150px] "
+                      autoComplete="off"
+                      placeholder="Add any specific instructions or notes for your post."
+                      {...field}
+                      disabled={isLoading || isGeneratingInstructions}
+                    />
+                  </FormControl>
+                </div>
+                <FormDescription className="rounded">
+                  Enter instructions for a more tailored repurpose or{" "}
+                  <span
+                    id="tour-6"
+                    onClick={handleGenerateInstructions}
+                    className={`cursor-pointer  text-brand-purple-600 hover:text-brand-purple-700 ${
+                      isLoading || isGeneratingInstructions
+                        ? "pointer-events-none opacity-50"
+                        : ""
+                    }`}
+                  >
+                    {isGeneratingInstructions ? (
+                      <>
+                        generating
+                        <Loader2 className="ml-1 inline-block h-4 w-4 animate-spin" />
+                      </>
+                    ) : (
+                      "generate some using AI."
+                    )}
+                  </span>
+                </FormDescription>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button
+            id="tour-7"
+            className="rounded-lg bg-brand-purple-600 font-light hover:bg-brand-purple-700"
+            type="submit"
+            disabled={isLoading}
+          >
+            {isLoading ? "Generating" : "Generate Post"}
+          </Button>
+        </form>
+      </Form>
+    </>
   );
 }

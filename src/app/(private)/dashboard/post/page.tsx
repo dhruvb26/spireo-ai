@@ -11,7 +11,7 @@ const PostsPage = () => {
         <h1 className="text-xl font-semibold tracking-tight text-brand-gray-900 ">
           Craft Engaging Posts with AI Assistance
         </h1>
-        <p className="text-sm text-brand-gray-500 ">
+        <p className="text-sm text-brand-gray-500">
           Choose Your Template Select from our range of AI-powered templates to
           kickstart your post creation process. Whether you're repurposing
           content or starting from scratch, we've got you covered.
@@ -65,7 +65,11 @@ const PostsPage = () => {
             </div>
           </div>
         </Link>
-        <Link href={"/dashboard/post/scratch-story"}>
+        <Link
+          className="rounded-lg"
+          href={"/dashboard/post/scratch-story"}
+          id="tour-2"
+        >
           <div className="group h-full overflow-hidden rounded-lg border border-brand-gray-200 transition-all">
             <img
               src="/Writing.svg"

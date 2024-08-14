@@ -6,6 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import Link from "next/link";
 import { BookmarkSimple, HardDrive, ShareFat } from "@phosphor-icons/react";
 import { toast } from "sonner";
+import SuggestedIdeas from "@/components/suggested-ideas";
 import {
   Tooltip,
   TooltipContent,

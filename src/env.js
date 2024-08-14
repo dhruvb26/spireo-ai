@@ -21,6 +21,7 @@ export const env = createEnv({
     REDIS_CLOUD_PASSWORD: z.string(),
     STRIPE_SECRET_KEY: z.string(),
     STRIPE_WEBHOOK_SECRET: z.string(),
+    FRIGADE_API_KEY: z.string(),
   },
 
   /**
@@ -51,6 +52,7 @@ export const env = createEnv({
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     LINKEDIN_CLIENT_SECRET: process.env.LINKEDIN_CLIENT_SECRET,
     REDIS_CLOUD_PASSWORD: process.env.REDIS_CLOUD_PASSWORD,
+    FRIGADE_API_KEY: process.env.FRIGADE_API_KEY,
     NEXT_PUBLIC_NODE_ENV: process.env.NEXT_PUBLIC_NODE_ENV,
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,

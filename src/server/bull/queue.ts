@@ -45,9 +45,6 @@ export function initializeQueue() {
     "linkedin-posts",
     async (job) => {
       const { userId, postId, content, documentUrn } = job.data;
-      // const scheduledFor = job.opts.delay
-      //   ? new Date(job.timestamp + job.opts.delay)
-      //   : null;
 
       console.log(`Processing post ${postId} for user ${userId}`);
 

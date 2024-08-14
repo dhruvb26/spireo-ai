@@ -1,10 +1,11 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import { getUser } from "@/actions/user";
 import { Descendant } from "slate";
 import ContentViewer from "@/app/(private)/dashboard/_components/content-viewer";
 import { getDownloadUrl } from "@/actions/draft";
+import { MdSmartphone, MdTablet, MdLaptop } from "react-icons/md";
 import {
   ChatCircleText,
   GlobeHemisphereWest,
@@ -39,13 +40,39 @@ interface User {
 
 const LinkedInPostPreview: React.FC<LinkedInPostPreviewProps> = ({
   content,
-  device,
+  device: initialDevice,
   postId,
 }) => {
   const [user, setUser] = useState<User | null>(null);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [contentType, setContentType] = useState<string | null>(null);
+  const [device, setDevice] = useState<"mobile" | "tablet" | "desktop">(
+    "mobile",
+  );
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const updateDeviceBasedOnSize = () => {
+      if (containerRef.current) {
+        const containerWidth = containerRef.current.offsetWidth;
+        if (containerWidth <= 320) {
+          setDevice("mobile");
+        } else if (containerWidth <= 480) {
+          setDevice("tablet");
+        } else {
+          setDevice("desktop");
+        }
+      }
+    };
+
+    updateDeviceBasedOnSize();
+    window.addEventListener("resize", updateDeviceBasedOnSize);
+
+    return () => {
+      window.removeEventListener("resize", updateDeviceBasedOnSize);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -82,6 +109,28 @@ const LinkedInPostPreview: React.FC<LinkedInPostPreviewProps> = ({
     fetchData();
   }, [postId]);
 
+  useEffect(() => {
+    const updateDeviceBasedOnSize = () => {
+      if (containerRef.current) {
+        const containerWidth = containerRef.current.offsetWidth;
+        if (containerWidth <= 320) {
+          setDevice("mobile");
+        } else if (containerWidth <= 480) {
+          setDevice("tablet");
+        } else {
+          setDevice("desktop");
+        }
+      }
+    };
+
+    updateDeviceBasedOnSize();
+    window.addEventListener("resize", updateDeviceBasedOnSize);
+
+    return () => {
+      window.removeEventListener("resize", updateDeviceBasedOnSize);
+    };
+  }, []);
+
   const renderContent = () => {
     if (!downloadUrl) return null;
 
@@ -92,13 +141,7 @@ const LinkedInPostPreview: React.FC<LinkedInPostPreviewProps> = ({
         <img
           src={downloadUrl}
           alt="Content"
-          className={`h-auto ${
-            device === "mobile"
-              ? "max-w-[320px]"
-              : device === "tablet"
-                ? "max-w-[480px]"
-                : "max-w-[560px]"
-          }`}
+          className="h-auto w-full object-contain"
         />
       );
     } else if (contentType === "application/pdf") {
@@ -110,9 +153,32 @@ const LinkedInPostPreview: React.FC<LinkedInPostPreviewProps> = ({
   };
 
   return (
-    <div className="flex w-full justify-center">
+    <div className="flex w-full flex-col items-center justify-center">
+      <div className="mb-4 flex items-center justify-center">
+        <div className="flex gap-2">
+          <button
+            onClick={() => setDevice("mobile")}
+            className={`rounded-full p-2 ${device === "mobile" ? "text-brand-purple-600" : "text-brand-gray-500"}`}
+          >
+            <MdSmartphone size={24} />
+          </button>
+          <button
+            onClick={() => setDevice("tablet")}
+            className={`rounded-full p-2 ${device === "tablet" ? "text-brand-purple-600" : "text-brand-gray-500"}`}
+          >
+            <MdTablet size={24} />
+          </button>
+          <button
+            onClick={() => setDevice("desktop")}
+            className={`rounded-full p-2 ${device === "desktop" ? "text-brand-purple-600" : "text-brand-gray-500"}`}
+          >
+            <MdLaptop size={24} />
+          </button>
+        </div>
+      </div>
       <div
-        className={`w-full rounded bg-white p-4 shadow ${
+        ref={containerRef}
+        className={`w-full rounded bg-white shadow ${
           device === "mobile"
             ? "max-w-[320px]"
             : device === "tablet"
@@ -120,7 +186,7 @@ const LinkedInPostPreview: React.FC<LinkedInPostPreviewProps> = ({
               : "max-w-[560px]"
         }`}
       >
-        <div className="mb-2 flex items-center">
+        <div className="mb-2 flex items-center p-4">
           <div className="relative mr-2 h-12 w-12">
             <img
               src={user?.image || "https://i.pravatar.cc/300"}
@@ -141,7 +207,9 @@ const LinkedInPostPreview: React.FC<LinkedInPostPreviewProps> = ({
           </div>
         </div>
 
-        <ContentViewer postId={postId} value={content} />
+        <div className="px-4">
+          <ContentViewer postId={postId} value={content} />
+        </div>
 
         {downloadUrl && (
           <div className="mt-2 flex items-center justify-center">
@@ -149,7 +217,7 @@ const LinkedInPostPreview: React.FC<LinkedInPostPreviewProps> = ({
           </div>
         )}
 
-        <div className="border-t border-gray-200 pt-1">
+        <div className="border-t border-gray-200 p-4">
           <div className="flex items-center justify-between">
             {[
               {

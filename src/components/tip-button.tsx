@@ -23,8 +23,8 @@ const TipButton: React.FC<TipButtonProps> = ({ heading, content }) => {
             <Question weight="duotone" className="text-blue-600" size={28} />
           </button>
         </TooltipTrigger>
-        <TooltipContent className="w-64 p-4" side="right">
-          <h3 className="mb-2 text-sm font-semibold">{heading}</h3>
+        <TooltipContent className="w-64 bg-blue-50 p-4" side="right">
+          <h3 className="mb-2 text-sm font-semibold text-black">{heading}</h3>
           <p className="text-xs">{content}</p>
         </TooltipContent>
       </Tooltip>

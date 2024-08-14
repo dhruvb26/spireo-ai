@@ -7,12 +7,15 @@ import { getUserId } from "./user";
 import { eq, and } from "drizzle-orm";
 import { getJobId, deleteJobId } from "@/server/redis";
 import { getQueue } from "@/server/bull/queue";
+import { env } from "@/env";
 
 export type Draft = {
   id: string;
+  name?: string;
   content: string;
   createdAt: Date;
   updatedAt: Date;
+  scheduledFor?: Date;
   userId: string;
   status: string;
   linkedInId: string;
@@ -299,6 +302,94 @@ export async function saveDraft(
           message: "Failed to create new draft",
         };
       }
+
+      // Get the user flow state
+      const options = {
+        method: "GET",
+        headers: { Authorization: `Bearer ${env.FRIGADE_API_KEY}` },
+      };
+
+      const response = await fetch(
+        `https://api.frigade.com/v1/public/flowStates?userId=${userId}`,
+        options,
+      );
+      const data = await response.json();
+      // Find the flow with slug "flow_pUF3qW42"
+      const targetFlow = data.eligibleFlows.find(
+        (flow: any) => flow.flowSlug === "flow_pUF3qW42",
+      );
+
+      if (targetFlow) {
+        // Find the step with id "checklist-step-two"
+        const targetStep = targetFlow.data.steps.find(
+          (step: any) => step.id === "checklist-step-two",
+        );
+        console.log(targetStep);
+
+        if (targetStep) {
+          const isCompleted = targetStep.$state.completed;
+          const isStarted = targetStep.$state.started;
+          console.log(`Step "checklist-step-two" is completed: ${isCompleted}`);
+          console.log(`Step "checklist-step-two" is started: ${isStarted}`);
+
+          if (!isCompleted) {
+            let startOptions = {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${env.FRIGADE_API_KEY}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                userId: userId,
+                flowSlug: "flow_pUF3qW42",
+                stepId: "checklist-step-two",
+                actionType: "STARTED_STEP",
+              }),
+            };
+
+            const startResponse = await fetch(
+              "https://api.frigade.com/v1/public/flowStates",
+              startOptions,
+            );
+
+            if (startResponse.ok) {
+              console.log("Step marked as started.");
+
+              let completeOptions = {
+                method: "POST",
+                headers: {
+                  Authorization: `Bearer ${env.FRIGADE_API_KEY}`,
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  userId: userId,
+                  flowSlug: "flow_pUF3qW42",
+                  stepId: "checklist-step-two",
+                  actionType: "COMPLETED_STEP",
+                }),
+              };
+
+              const completeResponse = await fetch(
+                "https://api.frigade.com/v1/public/flowStates",
+                completeOptions,
+              );
+
+              if (completeResponse.ok) {
+                console.log("Step marked as completed.");
+              } else {
+                console.error("Failed to mark step as completed.");
+              }
+            } else {
+              console.error("Failed to mark step as started.");
+            }
+          }
+        } else {
+          console.log("Step 'checklist-step-two' not found in the flow.");
+        }
+      } else {
+        console.log("Flow 'flow_pUF3qW42' not found in eligible flows.");
+      }
+
       return {
         success: true,
         message: "Draft created successfully",

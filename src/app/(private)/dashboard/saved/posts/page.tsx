@@ -7,6 +7,17 @@ import Link from "next/link";
 import { ParallaxScroll } from "@/components/ui/parallax-scroll";
 import { Loader2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const SavedDraftsPage = () => {
   const [drafts, setDrafts] = useState<Draft[]>([]);
@@ -15,6 +26,7 @@ const SavedDraftsPage = () => {
   const [activeTab, setActiveTab] = useState<
     "saved" | "scheduled" | "published"
   >("saved");
+  const [draftToDelete, setDraftToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     fetchDrafts(activeTab);
@@ -41,19 +53,22 @@ const SavedDraftsPage = () => {
     }
   };
 
-  const handleDeleteDraft = async (draftId: string) => {
+  const handleDeleteDraft = async () => {
+    if (!draftToDelete) return;
     try {
-      const result = await deleteDraft(draftId);
+      const result = await deleteDraft(draftToDelete);
       if (result.success) {
         toast.success(result.message);
         setDrafts((prevDrafts) =>
-          prevDrafts.filter((draft) => draft.id !== draftId),
+          prevDrafts.filter((draft) => draft.id !== draftToDelete),
         );
       } else {
         toast.error(result.message);
       }
     } catch (error) {
       toast.error("An error occurred while deleting the draft");
+    } finally {
+      setDraftToDelete(null);
     }
   };
 
@@ -94,7 +109,7 @@ const SavedDraftsPage = () => {
           status: draft.status,
           updatedAt: new Date(draft.updatedAt),
         }))}
-        onDeleteDraft={handleDeleteDraft}
+        onDeleteDraft={(draftId) => setDraftToDelete(draftId)}
       />
     );
   };
@@ -126,6 +141,34 @@ const SavedDraftsPage = () => {
         <TabsContent value="scheduled">{renderContent()}</TabsContent>
         <TabsContent value="published">{renderContent()}</TabsContent>
       </Tabs>
+
+      <AlertDialog
+        open={!!draftToDelete}
+        onOpenChange={() => setDraftToDelete(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-lg font-semibold tracking-tight">
+              Are you sure?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete your
+              draft.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="rounded-lg text-sm">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              className="rounded-lg bg-blue-600 text-sm hover:bg-blue-700"
+              onClick={handleDeleteDraft}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </main>
   );
 };

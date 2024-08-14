@@ -1,8 +1,6 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import {
   Select,
   SelectContent,
@@ -10,18 +8,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-export interface Draft {
-  id: string;
-  name: string | null;
-  status: string | null;
-  userId: string | null;
-  scheduledFor: Date | null;
-  linkedInId: string | null;
-  content: string | null;
-  createdAt: Date;
-  updatedAt: Date | null;
-}
+import DraftCard from "./DraftCard";
+import { Draft } from "@/actions/draft";
 
 interface CalendarProps {
   drafts: Draft[];
@@ -29,26 +17,7 @@ interface CalendarProps {
 
 const Calendar: React.FC<CalendarProps> = ({ drafts }) => {
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
-  const [currentView, setCurrentView] = useState<"1week" | "2weeks">("2weeks");
-  const [hoveredDraft, setHoveredDraft] = useState<Draft | null>(null);
-  const [activeDraft, setActiveDraft] = useState<Draft | null>(null);
-  const tooltipRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        tooltipRef.current &&
-        !tooltipRef.current.contains(event.target as Node)
-      ) {
-        setActiveDraft(null);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+  const [currentView, setCurrentView] = useState<"1week" | "2weeks">("1week");
 
   const getWeekDates = (date: Date, weeks: number = 1): Date[] => {
     const dates: Date[] = [];
@@ -103,61 +72,6 @@ const Calendar: React.FC<CalendarProps> = ({ drafts }) => {
     );
   };
 
-  const renderDraftTooltip = (draft: Draft) => {
-    if (!activeDraft || activeDraft.id !== draft.id) return null;
-
-    return (
-      <div
-        ref={tooltipRef}
-        className="absolute right-full top-0 z-50 mr-2 w-[300px] rounded-lg border border-brand-gray-200 bg-brand-gray-25 p-4 shadow-lg"
-      >
-        <p className="mb-2 text-sm">
-          <strong>Scheduled for:</strong> {draft.scheduledFor?.toLocaleString()}
-        </p>
-        <p className="mb-4 text-sm">
-          <strong>Created at:</strong> {draft.createdAt.toLocaleString()}
-        </p>
-        <Link href={`/dashboard/draft/${draft.id}`} passHref>
-          <Button variant="outline" size="sm" className="w-full">
-            Edit Draft
-          </Button>
-        </Link>
-      </div>
-    );
-  };
-
-  const renderDraftCard = (draft: Draft) => {
-    const getStatusColor = (status: string | null): string => {
-      switch (status?.toLowerCase()) {
-        case "scheduled":
-          return "bg-green-500";
-        default:
-          return "bg-gray-400";
-      }
-    };
-
-    return (
-      <div className="relative" key={draft.id}>
-        <div
-          className="relative cursor-pointer rounded bg-slate-50 p-2 text-sm"
-          onClick={() => setActiveDraft(draft)}
-          onMouseEnter={() => setHoveredDraft(draft)}
-          onMouseLeave={() => setHoveredDraft(null)}
-        >
-          <div className="flex items-center space-x-2">
-            <div
-              className={`h-2 w-2 rounded-full ${getStatusColor(draft.status)}`}
-            ></div>
-            <span className="truncate text-sm font-medium text-brand-gray-800">
-              {draft.name || "Untitled"}
-            </span>
-          </div>
-        </div>
-        {renderDraftTooltip(draft)}
-      </div>
-    );
-  };
-
   const renderCalendarView = () => {
     const dates = getWeekDates(currentDate, currentView === "1week" ? 1 : 2);
     const today = new Date().toDateString();
@@ -166,16 +80,18 @@ const Calendar: React.FC<CalendarProps> = ({ drafts }) => {
         {dates.map((date, index) => (
           <div
             key={index}
-            className={`flex h-64 flex-col ${
+            className={`flex ${
+              currentView === "1week" ? "h-[75vh]" : "h-[50vh]"
+            } flex-col ${
               date.toDateString() === today ? "bg-blue-50" : "bg-white"
             } ${isFirstDayOfMonth(date) ? "bg-blue-100" : ""}`}
           >
             <div
               className={`flex-shrink-0 border-b p-2 ${
                 date.toDateString() === today ? "bg-blue-100" : ""
-              } ${isFirstDayOfMonth(date) ? "bg-black/90 text-white" : ""}`}
+              } ${isFirstDayOfMonth(date) ? "bg-blue-50 " : ""}`}
             >
-              <div className="text-xs text-blue-700">
+              <div className="text-sm font-semibold text-blue-700">
                 {formatDayOfWeek(date).toUpperCase()}
               </div>
               <div className="flex flex-row items-end space-x-2">
@@ -189,8 +105,10 @@ const Calendar: React.FC<CalendarProps> = ({ drafts }) => {
                 )}
               </div>
             </div>
-            <div className="relative flex-grow overflow-visible p-2">
-              {getDraftsForDate(date).map(renderDraftCard)}
+            <div className="relative flex-grow overflow-hidden p-2">
+              {getDraftsForDate(date).map((draft) => (
+                <DraftCard key={draft.id} draft={draft} />
+              ))}
             </div>
           </div>
         ))}
@@ -210,14 +128,20 @@ const Calendar: React.FC<CalendarProps> = ({ drafts }) => {
             {formatMonthYear(currentDate)}
           </span>
           <div className="flex flex-row items-center space-x-4">
-            <button onClick={goToPrevious} className="p-1">
-              <ChevronLeft className="h-5 w-5" />
+            <button
+              onClick={goToPrevious}
+              className="rounded-full bg-white p-1  shadow-md disabled:opacity-50"
+            >
+              <ChevronLeft className="h-4 w-4 text-blue-600" />
             </button>
             <button onClick={goToToday} className="text-sm">
               Today
             </button>
-            <button onClick={goToNext} className="p-1">
-              <ChevronRight className="h-5 w-5" />
+            <button
+              onClick={goToNext}
+              className="rounded-full bg-white p-1 shadow-md disabled:opacity-50"
+            >
+              <ChevronRight className="h-4 w-4 text-blue-600" />
             </button>
           </div>
         </div>
@@ -228,7 +152,7 @@ const Calendar: React.FC<CalendarProps> = ({ drafts }) => {
               setCurrentView(value as "1week" | "2weeks")
             }
           >
-            <SelectTrigger className="w-[120px]">
+            <SelectTrigger className="w-[120px] rounded-lg text-sm ">
               <SelectValue placeholder="Select view" />
             </SelectTrigger>
             <SelectContent>

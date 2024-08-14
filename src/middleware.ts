@@ -9,6 +9,9 @@ export default withAuth(function middleware(req) {
     console.log("Token: ", token);
     return NextResponse.redirect(new URL("/signin", req.url));
   }
+
+  // Add a log here for token to see the full info
+  // console.log("Token: ", token);
   return NextResponse.next();
 });
 

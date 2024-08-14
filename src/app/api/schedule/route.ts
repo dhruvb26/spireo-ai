@@ -10,8 +10,10 @@ import { checkAccess } from "@/actions/user";
 import { deleteDraft, getDraft } from "@/actions/draft";
 
 export async function POST(req: Request) {
+  console.log("POST request received for scheduling");
   const hasAccess = await checkAccess();
   if (!hasAccess) {
+    console.log("Access denied for scheduling request");
     return NextResponse.json({ error: "Not authorized!" }, { status: 401 });
   }
 
@@ -19,12 +21,14 @@ export async function POST(req: Request) {
   const queue = getQueue();
 
   const body = await req.json();
-  const { userId, postId, scheduledTime, documentUrn } = body;
+  const { userId, postId, scheduledTime, documentUrn, name } = body;
+  console.log(`Scheduling request for user ${userId}, post ${postId}`);
 
   const gettingDraft = await getDraft(postId);
   const content = gettingDraft?.data?.content;
 
   if (!userId || !postId || !content) {
+    console.log("Missing required fields for scheduling");
     return NextResponse.json(
       { error: "Missing required fields" },
       { status: 400 },
@@ -35,7 +39,9 @@ export async function POST(req: Request) {
     // Check if a job already exists for this post
     const existingJobId = await getJobId(userId, postId);
     if (existingJobId) {
+      console.log(`Existing job found for post ${postId}: ${existingJobId}`);
       if (!queue) {
+        console.log("Queue not found when trying to remove existing job");
         return NextResponse.json(
           {
             success: false,
@@ -48,8 +54,10 @@ export async function POST(req: Request) {
       const existingJob = await queue.getJob(existingJobId);
       if (existingJob) {
         await existingJob.remove();
+        console.log(`Removed existing job ${existingJobId} from queue`);
       }
       await deleteJobId(userId, postId);
+      console.log(`Deleted job ID ${existingJobId} from Redis`);
     }
 
     // Check if the draft exists
@@ -60,18 +68,21 @@ export async function POST(req: Request) {
       .limit(1);
 
     if (draft.length === 0) {
+      console.log(`Draft not found for post ${postId}, creating new draft`);
       // If draft doesn't exist, create it
       draft = await db
         .insert(drafts)
         .values({
           id: postId,
           userId: userId,
+          name: name,
           content: content,
           status: "saved",
           createdAt: new Date(),
           updatedAt: new Date(),
         })
         .returning();
+      console.log(`New draft created for post ${postId}`);
     }
 
     const jobData = { userId, postId, content, documentUrn };
@@ -85,6 +96,7 @@ export async function POST(req: Request) {
     if (scheduledTime) {
       const scheduledDate = new Date(scheduledTime);
       if (isNaN(scheduledDate.getTime())) {
+        console.log(`Invalid scheduledTime: ${scheduledTime}`);
         return NextResponse.json(
           { error: "Invalid scheduledTime" },
           { status: 400 },
@@ -92,6 +104,7 @@ export async function POST(req: Request) {
       }
 
       if (scheduledDate <= now) {
+        console.log(`Scheduled time is in the past: ${scheduledTime}`);
         return NextResponse.json(
           { error: "Scheduled time must be in the future" },
           { status: 400 },
@@ -99,9 +112,11 @@ export async function POST(req: Request) {
       }
 
       jobOptions.delay = scheduledDate.getTime() - now.getTime();
+      console.log(`Job scheduled for ${scheduledDate.toISOString()}`);
     }
 
     if (!queue) {
+      console.log("Queue not found when trying to add new job");
       return NextResponse.json(
         {
           success: false,
@@ -113,9 +128,13 @@ export async function POST(req: Request) {
 
     // Add a new job to the queue
     const job = await queue.add("post", jobData, jobOptions);
+    console.log(`New job added to queue with ID: ${job.id}`);
 
     // Save the new job ID in Redis
     await saveJobId(userId, postId, job.id || "");
+    console.log(
+      `Job ID ${job.id} saved in Redis for user ${userId}, post ${postId}`,
+    );
 
     const scheduledFor = jobOptions.delay
       ? new Date(now.getTime() + jobOptions.delay).toISOString()
@@ -127,7 +146,7 @@ export async function POST(req: Request) {
       .set({
         status: "scheduled",
         content: content,
-        documentUrn: documentUrn, // Add this line
+        documentUrn: documentUrn,
         scheduledFor: scheduledTime ? new Date(scheduledTime) : null,
         updatedAt: new Date(),
       })
@@ -135,6 +154,7 @@ export async function POST(req: Request) {
       .returning();
 
     if (updatedDraft.length === 0) {
+      console.log(`Failed to update draft for post ${postId}`);
       return NextResponse.json(
         {
           success: false,
@@ -144,6 +164,7 @@ export async function POST(req: Request) {
       );
     }
 
+    console.log(`Draft updated successfully for post ${postId}`);
     return NextResponse.json({
       success: true,
       message: existingJobId
@@ -165,10 +186,12 @@ export async function POST(req: Request) {
 }
 
 export async function DELETE(req: Request) {
+  console.log("DELETE request received for scheduled post");
   const body = await req.json();
   const { userId, postId } = body;
 
   if (!userId || !postId) {
+    console.log("Missing required fields for DELETE request");
     return NextResponse.json(
       { error: "Missing required fields" },
       { status: 400 },
@@ -178,6 +201,7 @@ export async function DELETE(req: Request) {
   try {
     const queue = getQueue();
     if (!queue) {
+      console.log("Queue not initialized for DELETE request");
       return NextResponse.json(
         { error: "Queue not initialized" },
         { status: 500 },
@@ -215,8 +239,10 @@ export async function DELETE(req: Request) {
     const result = await deleteDraft(postId);
 
     if (result.success) {
+      console.log(`Draft deleted successfully for post ${postId}`);
       return NextResponse.json({ message: result.message });
     } else {
+      console.log(`Failed to delete draft for post ${postId}`);
       return NextResponse.json({ error: result.message }, { status: 404 });
     }
   } catch (error) {
@@ -229,13 +255,15 @@ export async function DELETE(req: Request) {
 }
 
 export async function PUT(req: Request) {
+  console.log("PUT request received for updating scheduled post");
   // Initialize the queue
   const queue = getQueue();
 
   const body = await req.json();
-  const { userId, postId, content, scheduledTime, documentUrn } = body;
+  const { userId, postId, content, scheduledTime, documentUrn, name } = body;
 
   if (!userId || !postId) {
+    console.log("Missing required fields for PUT request");
     return NextResponse.json(
       { error: "Missing required fields" },
       { status: 400 },
@@ -245,10 +273,12 @@ export async function PUT(req: Request) {
   const jobId = await getJobId(userId, postId);
 
   if (!jobId) {
+    console.log(`Job not found for user ${userId}, post ${postId}`);
     return NextResponse.json({ error: "Job not found" }, { status: 404 });
   }
 
   if (!queue) {
+    console.log("Queue not found for PUT request");
     return NextResponse.json(
       {
         success: false,
@@ -261,6 +291,7 @@ export async function PUT(req: Request) {
   const job = await queue.getJob(jobId);
 
   if (!job) {
+    console.log(`Job ${jobId} not found in queue`);
     return NextResponse.json(
       { error: "Job not found in queue" },
       { status: 404 },
@@ -268,7 +299,7 @@ export async function PUT(req: Request) {
   }
 
   // Update job data
-  let updatedData = { ...job.data, content, documentUrn };
+  let updatedData = { ...job.data, content, documentUrn, name };
 
   // Update job options
   let updatedOpts = { ...job.opts };
@@ -277,6 +308,7 @@ export async function PUT(req: Request) {
   if (scheduledTime) {
     scheduledDate = new Date(scheduledTime);
     if (isNaN(scheduledDate.getTime())) {
+      console.log(`Invalid scheduledTime: ${scheduledTime}`);
       return NextResponse.json(
         { error: "Invalid scheduledTime" },
         { status: 400 },
@@ -285,12 +317,14 @@ export async function PUT(req: Request) {
 
     const now = new Date();
     if (scheduledDate <= now) {
+      console.log(`Scheduled time is in the past: ${scheduledTime}`);
       return NextResponse.json(
         { error: "Scheduled time must be in the future" },
         { status: 400 },
       );
     }
     updatedOpts.delay = scheduledDate.getTime() - now.getTime();
+    console.log(`Updated scheduled time to ${scheduledDate.toISOString()}`);
   }
 
   try {
@@ -301,18 +335,23 @@ export async function PUT(req: Request) {
         content,
         documentUrn,
         scheduledFor: scheduledDate,
+        name,
         updatedAt: new Date(),
       })
       .where(eq(drafts.id, postId));
+    console.log(`Updated draft in database for post ${postId}`);
 
     // Remove the existing job
     await job.remove();
+    console.log(`Removed existing job ${jobId} from queue`);
 
     // Add a new job with updated data and options
     const updatedJob = await queue.add("post", updatedData, updatedOpts);
+    console.log(`Added new job ${updatedJob.id} to queue`);
 
     // Update the job ID in Redis
     await saveJobId(userId, postId, updatedJob.id || "");
+    console.log(`Updated job ID in Redis for user ${userId}, post ${postId}`);
 
     return NextResponse.json({
       message: "Job updated successfully",

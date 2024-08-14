@@ -1,4 +1,3 @@
-
 import Anthropic from "@anthropic-ai/sdk";
 import { env } from "@/env";
 import { NextResponse } from "next/server";
@@ -23,7 +22,7 @@ export async function POST(req: Request) {
   const { topic } = body;
 
   const msg = await anthropic.messages.create({
-    model: env.MODEL,
+    model: "claude-3-haiku-20240307",
     max_tokens: 1024,
     messages: [
       {
@@ -103,9 +102,6 @@ export async function POST(req: Request) {
     ?.split("\n")
     .map((idea) => idea.trim())
     .filter((idea) => idea !== "");
-
-  // Console log the ideas
-  //   console.log("Generated ideas:", ideasList);
 
   // Return the ideas as a response
   return NextResponse.json({ ideas: ideasList }, { status: 200 });

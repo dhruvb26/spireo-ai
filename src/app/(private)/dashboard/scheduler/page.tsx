@@ -1,6 +1,7 @@
 import { getDrafts } from "@/actions/draft";
-import Calendar, { Draft } from "../_components/calendar-component";
+import Calendar from "../_components/calendar-component";
 export const dynamic = "force-dynamic";
+import { Draft } from "@/actions/draft";
 
 interface GetDraftsResult {
   success: boolean;

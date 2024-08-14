@@ -7,7 +7,7 @@ import { getServerAuthSession } from "@/server/auth";
 import { getUserFromDb } from "@/actions/user";
 import SubscriptionPrompt from "@/components/subscription-prompt";
 import FeedbackButton from "@/components/feedback-button";
-import { OnboardingForm } from "../../../components/forms/onboarding-form";
+import OnboardingPage from "@/app/(public)/onboarding/page";
 
 export default async function DashboardLayout({
   children,
@@ -19,7 +19,7 @@ export default async function DashboardLayout({
   const isOnboardingComplete = user?.onboardingCompleted;
 
   if (!isOnboardingComplete) {
-    return <OnboardingForm />;
+    return <OnboardingPage />;
   }
   return (
     <div className="flex min-h-screen">
