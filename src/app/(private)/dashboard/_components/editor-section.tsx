@@ -560,7 +560,7 @@ function EditorSection({
         </Button>
         <div className="flex space-x-2">
           <ScheduleDialog
-            documentUrn={documentUrn}
+            documentUrn={documentUrn || undefined}
             id={id}
             content={value}
             disabled={isPublishing}

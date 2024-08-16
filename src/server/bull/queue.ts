@@ -1,43 +1,17 @@
-import { Queue, Worker, QueueEvents, ConnectionOptions } from "bullmq";
-import IORedis from "ioredis";
+import { Queue, Worker, QueueEvents } from "bullmq";
+import { sharedConnection } from "../redisConnection";
 import { env } from "@/env";
 
-export let redisConnection: IORedis | null = null;
 let queue: Queue | null = null;
 let worker: Worker | null = null;
 let queueEvents: QueueEvents | null = null;
 
-const redisOptions: ConnectionOptions = {
-  port: 12701,
-  host: "redis-12701.c325.us-east-1-4.ec2.cloud.redislabs.com",
-  username: "default",
-  password: env.REDIS_CLOUD_PASSWORD,
-  maxRetriesPerRequest: null,
-};
-
-function createClient() {
-  if (!redisConnection) {
-    redisConnection = new IORedis(redisOptions as any);
-
-    redisConnection.on("error", (error) => {
-      console.error("Redis connection error:", error);
-    });
-
-    redisConnection.on("connect", () => {
-      console.log("Connected to Redis");
-    });
-  }
-  return redisConnection;
-}
-
 export function initializeQueue() {
   if (queue) return queue;
 
-  const client = createClient();
-
-  // Create a queue
+  // Create a queue using the shared connection
   queue = new Queue("linkedin-posts", {
-    connection: client,
+    connection: sharedConnection,
   });
 
   // Create a worker to process jobs
@@ -78,7 +52,7 @@ export function initializeQueue() {
       }
     },
     {
-      connection: client,
+      connection: sharedConnection,
     },
   );
 
@@ -94,10 +68,11 @@ export function initializeQueue() {
 
   return queue;
 }
-
 export function getQueue() {
   if (!queue) {
-    return initializeQueue();
+    queue = new Queue("linkedin-posts", {
+      connection: sharedConnection,
+    });
   }
   return queue;
 }
@@ -106,27 +81,27 @@ export async function closeConnections() {
   if (worker) {
     await worker.close();
   }
-  if (queue) {
-    await queue.close();
-  }
-  if (queueEvents) {
-    await queueEvents.close();
-  }
-  if (redisConnection) {
-    await redisConnection.quit();
-  }
+  // if (queue) {
+  //   await queue.close();
+  // }
+  // if (queueEvents) {
+  //   await queueEvents.close();
+  // }
+
   console.log("All connections closed");
 }
 
 // Make sure to call closeConnections() when your application is shutting down
 process.on("SIGTERM", async () => {
-  console.log("SIGTERM signal received: closing HTTP server");
+  console.log("SIGTERM received. Closing connections...");
   await closeConnections();
+  await sharedConnection.quit();
   process.exit(0);
 });
 
 process.on("SIGINT", async () => {
-  console.log("SIGINT signal received: closing HTTP server");
+  console.log("SIGINT received. Closing connections...");
   await closeConnections();
+  await sharedConnection.quit();
   process.exit(0);
 });

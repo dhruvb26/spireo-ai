@@ -325,7 +325,7 @@ export async function POST(request: Request) {
         mediaContent = {
           media: {
             id: `urn:li:document:${urnId}`,
-            title: "PDF Document Title",
+            title: "PDF",
           },
         };
       }
