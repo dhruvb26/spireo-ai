@@ -17,12 +17,32 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { PostFormatSelector } from "../post-formatter";
-import { Loader2 } from "lucide-react";
+import {
+  Loader2,
+  LightbulbIcon,
+  ChevronUpIcon,
+  ChevronDownIcon,
+} from "lucide-react";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import {
+  CaretDown,
+  CaretUp,
+  Lightbulb,
+  Lightning,
+  Minus,
+  Plus,
+} from "@phosphor-icons/react";
 
 export const RepurposeFormSchema = z.object({
   url: z.string().url(),
   instructions: z.string().optional(),
   formatTemplate: z.string().optional(),
+  engagementQuestion: z.string().optional(),
+  CTA: z.string().optional(),
 });
 
 interface YouTubeFormProps {
@@ -37,11 +57,14 @@ export function YouTubeForm({ onSubmit, isLoading }: YouTubeFormProps) {
       url: "",
       instructions: "",
       formatTemplate: "",
+      engagementQuestion: "",
+      CTA: "",
     },
   });
   const [selectedFormat, setSelectedFormat] = useState<string | null>(null);
   const [isGeneratingInstructions, setIsGeneratingInstructions] =
     useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     form.setValue("formatTemplate", selectedFormat || "");
@@ -151,6 +174,80 @@ export function YouTubeForm({ onSubmit, isLoading }: YouTubeFormProps) {
             </FormItem>
           )}
         />
+        <Collapsible
+          open={isOpen}
+          onOpenChange={setIsOpen}
+          className="w-full max-w-full rounded-lg bg-blue-50"
+        >
+          <CollapsibleTrigger asChild>
+            <div className="flex items-center justify-between px-4 py-4">
+              <h2 className="flex items-center text-sm font-medium text-black">
+                <Lightning
+                  weight="duotone"
+                  className="mr-1 text-blue-500"
+                  size={22}
+                />
+                Add more information
+              </h2>
+
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-6 w-6 p-0 text-blue-600 hover:bg-blue-50 hover:text-blue-700"
+              >
+                <CaretDown
+                  className={`h-4 w-4 transition-transform ${
+                    isOpen ? "rotate-180" : ""
+                  }`}
+                />
+                <span className="sr-only">Toggle</span>
+              </Button>
+            </div>
+          </CollapsibleTrigger>
+          <CollapsibleContent className="space-y-4 px-4 pb-4">
+            <FormField
+              control={form.control}
+              name="engagementQuestion"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Engagement question</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      {...field}
+                      placeholder="Enter your question here"
+                      className="resize-none"
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Ask a question to encourage discussion and comments on your
+                    post.
+                  </FormDescription>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="CTA"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Call to Action refinement</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      {...field}
+                      placeholder="Refine your CTA here"
+                      className="resize-none"
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Refine the call to action to be more specific to your
+                    audience's needs.
+                  </FormDescription>
+                </FormItem>
+              )}
+            />
+          </CollapsibleContent>
+        </Collapsible>
         <FormField
           control={form.control}
           name="instructions"
@@ -168,6 +265,7 @@ export function YouTubeForm({ onSubmit, isLoading }: YouTubeFormProps) {
                   />
                 </FormControl>
               </div>
+
               <FormDescription>
                 Enter instructions for a more tailored repurpose or{" "}
                 <span
@@ -188,17 +286,24 @@ export function YouTubeForm({ onSubmit, isLoading }: YouTubeFormProps) {
                   )}
                 </span>
               </FormDescription>
-
               <FormMessage />
             </FormItem>
           )}
         />
+
         <Button
           className="rounded-lg bg-brand-purple-600 font-light hover:bg-brand-purple-700"
           type="submit"
           disabled={isLoading}
         >
-          {isLoading ? "Repurposing..." : "Generate Post"}
+          {isLoading ? (
+            <>
+              Repurposing
+              <Loader2 className="ml-2 h-4 w-4 animate-spin" />
+            </>
+          ) : (
+            "Generate Post"
+          )}
         </Button>
       </form>
     </Form>

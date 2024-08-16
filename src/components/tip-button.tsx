@@ -1,10 +1,10 @@
+import React, { useState } from "react";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { Info, Question, SealQuestion } from "@phosphor-icons/react";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface TipButtonProps {
   heading: string;
@@ -12,23 +12,28 @@ interface TipButtonProps {
 }
 
 const TipButton: React.FC<TipButtonProps> = ({ heading, content }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <button
-            className="  focus:outline-none"
-            aria-label="Format selection tip"
-          >
-            <Question weight="duotone" className="text-blue-600" size={28} />
-          </button>
-        </TooltipTrigger>
-        <TooltipContent className="w-64 bg-blue-50 p-4" side="right">
-          <h3 className="mb-2 text-sm font-semibold text-black">{heading}</h3>
-          <p className="text-xs">{content}</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <div className="flex items-center">
+      <button
+        className="relative ml-2 h-6 w-6 focus:outline-none"
+        onClick={() => setIsOpen(true)}
+        aria-label="Embed information"
+      >
+        <span className="absolute inset-0 rounded-full bg-blue-600"></span>
+        <span className="absolute inset-0 animate-ping rounded-full bg-blue-600 opacity-75 "></span>
+      </button>
+
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{heading}</DialogTitle>
+          </DialogHeader>
+          <p>{content}</p>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 };
 

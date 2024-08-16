@@ -153,7 +153,7 @@ export function OnboardingForm() {
       const result = await skipOnboarding();
       if (result.success) {
         toast.success("Onboarding skipped. You can always complete it later.");
-        router.push("/dashboard/settings");
+        router.push("/dashboard/getting-started");
         router.refresh();
       } else {
         throw new Error("Failed to skip onboarding");

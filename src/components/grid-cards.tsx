@@ -39,7 +39,7 @@ export function GridCards() {
           <h2 className="max-w-80 text-balance  text-left text-lg font-semibold tracking-tight text-brand-gray-900  md:text-2xl">
             We Value Your Feedback
           </h2>
-          <p className="mt-4 max-w-[16remr] text-balance text-left text-sm text-brand-gray-500 ">
+          <p className="mt-4 max-w-[14rem] text-balance text-left text-sm text-brand-gray-500 ">
             Have ideas for new features? We're all ears! Your feedback helps us
             improve Spireo and tailor it to your needs.
           </p>

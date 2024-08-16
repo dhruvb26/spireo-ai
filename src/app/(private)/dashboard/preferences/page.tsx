@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -83,6 +83,8 @@ export default function OnboardingPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [topicInput, setTopicInput] = useState("");
   const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
+  const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
+  const suggestionsRef = useRef<HTMLUListElement>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -155,6 +157,7 @@ export default function OnboardingPage() {
       }
 
       setFilteredSuggestions(filtered);
+      setSelectedSuggestionIndex(-1);
     } else {
       setFilteredSuggestions([]);
     }
@@ -177,11 +180,37 @@ export default function OnboardingPage() {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && topicInput) {
+    if (e.key === "Enter") {
       e.preventDefault();
-      addTopic(topicInput);
+      if (
+        selectedSuggestionIndex >= 0 &&
+        selectedSuggestionIndex < filteredSuggestions.length
+      ) {
+        addTopic(filteredSuggestions[selectedSuggestionIndex] || "");
+      } else if (topicInput) {
+        addTopic(topicInput);
+      }
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setSelectedSuggestionIndex((prevIndex) =>
+        Math.min(prevIndex + 1, filteredSuggestions.length - 1),
+      );
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setSelectedSuggestionIndex((prevIndex) => Math.max(prevIndex - 1, -1));
     }
   };
+
+  useEffect(() => {
+    if (suggestionsRef.current && selectedSuggestionIndex >= 0) {
+      const selectedElement = suggestionsRef.current.children[
+        selectedSuggestionIndex
+      ] as HTMLElement;
+      if (selectedElement) {
+        selectedElement.scrollIntoView({ block: "nearest" });
+      }
+    }
+  }, [selectedSuggestionIndex]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
@@ -196,24 +225,6 @@ export default function OnboardingPage() {
       }
     } catch (error) {
       toast.error("An error occurred during onboarding.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  }
-
-  async function handleSkip() {
-    setIsSubmitting(true);
-    try {
-      const result = await skipOnboarding();
-      if (result.success) {
-        toast.success("Onboarding skipped. You can always complete it later.");
-        router.push("/dashboard/settings");
-        router.refresh();
-      } else {
-        throw new Error("Failed to skip onboarding");
-      }
-    } catch (error) {
-      toast.error("An error occurred while skipping onboarding.");
     } finally {
       setIsSubmitting(false);
     }
@@ -305,11 +316,18 @@ export default function OnboardingPage() {
                     />
                     {filteredSuggestions.length > 0 && (
                       <div className="relative">
-                        <ul className="absolute z-50 max-h-60 w-full overflow-auto rounded-md border border-input bg-popover p-1 text-popover-foreground shadow-md">
+                        <ul
+                          ref={suggestionsRef}
+                          className="absolute z-50 max-h-60 w-full overflow-auto rounded-md border border-input bg-popover p-1 text-popover-foreground shadow-md"
+                        >
                           {filteredSuggestions.map((suggestion, index) => (
                             <li
                               key={index}
-                              className="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                              className={`relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none ${
+                                index === selectedSuggestionIndex
+                                  ? "bg-accent text-accent-foreground"
+                                  : "hover:bg-accent hover:text-accent-foreground"
+                              }`}
                               onClick={() => addTopic(suggestion)}
                             >
                               <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">

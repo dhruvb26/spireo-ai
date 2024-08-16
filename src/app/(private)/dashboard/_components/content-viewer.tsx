@@ -77,7 +77,7 @@ const ContentViewer: React.FC<ContentViewerProps> = ({ value, postId }) => {
     <div className="mb-4">
       <div
         ref={contentRef}
-        className={`whitespace-pre-wrap break-words py-2 text-sm ${
+        className={`whitespace-pre-wrap break-words py-2 text-sm text-black ${
           isExpanded ? "" : "max-h-[100px] overflow-hidden"
         }`}
       >

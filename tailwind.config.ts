@@ -137,6 +137,7 @@ const config = {
       },
       animation: {
         gradient: "gradient-animation 2s ease infinite",
+        shimmer: "shimmer 2s linear infinite",
         ripple: "ripple 3400ms ease infinite",
         marquee: "marquee var(--duration) linear infinite",
         "marquee-vertical": "marquee-vertical var(--duration) linear infinite",

@@ -15,7 +15,7 @@ export async function POST(req: Request) {
   }
 
   const body = await req.json();
-  const { url, instructions, formatTemplate } = body;
+  const { url, instructions, formatTemplate, engagementQuestion, CTA } = body;
   const anthropic = new Anthropic({
     apiKey: env.SPIREO_SECRET_KEY,
   });
@@ -38,39 +38,50 @@ export async function POST(req: Request) {
         {
           role: "user",
           content: `You are tasked with creating an informative LinkedIn post based on a YouTube video transcript. Your goal is to understand the context of the video and generate a post that captures its key points and value.
-    
-                    Here is the transcript of the YouTube video:
+
+                    First, carefully read and analyze the following transcript:
+
                     <transcript>
-                    ${plainText}
+                    {${plainText}}
                     </transcript>
-    
-                    Carefully read and analyze the transcript. Pay attention to:
+
+                    As you analyze the transcript, pay attention to:
                     1. The main topic or theme of the video
                     2. Key points or arguments presented
                     3. Any notable quotes or statistics
                     4. The overall message or takeaway
-                    5. Structure of the video (for eg: Podcast, Single person info content)
-    
+                    5. Structure of the video (e.g., podcast, single-person informational content)
+
                     Based on your analysis, create a LinkedIn post that:
                     1. Summarizes the main idea of the video
                     2. Highlights 2-3 key points or insights
-                    3. Includes a thought-provoking question or call-to-action for the audience
-                    4. Is concise and engaging, suitable for a professional audience on LinkedIn
-                    5. About 200-250 words with no hashtags unless mentioned in the instructions by the user
-                    6. Use of relevant emoticons unless mentioned no emojis in the instructions by the user
-    
+                    3. Is concise and engaging, suitable for a professional audience on LinkedIn
+                    4. Contains about 200-250 words
+
                     If custom instructions are provided, incorporate them into your post creation process:
                     <custom_instructions>
-                    ${instructions}
+                    {${instructions}}
                     </custom_instructions>
-    
+
                     If a format template is provided, use it to structure your post:
                     <format_template>
-                    ${formatTemplate}
+                    {${formatTemplate}}
                     </format_template>
-    
-                    If no custom instructions or format template are provided, use your best judgment to create an informative and engaging LinkedIn post.
-    
+
+                    If a call-to-action (CTA) is provided, include it in your post:
+                    <cta>
+                    {${CTA}}
+                    </cta>
+
+                    If engagement questions are provided, incorporate them into your post:
+                    <engagement_questions>
+                    {${engagementQuestion}}
+                    </engagement_questions>
+
+                    If no custom instructions, format template, CTA, or engagement questions are provided, use your best judgment to create an informative and engaging LinkedIn post.
+
+                    Use relevant emoticons unless specifically instructed not to in the custom instructions. Do not include hashtags unless explicitly mentioned in the custom instructions.
+
                     Important: Generate and output only the content of the LinkedIn post directly. Do not include any XML tags, metadata, or additional commentary. The post should be ready to be shared on LinkedIn as-is.`,
         },
       ],

@@ -37,7 +37,14 @@ export async function GET(req: Request) {
 
     // Extract topics and role from user object
     const userInfo = user.onboardingData as { topics: string[]; role: string };
+    if (!userInfo) {
+      return NextResponse.json(
+        { message: "Onboarding not completed yet" },
+        { status: 403 },
+      );
+    }
     const topics = userInfo.topics || [];
+
     const role = userInfo.role || "";
 
     const msg = await anthropic.messages.create({

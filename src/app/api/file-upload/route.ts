@@ -104,8 +104,14 @@ export async function POST(req: Request) {
     const maxRetries = 10;
     const retryInterval = 2000; // 2 seconds
 
+    console.log(
+      `Starting polling for document status. Document URN: ${documentUrn}`,
+    );
+
     while (retries < maxRetries) {
       const getDocumentUrl = `https://api.linkedin.com/rest/documents/${documentUrn}`;
+      console.log(`Polling attempt ${retries + 1}. URL: ${getDocumentUrl}`);
+
       const documentResponse = await fetch(getDocumentUrl, {
         method: "GET",
         headers: {
@@ -115,27 +121,37 @@ export async function POST(req: Request) {
       });
 
       if (!documentResponse.ok) {
+        console.error(
+          `GET document failed with status: ${documentResponse.status}`,
+        );
         throw new Error(
           `GET document failed with status: ${documentResponse.status}`,
         );
       }
 
       documentData = await documentResponse.json();
+      console.log(`Document status: ${documentData.status}`);
 
       if (documentData.status === "AVAILABLE") {
+        console.log("Document is now available. Exiting polling loop.");
         break;
       }
 
+      console.log(`Document not yet available. Retrying in ${retryInterval}ms`);
       await new Promise((resolve) => setTimeout(resolve, retryInterval));
       retries++;
     }
 
     if (!documentData || documentData.status !== "AVAILABLE") {
+      console.error("Document processing timed out or failed");
       throw new Error("Document processing timed out or failed");
     }
 
+    console.log("Document processing completed successfully");
+
     if (postId) {
       await updateDownloadUrl(postId, documentData.downloadUrl);
+      console.log(`Updated download URL for post ${postId}`);
     }
 
     return NextResponse.json(
@@ -148,6 +164,7 @@ export async function POST(req: Request) {
       { status: 200 },
     );
   } catch (err: any) {
+    console.error("Error in file upload:", err);
     return NextResponse.json(
       {
         success: false,

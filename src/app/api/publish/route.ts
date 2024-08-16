@@ -6,7 +6,6 @@ import { checkAccess } from "@/actions/user";
 
 function convertToLinkedInFormat(content: any[]) {
   let plainText = "";
-  const attributes = [] as any[];
   let currentPosition = 0;
 
   if (!Array.isArray(content)) {
@@ -18,18 +17,6 @@ function convertToLinkedInFormat(content: any[]) {
       node.children.forEach((child: any) => {
         if (typeof child === "object" && "text" in child) {
           plainText += child.text;
-
-          if (child.bold || child.italic) {
-            attributes.push({
-              start: currentPosition,
-              length: child.text.length,
-              attributes: {
-                "com.linkedin.pemberly.text.bold": child.bold || false,
-                "com.linkedin.pemberly.text.italic": child.italic || false,
-              },
-            });
-          }
-
           currentPosition += child.text.length;
         }
       });
@@ -38,7 +25,7 @@ function convertToLinkedInFormat(content: any[]) {
     }
   });
 
-  return { text: plainText.trim(), attributes };
+  return plainText.trim();
 }
 
 export async function POST(req: Request) {
@@ -52,19 +39,27 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { userId, postId, content: contentString, documentUrn } = body;
     const content = JSON.parse(contentString);
-    const { text, attributes } = convertToLinkedInFormat(content);
+    const commentary = convertToLinkedInFormat(content);
 
-    let urnId = "";
-    let mediaType = "NONE";
+    let mediaContent = null;
 
     if (documentUrn) {
       const parts = documentUrn.split(":");
-      urnId = parts[parts.length - 1];
+      const urnId = parts[parts.length - 1];
 
       if (documentUrn.includes(":image:")) {
-        mediaType = "IMAGE";
+        mediaContent = {
+          media: {
+            id: `urn:li:image:${urnId}`,
+          },
+        };
       } else if (documentUrn.includes(":document:")) {
-        mediaType = "RICH";
+        mediaContent = {
+          media: {
+            id: `urn:li:document:${urnId}`,
+            title: content[0]?.children[0]?.text || "Document Title",
+          },
+        };
       }
     }
 
@@ -81,41 +76,30 @@ export async function POST(req: Request) {
       );
     }
 
-    // await saveDraft(postId, content);
-
     let postBody: any = {
       author: `urn:li:person:${linkedInId}`,
+      commentary: commentary,
+      visibility: "PUBLIC",
+      distribution: {
+        feedDistribution: "MAIN_FEED",
+        targetEntities: [],
+        thirdPartyDistributionChannels: [],
+      },
       lifecycleState: "PUBLISHED",
-      specificContent: {
-        "com.linkedin.ugc.ShareContent": {
-          shareCommentary: {
-            text: text,
-            attributes: attributes,
-          },
-          shareMediaCategory: mediaType,
-        },
-      },
-      visibility: {
-        "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC",
-      },
+      isReshareDisabledByAuthor: false,
     };
 
-    if (mediaType === "IMAGE" || mediaType === "RICH") {
-      postBody.specificContent["com.linkedin.ugc.ShareContent"].media = [
-        {
-          status: "READY",
-          media: `urn:li:digitalmediaAsset:${urnId}`,
-        },
-      ];
+    if (mediaContent) {
+      postBody.content = mediaContent;
     }
 
     console.log("Posting to LinkedIn:", postBody);
 
-    const response = await fetch("https://api.linkedin.com/v2/ugcPosts", {
+    const response = await fetch("https://api.linkedin.com/rest/posts", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "LinkedIn-Version": "202406",
+        "LinkedIn-Version": "202401",
         Authorization: `Bearer ${accessToken}`,
         "X-Restli-Protocol-Version": "2.0.0",
       },

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getLinkedInId, getAccessToken } from "@/actions/user";
-import { getDraft, saveDraft } from "@/actions/draft";
+import { saveDraft } from "@/actions/draft";
 import { drafts } from "@/server/db/schema";
 import { and, eq } from "drizzle-orm";
 import { db } from "@/server/db";
@@ -286,7 +286,17 @@ export async function POST(request: Request) {
       );
     }
 
-    const formattedContent = extractText(JSON.parse(content));
+    let formattedContent;
+    try {
+      formattedContent = extractText(JSON.parse(content));
+    } catch (parseError) {
+      console.error("Error parsing content:", parseError);
+      return NextResponse.json(
+        { error: "Invalid content format" },
+        { status: 400 },
+      );
+    }
+
     const linkedInId = await getLinkedInId(userId);
     const accessToken = await getAccessToken(userId);
 
@@ -298,76 +308,77 @@ export async function POST(request: Request) {
       );
     }
 
-    let urnId = "";
-    let mediaType = "NONE";
+    let mediaContent = null;
 
     if (documentUrn) {
       console.log("Received document URN: ", documentUrn);
       const parts = documentUrn.split(":");
-      urnId = parts[parts.length - 1];
+      const urnId = parts[parts.length - 1];
 
       if (documentUrn.includes(":image:")) {
-        mediaType = "IMAGE";
+        mediaContent = {
+          media: {
+            id: `urn:li:image:${urnId}`,
+          },
+        };
       } else if (documentUrn.includes(":document:")) {
-        mediaType = "URN_REFERENCE";
+        mediaContent = {
+          media: {
+            id: `urn:li:document:${urnId}`,
+            title: "PDF Document Title",
+          },
+        };
       }
     }
 
     const postBody: any = {
       author: `urn:li:person:${linkedInId}`,
+      commentary: formattedContent,
+      visibility: "PUBLIC",
+      distribution: {
+        feedDistribution: "MAIN_FEED",
+        targetEntities: [],
+        thirdPartyDistributionChannels: [],
+      },
       lifecycleState: "PUBLISHED",
-      specificContent: {
-        "com.linkedin.ugc.ShareContent": {
-          shareCommentary: {
-            text: formattedContent,
-            attributes: [],
-          },
-          shareMediaCategory: mediaType,
-        },
-      },
-      visibility: {
-        "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC",
-      },
+      isReshareDisabledByAuthor: false,
     };
 
-    if (mediaType === "IMAGE" || mediaType === "URN_REFERENCE") {
-      postBody.specificContent["com.linkedin.ugc.ShareContent"].media = [
-        {
-          status: "READY",
-          media: `urn:li:digitalmediaAsset:${urnId}`,
-        },
-      ];
-
-      if (mediaType === "URN_REFERENCE") {
-        postBody.specificContent[
-          "com.linkedin.ugc.ShareContent"
-        ].media[0].title = {
-          text: "PDF Document Title",
-          attributes: [],
-        };
-      }
+    if (mediaContent) {
+      postBody.content = mediaContent;
     }
-    const response = await fetch("https://api.linkedin.com/v2/ugcPosts", {
+
+    console.log("Posting to LinkedIn:", JSON.stringify(postBody, null, 2));
+
+    const response = await fetch("https://api.linkedin.com/rest/posts", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "LinkedIn-Version": "202406",
+        "LinkedIn-Version": "202401",
         Authorization: `Bearer ${accessToken}`,
         "X-Restli-Protocol-Version": "2.0.0",
       },
       body: JSON.stringify(postBody),
     });
+    let linkedInPostId;
+    let responseData;
 
-    const responseData = await response.json();
-    console.log(
-      "LinkedIn API response:",
-      JSON.stringify(responseData, null, 2),
-    );
+    if (response.status === 201) {
+      linkedInPostId = response.headers.get("x-restli-id");
+      console.log("LinkedIn Post ID:", linkedInPostId);
+    } else {
+      try {
+        responseData = await response.text();
+        console.log("LinkedIn API response:", responseData);
+      } catch (error) {
+        console.error("Error reading LinkedIn API response:", error);
+      }
+    }
 
     if (!response.ok) {
       console.error("Error publishing draft", response.status, responseData);
       return NextResponse.json(
-        { error: `Error publishing draft: ${JSON.stringify(responseData)}` },
+        { error: `Error publishing draft: ${responseData}` },
         { status: response.status },
       );
     }

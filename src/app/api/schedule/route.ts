@@ -146,6 +146,7 @@ export async function POST(req: Request) {
       .set({
         status: "scheduled",
         content: content,
+        name: name,
         documentUrn: documentUrn,
         scheduledFor: scheduledTime ? new Date(scheduledTime) : null,
         updatedAt: new Date(),

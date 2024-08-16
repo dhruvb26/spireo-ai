@@ -371,7 +371,7 @@ const Sidebar = ({ children, user }: any) => {
   }
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden">
+    <div className="flex h-screen flex-col overflow-auto">
       <Tour
         className="[&_.fr-title]:text-md [&_.fr-button-primary:hover]:bg-blue-700 [&_.fr-button-primary]:rounded-lg [&_.fr-button-primary]:bg-blue-600 [&_.fr-title]:font-semibold [&_.fr-title]:tracking-tight [&_.fr-title]:text-brand-gray-900"
         flowId="flow_wqlim5Vq"
@@ -410,7 +410,7 @@ const Sidebar = ({ children, user }: any) => {
                   </DropdownMenuLabel>
                   <Link
                     className="text-sm text-brand-gray-600"
-                    href="/dashboard/preferences"
+                    href="/dashboard/settings"
                   >
                     <DropdownMenuItem>
                       <GearSix size={16} className="mr-2 inline" /> Settings
@@ -471,7 +471,7 @@ const Sidebar = ({ children, user }: any) => {
           </div>
         </aside>
 
-        <main className="flex-grow overflow-x-auto overflow-y-auto">
+        <main className="flex-grow overflow-y-auto overflow-x-scroll">
           {children}
         </main>
       </div>

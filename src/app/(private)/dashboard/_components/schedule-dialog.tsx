@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -17,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { getUserId } from "@/actions/user";
 import { DatePicker } from "./date-picker";
@@ -26,27 +27,34 @@ import { CalendarBlank } from "@phosphor-icons/react";
 interface ScheduleDialogProps {
   content: any;
   id: string;
-  documentUrn?: any;
-  disabled: any;
+  documentUrn?: string;
+  disabled: boolean;
 }
 
-const ScheduleDialog = ({
+const ScheduleDialog: React.FC<ScheduleDialogProps> = ({
   content,
   id,
   documentUrn,
   disabled,
-}: ScheduleDialogProps) => {
+}) => {
   const [scheduleDate, setScheduleDate] = useState<Date | undefined>(undefined);
   const [postName, setPostName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [hour, setHour] = useState("");
-  const [minute, setMinute] = useState("");
-  const [amPm, setAmPm] = useState("");
+  const [scheduleHours, setScheduleHours] = useState("");
+  const [scheduleMinutes, setScheduleMinutes] = useState("");
+  const [isPM, setIsPM] = useState(false);
+  const [timezone, setTimezone] = useState("");
+
+  useEffect(() => {
+    // Set the default timezone to the local timezone
+    const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    setTimezone(localTimezone);
+  }, []);
 
   const handleSchedule = async () => {
-    if (!scheduleDate || !hour || !minute || !amPm) {
-      console.error("Please select both date and time");
-      toast.error("Please select both date and time");
+    if (!scheduleDate || !scheduleHours || !scheduleMinutes || !timezone) {
+      console.error("Please fill in all fields");
+      toast.error("Please fill in all fields");
       return;
     }
 
@@ -63,17 +71,20 @@ const ScheduleDialog = ({
         content: string;
         scheduledTime: string;
         documentUrn?: string;
+        timezone: string;
       }
 
-      let hours = parseInt(hour);
-      if (amPm === "PM" && hours !== 12) {
+      let hours = parseInt(scheduleHours);
+      const minutes = parseInt(scheduleMinutes);
+
+      if (isPM && hours !== 12) {
         hours += 12;
-      } else if (amPm === "AM" && hours === 12) {
+      } else if (!isPM && hours === 12) {
         hours = 0;
       }
 
       const scheduledDate = new Date(scheduleDate);
-      scheduledDate.setHours(hours, parseInt(minute));
+      scheduledDate.setHours(hours, minutes);
 
       const scheduleData: ScheduleData = {
         name: postName,
@@ -81,6 +92,7 @@ const ScheduleDialog = ({
         postId: id,
         content: postContent,
         scheduledTime: scheduledDate.toISOString(),
+        timezone: timezone,
       };
 
       if (documentUrn !== null && documentUrn !== undefined) {
@@ -113,6 +125,19 @@ const ScheduleDialog = ({
   const handleDateChange = (date: Date | undefined) => {
     setScheduleDate(date);
   };
+
+  const handleHoursChange = (value: string) => {
+    setScheduleHours(value);
+  };
+
+  const handleMinutesChange = (value: string) => {
+    setScheduleMinutes(value);
+  };
+
+  const timezones = Intl.supportedValuesOf("timeZone");
+
+  const hours = Array.from({ length: 12 }, (_, i) => i + 1);
+  const minutes = Array.from({ length: 12 }, (_, i) => i * 5);
 
   return (
     <Dialog>
@@ -158,48 +183,71 @@ const ScheduleDialog = ({
             <Label htmlFor="time" className="w-[80px] text-center">
               Time
             </Label>
-            <div className="flex w-3/4 space-x-2">
-              <Select onValueChange={(value) => setHour(value)}>
-                <SelectTrigger className="w-[70px]">
+            <div className="flex w-3/4 items-center space-x-2">
+              <Select value={scheduleHours} onValueChange={handleHoursChange}>
+                <SelectTrigger className="w-16">
                   <SelectValue placeholder="HH" />
                 </SelectTrigger>
                 <SelectContent>
-                  {Array.from({ length: 12 }, (_, i) => (
+                  {hours.map((hour) => (
                     <SelectItem
-                      key={i}
-                      value={(i + 1).toString().padStart(2, "0")}
+                      key={hour}
+                      value={hour.toString().padStart(2, "0")}
                     >
-                      {(i + 1).toString().padStart(2, "0")}
+                      {hour.toString().padStart(2, "0")}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-              <Select onValueChange={(value) => setMinute(value)}>
-                <SelectTrigger className="w-[70px]">
+              <span>:</span>
+              <Select
+                value={scheduleMinutes}
+                onValueChange={handleMinutesChange}
+              >
+                <SelectTrigger className="w-16">
                   <SelectValue placeholder="MM" />
                 </SelectTrigger>
                 <SelectContent>
-                  {Array.from({ length: 12 }, (_, i) => (
+                  {minutes.map((minute) => (
                     <SelectItem
-                      key={i}
-                      value={(i * 5).toString().padStart(2, "0")}
+                      key={minute}
+                      value={minute.toString().padStart(2, "0")}
                     >
-                      {(i * 5).toString().padStart(2, "0")}
+                      {minute.toString().padStart(2, "0")}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-              <Select onValueChange={(value) => setAmPm(value)}>
-                <SelectTrigger className="w-[100px]">
-                  <SelectValue placeholder="AM/PM" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="AM">AM</SelectItem>
-                  <SelectItem value="PM">PM</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="flex items-center space-x-2">
+                <Switch
+                  checked={isPM}
+                  onCheckedChange={setIsPM}
+                  id="am-pm-toggle"
+                />
+                <Label htmlFor="am-pm-toggle">{isPM ? "PM" : "AM"}</Label>
+              </div>
             </div>
           </div>
+          {/* <div className="flex items-center">
+            <Label htmlFor="timezone" className="w-[80px] text-center">
+              Timezone
+            </Label>
+            <Select
+              value={timezone}
+              onValueChange={(value) => setTimezone(value)}
+            >
+              <SelectTrigger className="w-3/4">
+                <SelectValue placeholder="Select" />
+              </SelectTrigger>
+              <SelectContent>
+                {timezones.map((tz) => (
+                  <SelectItem key={tz} value={tz}>
+                    {tz}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div> */}
         </div>
         <Button
           className="rounded-lg bg-brand-purple-600 px-[1rem] font-light hover:bg-brand-purple-700"

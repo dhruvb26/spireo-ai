@@ -8,9 +8,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import TipButton from "./tip-button";
-import { DialogTitle } from "@radix-ui/react-dialog";
-import PostFormatTip from "./frigade/post-format-tip";
+
+import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
 
 interface PostFormat {
   templates: string[];
@@ -128,28 +127,25 @@ export function PostFormatSelector({
           <DialogTrigger asChild>
             <Button
               ref={buttonRef}
-              className="rounded-lg bg-blue-600 text-sm text-white hover:bg-blue-700 hover:text-white"
+              className="inline-flex h-10 animate-shimmer items-center justify-center rounded-lg bg-[linear-gradient(110deg,#1d4ed8,45%,#3b82f6,55%,#1d4ed8)] bg-[length:200%_100%] px-4 py-0.5 font-light text-white transition-colors"
               onClick={() => setIsDialogOpen(true)}
             >
               Post Format
             </Button>
           </DialogTrigger>
-
-          <div className="relative">
-            <TipButton
-              heading="Why use a post format?"
-              content="Selecting a post format can help structure your content and make it more engaging. Try one out to enhance your post!"
-            />
-          </div>
         </div>
         <DialogContent
           aria-describedby={undefined}
           className="min-h-[80vh] sm:max-w-[800px]"
         >
-          <DialogHeader>
-            <DialogTitle className="text-lg font-semibold tracking-tight">
+          <DialogHeader className="space-y-0">
+            <DialogTitle className="text-lg font-semibold tracking-tight text-brand-gray-900">
               Post Format
             </DialogTitle>
+            <DialogDescription className="text-sm font-normal text-brand-gray-500">
+              Select a post format from the given categories and use it to
+              structure your content.
+            </DialogDescription>
           </DialogHeader>
           <Tabs defaultValue={categories[0]} className="w-full">
             <TabsList className="grid h-fit w-full grid-cols-5">

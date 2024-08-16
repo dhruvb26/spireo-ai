@@ -6,6 +6,7 @@ import {
 } from "next-auth";
 import { type Adapter } from "next-auth/adapters";
 import LinkedInProvider from "next-auth/providers/linkedin";
+import GoogleProvider from "next-auth/providers/google";
 import { env } from "@/env";
 import { db } from "@/server/db";
 import { accounts, users } from "@/server/db/schema";
@@ -178,6 +179,17 @@ export const authOptions: NextAuthOptions = {
         },
       },
     }),
+    // GoogleProvider({
+    //   clientId: env.GOOGLE_CLIENT_ID,
+    //   clientSecret: env.GOOGLE_CLIENT_SECRET,
+    //   authorization: {
+    //     params: {
+    //       prompt: "consent",
+    //       access_type: "offline",
+    //       response_type: "code",
+    //     },
+    //   },
+    // }),
   ],
 
   pages: {

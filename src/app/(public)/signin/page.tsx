@@ -6,7 +6,6 @@ import AvatarCircles from "@/components/ui/avatar-circles";
 import { Button } from "@/components/ui/button";
 import SparklesText from "@/components/ui/sparkles-text";
 import { Input } from "@/components/ui/input";
-import { FaLinkedin } from "react-icons/fa";
 
 export default function SignUp() {
   const handleLinkedInSignIn = () => {
@@ -17,6 +16,16 @@ export default function SignUp() {
       });
     } catch (error) {
       console.error("Error signing in with LinkedIn", error);
+    }
+  };
+  const handleGoogleSignIn = () => {
+    try {
+      signIn("google", {
+        callbackUrl: `/dashboard/post`,
+        redirect: true,
+      });
+    } catch (error) {
+      console.error("Error signing in with Google", error);
     }
   };
   const avatarUrls = [
@@ -78,8 +87,8 @@ export default function SignUp() {
                 />
                 Continue with LinkedIn
               </Button>
-              <Button
-                onClick={handleLinkedInSignIn}
+              {/* <Button
+                onClick={handleGoogleSignIn}
                 className="flex flex-1 items-center justify-center rounded-lg border border-neutral-100 bg-neutral-50 px-4 py-2 text-sm text-brand-gray-900 shadow hover:bg-neutral-100"
               >
                 <Image
@@ -90,10 +99,10 @@ export default function SignUp() {
                   className="mr-2"
                 />
                 Continue with Google
-              </Button>
+              </Button> */}
             </div>
 
-            <div className="flex w-full items-center justify-center">
+            {/* <div className="flex w-full items-center justify-center">
               <hr className="flex-grow border-brand-gray-200" />
               <span className="px-3 text-sm text-brand-gray-500">or</span>
               <hr className="flex-grow border-brand-gray-200" />
@@ -103,7 +112,7 @@ export default function SignUp() {
               type="email"
               placeholder="Email"
               className="w-full rounded-lg  px-4 py-2 "
-            />
+            /> */}
 
             <div className="flex items-center">
               <label htmlFor="terms" className="text-xs text-brand-gray-500">
@@ -128,9 +137,9 @@ export default function SignUp() {
               </label>
             </div>
 
-            <button className="w-full rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700">
+            {/* <button className="w-full rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700">
               Create an account
-            </button>
+            </button> */}
           </div>
           {/* <p className="mt-6 text-center text-xs text-brand-gray-500">
             Already have an account?{" "}

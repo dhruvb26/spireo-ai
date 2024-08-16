@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -26,6 +26,7 @@ import { PostFormatSelector } from "../post-formatter";
 import { Loader2 } from "lucide-react";
 import { Tour } from "@frigade/react";
 import SuggestedIdeas from "../suggested-ideas";
+import { revalidateTag } from "next/cache";
 
 export const scratchStoryFormSchema = z.object({
   postContent: z.string().min(20, {
@@ -34,7 +35,6 @@ export const scratchStoryFormSchema = z.object({
   tone: z.string().min(1, {
     message: "Please select a tone.",
   }),
-  // linkedInPostUrl: z.string().url().optional(),
   instructions: z.string().optional(),
   formatTemplate: z.string().optional(),
 });
@@ -66,28 +66,57 @@ export function ScratchStoryForm({
     useState(false);
   const [triggerSubmit, setTriggerSubmit] = useState(false);
   const [triggerDialog, setTriggerDialog] = useState(false);
+  const [ideas, setIdeas] = useState<string[]>([]);
+  const [ideasError, setIdeasError] = useState<string | null>(null);
+  const [isLoadingIdeas, setIsLoadingIdeas] = useState(true);
+  const [isGeneratingInstructions, setIsGeneratingInstructions] =
+    useState(false);
 
   const form = useForm<z.infer<typeof scratchStoryFormSchema>>({
     resolver: zodResolver(scratchStoryFormSchema),
     defaultValues: {
-      postContent: initialPostContent || "",
+      postContent: initialPostContent,
       tone: "",
       instructions: "",
       formatTemplate: "",
     },
   });
 
-  const [isGeneratingInstructions, setIsGeneratingInstructions] =
-    useState(false);
+  const fetchIdeas = useCallback(async () => {
+    setIsLoadingIdeas(true);
+    try {
+      const response = await fetch("/api/ai/generate-suggestions", {
+        cache: "force-cache",
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setIdeas(data.ideas);
+    } catch (error) {
+      console.error("Fetch error:", error);
+      setIdeasError("Oops! No suggestions found.");
+    } finally {
+      setIsLoadingIdeas(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchIdeas();
+  }, [fetchIdeas]);
+
+  const handleSubmit = async (data: z.infer<typeof scratchStoryFormSchema>) => {
+    await onSubmit(data);
+    revalidateTag("suggestions");
+    fetchIdeas();
+  };
 
   const handleGenerateInstructions = async () => {
     setIsGeneratingInstructions(true);
     try {
       const response = await fetch("/api/ai/generate-instructions", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
       });
 
       if (!response.ok) {
@@ -141,14 +170,9 @@ export function ScratchStoryForm({
     }
   }, [triggerDialog]);
 
-  const handleSelectFormat = (format: string) => {
-    setSelectedFormat(format);
-  };
-
-  const handleFormatChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleSelectFormat = (format: string) => setSelectedFormat(format);
+  const handleFormatChange = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
     setSelectedFormat(e.target.value);
-  };
-
   const handleClearFormat = () => {
     setSelectedFormat(null);
     form.setValue("formatTemplate", "");
@@ -157,7 +181,7 @@ export function ScratchStoryForm({
   return (
     <>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
           <div
             className="flex items-center justify-start space-x-2"
             id="tour-3"
@@ -169,15 +193,9 @@ export function ScratchStoryForm({
           </div>
           <Tour
             onPrimary={(step) => {
-              if (step.order === 2) {
-                setTriggerDialog(true);
-              }
-              if (step.order === 5) {
-                setTriggerGenerateInstructions(true);
-              }
-              if (step.order === 6) {
-                setTriggerSubmit(true);
-              }
+              if (step.order === 2) setTriggerDialog(true);
+              if (step.order === 5) setTriggerGenerateInstructions(true);
+              if (step.order === 6) setTriggerSubmit(true);
               return true;
             }}
             className="[&_.fr-title]:text-md [&_.fr-button-primary:hover]:bg-blue-700 [&_.fr-button-primary]:rounded-lg [&_.fr-button-primary]:bg-blue-600 [&_.fr-title]:font-semibold [&_.fr-title]:tracking-tight [&_.fr-title]:text-brand-gray-900"
@@ -230,7 +248,11 @@ export function ScratchStoryForm({
               </FormItem>
             )}
           />
-          <SuggestedIdeas />
+          <SuggestedIdeas
+            ideas={ideas}
+            isLoading={isLoadingIdeas}
+            error={ideasError}
+          />
 
           <FormField
             control={form.control}
@@ -269,7 +291,7 @@ export function ScratchStoryForm({
                 <div className="flex items-start space-x-2">
                   <FormControl className="flex-grow">
                     <Textarea
-                      className="h-[150px] "
+                      className="h-[150px]"
                       autoComplete="off"
                       placeholder="Add any specific instructions or notes for your post."
                       {...field}
@@ -282,7 +304,7 @@ export function ScratchStoryForm({
                   <span
                     id="tour-6"
                     onClick={handleGenerateInstructions}
-                    className={`cursor-pointer  text-brand-purple-600 hover:text-brand-purple-700 ${
+                    className={`cursor-pointer text-brand-purple-600 hover:text-brand-purple-700 ${
                       isLoading || isGeneratingInstructions
                         ? "pointer-events-none opacity-50"
                         : ""
@@ -298,7 +320,6 @@ export function ScratchStoryForm({
                     )}
                   </span>
                 </FormDescription>
-
                 <FormMessage />
               </FormItem>
             )}

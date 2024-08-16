@@ -107,7 +107,7 @@ export const ParallaxScroll = ({
                   </Link>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Edit draft</p>
+                  <p>Edit</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -123,7 +123,7 @@ export const ParallaxScroll = ({
                   </button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Delete draft</p>
+                  <p>Delete</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>

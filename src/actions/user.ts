@@ -1,10 +1,11 @@
 "use server";
 
 import { getServerAuthSession } from "@/server/auth";
-import { accounts, users } from "@/server/db/schema";
+import { accounts, drafts, users } from "@/server/db/schema";
 import { db } from "@/server/db";
 import { eq, sql } from "drizzle-orm";
 import { env } from "@/env";
+import { ideas, verificationTokens, sessions } from "@/server/db/schema";
 
 export async function getUserId() {
   const session = await getServerAuthSession();
@@ -63,6 +64,79 @@ export async function getUserFromDb() {
   const user = await db.query.users.findFirst({
     where: eq(users.id, userId),
   });
+
+  const account = await db.query.accounts.findFirst({
+    where: eq(accounts.userId, userId),
+  });
+  const provider = account?.provider;
+
+  if (provider === "linkedin") {
+    const options = {
+      method: "GET",
+      headers: { Authorization: `Bearer ${env.FRIGADE_API_KEY}` },
+    };
+
+    const response = await fetch(
+      `https://api.frigade.com/v1/public/flowStates?userId=${userId}`,
+      options,
+    );
+    const data = await response.json();
+    const targetFlow = data.eligibleFlows.find(
+      (flow: any) => flow.flowSlug === "flow_pUF3qW42",
+    );
+
+    if (targetFlow) {
+      const targetStep = targetFlow.data.steps.find(
+        (step: any) => step.id === "checklist-step-three",
+      );
+
+      if (targetStep) {
+        const isCompleted = targetStep.$state.completed;
+
+        if (!isCompleted) {
+          let startOptions = {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${env.FRIGADE_API_KEY}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              userId: userId,
+              flowSlug: "flow_pUF3qW42",
+              stepId: "checklist-step-three",
+              actionType: "STARTED_STEP",
+            }),
+          };
+
+          const startResponse = await fetch(
+            "https://api.frigade.com/v1/public/flowStates",
+            startOptions,
+          );
+
+          if (startResponse.ok) {
+            let completeOptions = {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${env.FRIGADE_API_KEY}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                userId: userId,
+                flowSlug: "flow_pUF3qW42",
+                stepId: "checklist-step-three",
+                actionType: "COMPLETED_STEP",
+              }),
+            };
+
+            await fetch(
+              "https://api.frigade.com/v1/public/flowStates",
+              completeOptions,
+            );
+          }
+        }
+      }
+    }
+  }
 
   if (!user) return null;
 
@@ -173,7 +247,6 @@ export async function getUserOnboardingData() {
     throw new Error("Failed to fetch user onboarding data");
   }
 }
-
 export async function getAccessToken(userId: string) {
   const account = await db.query.accounts.findFirst({
     where: eq(accounts.userId, userId),
@@ -187,65 +260,33 @@ export async function getAccessToken(userId: string) {
     throw new Error("No account found for user");
   }
 
-  // if (
-  //   account.expires_at &&
-  //   account.expires_at < Math.floor(Date.now() / 1000)
-  // ) {
-  //   // Token is expired, refresh it
-  //   return refreshAccessToken(userId);
-  // }
-
   return account.access_token;
 }
 
-// export async function refreshAccessToken(userId: string) {
-//   const account = await db.query.accounts.findFirst({
-//     where: eq(accounts.userId, userId),
-//     columns: {
-//       refresh_token: true,
-//     },
-//   });
+export async function deleteUser() {
+  const session = await getServerAuthSession();
+  if (!session) throw new Error("Unauthorized");
 
-//   if (!account?.refresh_token) {
-//     throw new Error("No refresh token found");
-//   }
+  const userId = session.user.id;
 
-//   try {
-//     const response = await fetch(
-//       "https://www.linkedin.com/oauth/v2/accessToken",
-//       {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/x-www-form-urlencoded",
-//         },
-//         body: new URLSearchParams({
-//           grant_type: "refresh_token",
-//           refresh_token: account.refresh_token,
-//           client_id: env.LINKEDIN_CLIENT_ID,
-//           client_secret: env.LINKEDIN_CLIENT_SECRET,
-//         }),
-//       },
-//     );
+  try {
+    await db.transaction(async (tx) => {
+      // Delete related records first
+      await tx.delete(accounts).where(eq(accounts.userId, userId));
+      await tx.delete(sessions).where(eq(sessions.userId, userId));
+      await tx.delete(drafts).where(eq(drafts.userId, userId));
+      await tx.delete(ideas).where(eq(ideas.userId, userId));
+      await tx
+        .delete(verificationTokens)
+        .where(eq(verificationTokens.identifier, userId));
 
-//     const data = await response.json();
+      // Delete the user last
+      const result = await tx.delete(users).where(eq(users.id, userId));
+    });
 
-//     if (!response.ok) {
-//       throw new Error("Failed to refresh token");
-//     }
-
-//     // Update the account with the new tokens
-//     await db
-//       .update(accounts)
-//       .set({
-//         access_token: data.access_token,
-//         expires_at: Math.floor(Date.now() / 1000 + data.expires_in),
-//         refresh_token: data.refresh_token ?? account.refresh_token,
-//       })
-//       .where(eq(accounts.userId, userId));
-
-//     return data.access_token;
-//   } catch (error) {
-//     console.error("Error refreshing access token:", error);
-//     throw error;
-//   }
-// }
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    throw new Error("Failed to delete user");
+  }
+}
