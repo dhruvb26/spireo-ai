@@ -4,7 +4,6 @@ import { env } from "@/env";
 
 let queue: Queue | null = null;
 let worker: Worker | null = null;
-let queueEvents: QueueEvents | null = null;
 
 export function initializeQueue() {
   if (queue) return queue;
@@ -68,6 +67,9 @@ export function initializeQueue() {
 
   return queue;
 }
+
+initializeQueue();
+
 export function getQueue() {
   if (!queue) {
     queue = new Queue("linkedin-posts", {
