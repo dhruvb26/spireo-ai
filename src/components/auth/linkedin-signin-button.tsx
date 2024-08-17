@@ -1,11 +1,16 @@
 "use client";
 
 import { signIn } from "next-auth/react";
-import { FaLinkedin } from "react-icons/fa";
 import { Button } from "../ui/button";
 import Image from "next/image";
 
-export default function LinkedInSignInButton() {
+interface LinkedInSignInButtonProps {
+  buttonText: string;
+}
+
+export default function LinkedInSignInButton({
+  buttonText,
+}: LinkedInSignInButtonProps) {
   const handleLinkedInSignIn = () => {
     try {
       signIn("linkedin", {
@@ -29,7 +34,7 @@ export default function LinkedInSignInButton() {
         alt="LinkedIn Logo"
         className="mr-2"
       />
-      Connect LinkedIn
+      {buttonText}
     </Button>
   );
 }

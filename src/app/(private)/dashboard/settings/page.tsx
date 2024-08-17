@@ -179,7 +179,7 @@ const SettingsPage = async () => {
                 Connected
               </Button>
             ) : (
-              <LinkedInSignInButton />
+              <LinkedInSignInButton buttonText="Connect LinkedIn" />
             )}
           </div>
         </section>

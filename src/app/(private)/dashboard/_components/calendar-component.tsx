@@ -107,7 +107,7 @@ const Calendar: React.FC<CalendarProps> = ({ drafts }) => {
                 )}
               </div>
             </div>
-            <div className="relative flex-grow overflow-hidden p-2">
+            <div className="relative flex-grow space-y-2 overflow-hidden p-2">
               {getDraftsForDate(date).map((draft) => (
                 <DraftCard key={draft.id} draft={draft} />
               ))}

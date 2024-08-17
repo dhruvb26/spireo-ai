@@ -166,13 +166,8 @@ export async function deleteDraft(draftId: string): Promise<Result> {
       console.log(`Job ID for draft ${draftId}: ${jobId}`);
 
       if (jobId) {
-        const job = await queue.getJob(jobId);
-        if (job) {
-          await job.remove();
-          console.log(`Removed job ${jobId} from queue`);
-        } else {
-          console.log(`Job ${jobId} not found in queue`);
-        }
+        await queue.remove(jobId);
+        console.log(`Removed job ${jobId} from queue`);
 
         // Always delete the job ID from Redis
         await deleteJobId(userId, draftId);
@@ -186,8 +181,8 @@ export async function deleteDraft(draftId: string): Promise<Result> {
           (j) => j.data.userId === userId && j.data.postId === draftId,
         );
 
-        if (jobToRemove) {
-          await jobToRemove.remove();
+        if (jobToRemove && jobToRemove.id) {
+          await queue.remove(jobToRemove.id);
           console.log(
             `Removed job for draft ${draftId} found directly in queue`,
           );
@@ -225,6 +220,7 @@ export async function deleteDraft(draftId: string): Promise<Result> {
     };
   }
 }
+
 export async function saveDraft(
   draftId: string,
   content: string | Descendant[],

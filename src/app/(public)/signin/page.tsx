@@ -1,33 +1,18 @@
-"use client";
-import { signIn } from "next-auth/react";
+import { getServerSession } from "next-auth";
 import Link from "next/link";
 import Image from "next/image";
 import AvatarCircles from "@/components/ui/avatar-circles";
-import { Button } from "@/components/ui/button";
 import SparklesText from "@/components/ui/sparkles-text";
-import { Input } from "@/components/ui/input";
+import LinkedInSignInButton from "@/components/auth/linkedin-signin-button";
+import { redirect } from "next/navigation";
 
-export default function SignUp() {
-  const handleLinkedInSignIn = () => {
-    try {
-      signIn("linkedin", {
-        callbackUrl: `/dashboard/post`,
-        redirect: true,
-      });
-    } catch (error) {
-      console.error("Error signing in with LinkedIn", error);
-    }
-  };
-  const handleGoogleSignIn = () => {
-    try {
-      signIn("google", {
-        callbackUrl: `/dashboard/post`,
-        redirect: true,
-      });
-    } catch (error) {
-      console.error("Error signing in with Google", error);
-    }
-  };
+export default async function SignUp() {
+  const session = await getServerSession();
+
+  if (session) {
+    redirect("/dashboard/post");
+  }
+
   const avatarUrls = [
     "https://media.licdn.com/dms/image/D5603AQE1mcDQhAvINg/profile-displayphoto-shrink_100_100/0/1722469152073?e=2147483647&v=beta&t=DohYF7jtDgmhP-thFsuSZrnpUL7-c5s3k6pPdxPGB4s",
     "https://media.licdn.com/dms/image/D4E03AQF3n1Kczlen4g/profile-displayphoto-shrink_100_100/0/1722972052685?e=2147483647&v=beta&t=Ta55nledgAReBnb7gq2gnuJQeYuP7fkzC7-YbU0BW0o",
@@ -74,19 +59,7 @@ export default function SignUp() {
           </div>
           <div className="space-y-4">
             <div className="flex space-x-4">
-              <Button
-                onClick={handleLinkedInSignIn}
-                className="flex flex-1 items-center justify-center rounded-lg border border-neutral-100 bg-neutral-50 px-4 py-2 text-sm text-brand-gray-900 shadow hover:bg-neutral-100"
-              >
-                <Image
-                  src="/icons8-linkedin (1).svg"
-                  width={30}
-                  height={30}
-                  alt="LinkedIn Logo"
-                  className="mr-2"
-                />
-                Continue with LinkedIn
-              </Button>
+              <LinkedInSignInButton buttonText="Continue with LinkedIn" />
               {/* <Button
                 onClick={handleGoogleSignIn}
                 className="flex flex-1 items-center justify-center rounded-lg border border-neutral-100 bg-neutral-50 px-4 py-2 text-sm text-brand-gray-900 shadow hover:bg-neutral-100"

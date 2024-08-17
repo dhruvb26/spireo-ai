@@ -7,7 +7,7 @@ const redisOptions = {
   username: "default",
   password: env.REDIS_CLOUD_PASSWORD,
   maxRetriesPerRequest: null,
-  // lazyConnect: true,
+  lazyConnect: true,
 };
 
 export const sharedConnection = new IORedis(redisOptions);

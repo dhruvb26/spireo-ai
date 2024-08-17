@@ -165,6 +165,8 @@ export async function POST(req: Request) {
       );
     }
 
+    await queue.close();
+
     console.log(`Draft updated successfully for post ${postId}`);
     return NextResponse.json({
       success: true,
@@ -353,6 +355,8 @@ export async function PUT(req: Request) {
     // Update the job ID in Redis
     await saveJobId(userId, postId, updatedJob.id || "");
     console.log(`Updated job ID in Redis for user ${userId}, post ${postId}`);
+
+    await queue.close();
 
     return NextResponse.json({
       message: "Job updated successfully",

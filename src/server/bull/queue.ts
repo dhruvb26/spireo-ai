@@ -1,4 +1,4 @@
-import { Queue, Worker, QueueEvents } from "bullmq";
+import { Queue, Worker } from "bullmq";
 import { sharedConnection } from "../redisConnection";
 import { env } from "@/env";
 
