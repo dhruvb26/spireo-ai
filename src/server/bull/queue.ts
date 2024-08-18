@@ -1,17 +1,24 @@
 import { Queue, Worker } from "bullmq";
-import { sharedConnection } from "../redisConnection";
+import { redisConnection } from "../redisConnection";
 import { env } from "@/env";
 
 let queue: Queue | null = null;
 let worker: Worker | null = null;
 
 export function initializeQueue() {
-  if (queue) return queue;
+  if (queue) {
+    console.log("Reusing existing queue");
+    return queue;
+  }
+
+  console.log("Creating new queue");
 
   // Create a queue using the shared connection
   queue = new Queue("linkedin-posts", {
-    connection: sharedConnection,
+    connection: redisConnection,
   });
+
+  console.log("New queue created");
 
   // Create a worker to process jobs
   worker = new Worker(
@@ -51,9 +58,11 @@ export function initializeQueue() {
       }
     },
     {
-      connection: sharedConnection,
+      connection: redisConnection,
     },
   );
+
+  console.log("New worker created");
 
   // Handle completed jobs
   worker.on("completed", (job) => {
@@ -68,28 +77,24 @@ export function initializeQueue() {
   return queue;
 }
 
-initializeQueue();
-
 export function getQueue() {
   if (!queue) {
-    queue = new Queue("linkedin-posts", {
-      connection: sharedConnection,
-    });
+    console.log("Queue not initialized, initializing now");
+    return initializeQueue();
   }
+  console.log("Returning existing queue");
   return queue;
 }
 
 export async function closeConnections() {
   if (worker) {
     await worker.close();
+    console.log("Worker closed");
   }
-  // if (queue) {
-  //   await queue.close();
-  // }
-  // if (queueEvents) {
-  //   await queueEvents.close();
-  // }
-
+  if (queue) {
+    await queue.close();
+    console.log("Queue closed");
+  }
   console.log("All connections closed");
 }
 
@@ -97,13 +102,13 @@ export async function closeConnections() {
 process.on("SIGTERM", async () => {
   console.log("SIGTERM received. Closing connections...");
   await closeConnections();
-  await sharedConnection.quit();
+  await redisConnection.quit();
   process.exit(0);
 });
 
 process.on("SIGINT", async () => {
   console.log("SIGINT received. Closing connections...");
   await closeConnections();
-  await sharedConnection.quit();
+  await redisConnection.quit();
   process.exit(0);
 });

@@ -146,6 +146,12 @@ const LinkedInPostPreview: React.FC<LinkedInPostPreviewProps> = ({
       );
     } else if (contentType === "application/pdf") {
       return <PdfViewerComponent file={downloadUrl} device={device} />;
+    } else if (contentType?.startsWith("video/")) {
+      return (
+        <video src={downloadUrl} controls className="h-auto w-full">
+          Your browser does not support the video tag.
+        </video>
+      );
     } else {
       console.log("Unhandled content type:", contentType);
       return null;

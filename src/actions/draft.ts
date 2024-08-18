@@ -320,13 +320,10 @@ export async function saveDraft(
         const targetStep = targetFlow.data.steps.find(
           (step: any) => step.id === "checklist-step-two",
         );
-        console.log(targetStep);
 
         if (targetStep) {
           const isCompleted = targetStep.$state.completed;
           const isStarted = targetStep.$state.started;
-          console.log(`Step "checklist-step-two" is completed: ${isCompleted}`);
-          console.log(`Step "checklist-step-two" is started: ${isStarted}`);
 
           if (!isCompleted) {
             let startOptions = {

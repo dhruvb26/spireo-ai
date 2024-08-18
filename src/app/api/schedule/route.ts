@@ -4,28 +4,58 @@ import { db } from "@/server/db";
 import { drafts } from "@/server/db/schema";
 import { and, eq } from "drizzle-orm";
 import { getQueue } from "@/server/bull/queue";
-import { saveJobId } from "@/server/redis";
-import { getJobId, deleteJobId } from "@/server/redis";
+import { saveJobId, getJobId, deleteJobId } from "@/server/redis";
 import { checkAccess } from "@/actions/user";
-import { deleteDraft, getDraft } from "@/actions/draft";
+import { getDraft, deleteDraft } from "@/actions/draft";
+import { type Queue } from "bullmq";
+import { type JobsOptions } from "bullmq";
+import { fromZonedTime } from "date-fns-tz";
+import { format, isAfter, isBefore } from "date-fns";
+
+interface ScheduleData {
+  userId: string;
+  postId: string;
+  scheduledTime: string;
+  documentUrn: string;
+  timezone: string;
+  name: string;
+}
+
+interface JobData {
+  userId: string;
+  postId: string;
+  content: string;
+  documentUrn: string;
+}
 
 export async function POST(req: Request) {
-  console.log("POST request received for scheduling");
-  const hasAccess = await checkAccess();
-  if (!hasAccess) {
+  if (!(await checkAccess())) {
     console.log("Access denied for scheduling request");
-    return NextResponse.json({ error: "Not authorized!" }, { status: 401 });
+    return NextResponse.json({ error: "Not authorized" }, { status: 401 });
   }
 
-  // Initialize the queue
   const queue = getQueue();
+  if (!queue) {
+    console.log("Queue not initialized");
+    return NextResponse.json(
+      { error: "Queue not initialized" },
+      { status: 500 },
+    );
+  }
 
-  const body = await req.json();
-  const { userId, postId, scheduledTime, documentUrn, name } = body;
-  console.log(`Scheduling request for user ${userId}, post ${postId}`);
+  const {
+    userId,
+    postId,
+    scheduledTime,
+    timezone,
+    documentUrn,
+    name,
+  }: ScheduleData = await req.json();
 
-  const gettingDraft = await getDraft(postId);
-  const content = gettingDraft?.data?.content;
+  const scheduledDate = fromZonedTime(new Date(scheduledTime), timezone);
+
+  const draft = await getDraft(postId);
+  const content = draft?.data?.content;
 
   if (!userId || !postId || !content) {
     console.log("Missing required fields for scheduling");
@@ -36,145 +66,55 @@ export async function POST(req: Request) {
   }
 
   try {
-    // Check if a job already exists for this post
-    const existingJobId = await getJobId(userId, postId);
-    if (existingJobId) {
-      console.log(`Existing job found for post ${postId}: ${existingJobId}`);
-      if (!queue) {
-        console.log("Queue not found when trying to remove existing job");
-        return NextResponse.json(
-          {
-            success: false,
-            message: "Queue not found",
-          },
-          { status: 500 },
-        );
-      }
-      // If a job exists, remove it
-      const existingJob = await queue.getJob(existingJobId);
-      if (existingJob) {
-        await existingJob.remove();
-        console.log(`Removed existing job ${existingJobId} from queue`);
-      }
-      await deleteJobId(userId, postId);
-      console.log(`Deleted job ID ${existingJobId} from Redis`);
-    }
-
-    // Check if the draft exists
-    let draft = await db
-      .select()
-      .from(drafts)
-      .where(and(eq(drafts.id, postId), eq(drafts.userId, userId)))
-      .limit(1);
-
-    if (draft.length === 0) {
-      console.log(`Draft not found for post ${postId}, creating new draft`);
-      // If draft doesn't exist, create it
-      draft = await db
-        .insert(drafts)
-        .values({
-          id: postId,
-          userId: userId,
-          name: name,
-          content: content,
-          status: "saved",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        })
-        .returning();
-      console.log(`New draft created for post ${postId}`);
-    }
-
-    const jobData = { userId, postId, content, documentUrn };
-    console.log("Job data:", jobData);
-    const jobOptions: any = {
-      removeOnComplete: true,
-      removeOnFail: true,
-    };
+    // Check if the scheduled time is in the past
     const now = new Date();
-
-    if (scheduledTime) {
-      const scheduledDate = new Date(scheduledTime);
-      if (isNaN(scheduledDate.getTime())) {
-        console.log(`Invalid scheduledTime: ${scheduledTime}`);
-        return NextResponse.json(
-          { error: "Invalid scheduledTime" },
-          { status: 400 },
-        );
-      }
-
-      if (scheduledDate <= now) {
-        console.log(`Scheduled time is in the past: ${scheduledTime}`);
-        return NextResponse.json(
-          { error: "Scheduled time must be in the future" },
-          { status: 400 },
-        );
-      }
-
-      jobOptions.delay = scheduledDate.getTime() - now.getTime();
-      console.log(`Job scheduled for ${scheduledDate.toISOString()}`);
-    }
-
-    if (!queue) {
-      console.log("Queue not found when trying to add new job");
+    if (isBefore(scheduledDate.toISOString(), now.toISOString())) {
+      console.log("Scheduled time is in the past");
       return NextResponse.json(
-        {
-          success: false,
-          message: "Queue not found",
-        },
-        { status: 500 },
+        { error: "Scheduled time must be in the future" },
+        { status: 400 },
       );
     }
 
-    // Add a new job to the queue
+    // Handle existing job
+    const existingJobId = await getJobId(userId, postId);
+    if (existingJobId) {
+      await handleExistingJob(queue, existingJobId, userId, postId);
+    }
+
+    // Ensure draft exists
+    await ensureDraftExists(db, userId, postId, name, content);
+
+    // Prepare job data and options
+    const jobData: JobData = { userId, postId, content, documentUrn };
+    const jobOptions = prepareJobOptions(scheduledDate);
+
+    // Add new job to queue
     const job = await queue.add("post", jobData, jobOptions);
     console.log(`New job added to queue with ID: ${job.id}`);
 
-    // Save the new job ID in Redis
+    // Save job ID in Redis
     await saveJobId(userId, postId, job.id || "");
-    console.log(
-      `Job ID ${job.id} saved in Redis for user ${userId}, post ${postId}`,
+
+    // Update draft in database
+    await updateDraft(
+      db,
+      postId,
+      content,
+      name,
+      documentUrn,
+      scheduledDate.toISOString(),
     );
-
-    const scheduledFor = jobOptions.delay
-      ? new Date(now.getTime() + jobOptions.delay).toISOString()
-      : now.toISOString();
-
-    // Update the draft in the database
-    const updatedDraft = await db
-      .update(drafts)
-      .set({
-        status: "scheduled",
-        content: content,
-        name: name,
-        documentUrn: documentUrn,
-        scheduledFor: scheduledTime ? new Date(scheduledTime) : null,
-        updatedAt: new Date(),
-      })
-      .where(eq(drafts.id, postId))
-      .returning();
-
-    if (updatedDraft.length === 0) {
-      console.log(`Failed to update draft for post ${postId}`);
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Failed to update draft",
-        },
-        { status: 500 },
-      );
-    }
 
     await queue.close();
 
-    console.log(`Draft updated successfully for post ${postId}`);
     return NextResponse.json({
       success: true,
       message: existingJobId
         ? "Post rescheduled successfully!"
         : "Post scheduled successfully!",
       jobId: job.id,
-      scheduledFor: scheduledFor,
+      scheduledFor: scheduledDate.toISOString(),
     });
   } catch (error) {
     console.error("Error scheduling post:", error);
@@ -186,6 +126,92 @@ export async function POST(req: Request) {
       { status: 500 },
     );
   }
+}
+
+function prepareJobOptions(scheduledDate: Date): JobsOptions {
+  const now = new Date();
+  const delay = scheduledDate.getTime() - now.getTime();
+
+  const jobOptions: JobsOptions = {
+    removeOnComplete: true,
+    removeOnFail: true,
+    delay: delay > 0 ? delay : 0,
+  };
+
+  console.log(`Job scheduled for ${scheduledDate.toISOString()}`);
+
+  return jobOptions;
+}
+
+async function handleExistingJob(
+  queue: Queue,
+  existingJobId: string,
+  userId: string,
+  postId: string,
+) {
+  console.log(`Existing job found for post ${postId}: ${existingJobId}`);
+  const existingJob = await queue.getJob(existingJobId);
+  if (existingJob) {
+    await queue.remove(existingJobId);
+    console.log(`Removed existing job ${existingJobId} from queue`);
+  }
+  await deleteJobId(userId, postId);
+  console.log(`Deleted job ID ${existingJobId} from Redis`);
+}
+
+async function ensureDraftExists(
+  db: any,
+  userId: string,
+  postId: string,
+  name: string,
+  content: string,
+) {
+  const existingDraft = await db
+    .select()
+    .from(drafts)
+    .where(and(eq(drafts.id, postId), eq(drafts.userId, userId)))
+    .limit(1);
+
+  if (existingDraft.length === 0) {
+    console.log(`Draft not found for post ${postId}, creating new draft`);
+    await db.insert(drafts).values({
+      id: postId,
+      userId: userId,
+      name: name,
+      content: content,
+      status: "saved",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+    console.log(`New draft created for post ${postId}`);
+  }
+}
+
+async function updateDraft(
+  db: any,
+  postId: string,
+  content: string,
+  name: string,
+  documentUrn: string,
+  scheduledTime: string,
+) {
+  const updatedDraft = await db
+    .update(drafts)
+    .set({
+      status: "scheduled",
+      content: content,
+      name: name,
+      documentUrn: documentUrn,
+      scheduledFor: scheduledTime ? new Date(scheduledTime) : null,
+      updatedAt: new Date(),
+    })
+    .where(eq(drafts.id, postId))
+    .returning();
+
+  if (updatedDraft.length === 0) {
+    throw new Error(`Failed to update draft for post ${postId}`);
+  }
+  console.log(`Draft updated successfully for post ${postId}`);
 }
 
 export async function DELETE(req: Request) {

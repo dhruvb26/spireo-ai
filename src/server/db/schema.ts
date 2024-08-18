@@ -35,6 +35,7 @@ export const drafts = createTable(
     status: statusEnum("status"),
     userId: varchar("user_id", { length: 512 }),
     scheduledFor: timestamp("scheduled_for", { withTimezone: true }),
+    docTitle: varchar("doc_title", { length: 512 }),
     linkedInId: varchar("linked_in_id", { length: 512 }),
     content: text("content"),
     documentUrn: varchar("document_urn", { length: 512 }),
@@ -48,7 +49,7 @@ export const drafts = createTable(
     }).$onUpdate(() => new Date()),
   },
   (example) => ({
-    nameIndex: index("name_idx").on(example.content),
+    nameIndex: index("name").on(example.content),
   }),
 );
 

@@ -43,7 +43,16 @@ const FileAttachmentButton = ({
           "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         ].includes(selectedFile.type);
 
-        const endpoint = isDocument ? "/api/file-upload" : "/api/image-upload";
+        const isVideo = selectedFile.type === "video/mp4";
+
+        let endpoint;
+        if (isDocument) {
+          endpoint = "/api/file-upload";
+        } else if (isVideo) {
+          endpoint = "/api/video-upload";
+        } else {
+          endpoint = "/api/image-upload";
+        }
 
         const response = await fetch(endpoint, {
           method: "POST",
@@ -62,6 +71,9 @@ const FileAttachmentButton = ({
             urn = result.documentUrn;
             fileType =
               selectedFile.type === "application/pdf" ? "pdf" : "document";
+          } else if (isVideo) {
+            urn = result.videoUrn;
+            fileType = "video";
           } else {
             urn = result.imageUrn;
             fileType = "image";
@@ -99,7 +111,7 @@ const FileAttachmentButton = ({
             id="file-upload"
             type="file"
             onChange={handleFileChange}
-            accept="image/*,.pdf,.pptx,.docx,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            accept="image/jpeg,image/gif,image/png,image/heic,image/heif,image/webp,image/bmp,image/tiff,.pdf,.pptx,.docx,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.openxmlformats-officedocument.wordprocessingml.document,video/mp4,video/x-ms-asf,audio/mpeg,video/mpeg"
           />
           {selectedFile && (
             <p className="text-sm text-gray-500">

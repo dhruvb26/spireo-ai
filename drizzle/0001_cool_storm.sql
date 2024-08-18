@@ -1,0 +1,1 @@
+ALTER TABLE "spireo.ai_draft" ALTER COLUMN "document_title" SET DEFAULT 'Untitled';

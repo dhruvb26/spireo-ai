@@ -1,4 +1,4 @@
-import { sharedConnection } from "./redisConnection";
+import { redisConnection } from "./redisConnection";
 
 export function getJobKey(userId: string, postId: string): string {
   return `job:${userId}:${postId}`;
@@ -9,13 +9,13 @@ export async function saveJobId(
   postId: string,
   jobId: string,
 ): Promise<void> {
-  if (!sharedConnection) {
+  if (!redisConnection) {
     console.error("No redis connection");
     return;
   }
 
   const key = getJobKey(userId, postId);
-  await sharedConnection.set(key, jobId);
+  await redisConnection.set(key, jobId);
 }
 
 export async function getJobId(
@@ -23,11 +23,11 @@ export async function getJobId(
   postId: string,
 ): Promise<string | null> {
   const key = getJobKey(userId, postId);
-  if (!sharedConnection) {
+  if (!redisConnection) {
     console.error("No redis connection");
     return null;
   }
-  return await sharedConnection.get(key);
+  return await redisConnection.get(key);
 }
 
 export async function deleteJobId(
@@ -35,9 +35,9 @@ export async function deleteJobId(
   postId: string,
 ): Promise<void> {
   const key = getJobKey(userId, postId);
-  if (!sharedConnection) {
+  if (!redisConnection) {
     console.error("No redis connection");
     return;
   }
-  await sharedConnection.del(key);
+  await redisConnection.del(key);
 }

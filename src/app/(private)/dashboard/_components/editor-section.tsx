@@ -256,8 +256,11 @@ function EditorSection({
     handleSave();
     const result = await updateDraftDocumentUrn(id, urn);
     if (result.success) {
-      if (fileType == "pdf") {
+      if (fileType === "pdf" || fileType === "document") {
         toast.success(`${fileType.toUpperCase()} uploaded successfully`);
+        window.location.reload();
+      } else if (fileType === "video") {
+        toast.success(`Video uploaded successfully`);
         window.location.reload();
       } else {
         toast.success(`Image uploaded successfully`);

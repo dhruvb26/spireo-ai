@@ -22,7 +22,8 @@ import { toast } from "sonner";
 import { getUserId } from "@/actions/user";
 import { DatePicker } from "./date-picker";
 import { extractContent } from "./editor-section";
-import { CalendarBlank } from "@phosphor-icons/react";
+import { CalendarBlank, Moon, Sun } from "@phosphor-icons/react";
+import { useRouter } from "next/navigation";
 
 interface ScheduleDialogProps {
   content: any;
@@ -43,6 +44,7 @@ const ScheduleDialog: React.FC<ScheduleDialogProps> = ({
   const [scheduleHours, setScheduleHours] = useState("");
   const [scheduleMinutes, setScheduleMinutes] = useState("");
   const [isPM, setIsPM] = useState(false);
+  const router = useRouter();
   const [timezone, setTimezone] = useState("");
 
   useEffect(() => {
@@ -52,7 +54,13 @@ const ScheduleDialog: React.FC<ScheduleDialogProps> = ({
   }, []);
 
   const handleSchedule = async () => {
-    if (!scheduleDate || !scheduleHours || !scheduleMinutes || !timezone) {
+    if (
+      !scheduleDate ||
+      !scheduleHours ||
+      !scheduleMinutes ||
+      !timezone ||
+      !postName
+    ) {
       console.error("Please fill in all fields");
       toast.error("Please fill in all fields");
       return;
@@ -91,7 +99,7 @@ const ScheduleDialog: React.FC<ScheduleDialogProps> = ({
         userId: userId,
         postId: id,
         content: postContent,
-        scheduledTime: scheduledDate.toISOString(),
+        scheduledTime: scheduledDate.toUTCString(),
         timezone: timezone,
       };
 
@@ -111,6 +119,7 @@ const ScheduleDialog: React.FC<ScheduleDialogProps> = ({
 
       if (response.ok) {
         toast.success(data.message || "Draft scheduled successfully");
+        router.push("/dashboard/scheduler");
       } else {
         toast.error(data.error || "Failed to schedule draft");
       }
@@ -151,7 +160,7 @@ const ScheduleDialog: React.FC<ScheduleDialogProps> = ({
           <CalendarBlank className="ml-2 h-4 w-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent aria-description="schedule" aria-describedby={undefined}>
+      <DialogContent aria-description="schedule" aria-label="Schedule Post">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold tracking-tight">
             Schedule Post
@@ -185,7 +194,7 @@ const ScheduleDialog: React.FC<ScheduleDialogProps> = ({
             </Label>
             <div className="flex w-3/4 items-center space-x-2">
               <Select value={scheduleHours} onValueChange={handleHoursChange}>
-                <SelectTrigger className="w-16">
+                <SelectTrigger className="w-20">
                   <SelectValue placeholder="HH" />
                 </SelectTrigger>
                 <SelectContent>
@@ -204,7 +213,7 @@ const ScheduleDialog: React.FC<ScheduleDialogProps> = ({
                 value={scheduleMinutes}
                 onValueChange={handleMinutesChange}
               >
-                <SelectTrigger className="w-16">
+                <SelectTrigger className="w-20">
                   <SelectValue placeholder="MM" />
                 </SelectTrigger>
                 <SelectContent>
@@ -224,11 +233,31 @@ const ScheduleDialog: React.FC<ScheduleDialogProps> = ({
                   onCheckedChange={setIsPM}
                   id="am-pm-toggle"
                 />
-                <Label htmlFor="am-pm-toggle">{isPM ? "PM" : "AM"}</Label>
+                <Label htmlFor="am-pm-toggle" className="flex items-center">
+                  {isPM ? (
+                    <>
+                      <Moon
+                        className="mr-1 text-blue-600"
+                        size={16}
+                        weight="duotone"
+                      />
+                      PM
+                    </>
+                  ) : (
+                    <>
+                      <Sun
+                        className="mr-1 text-yellow-500"
+                        size={16}
+                        weight="duotone"
+                      />
+                      AM
+                    </>
+                  )}
+                </Label>
               </div>
             </div>
           </div>
-          {/* <div className="flex items-center">
+          <div className="flex items-center">
             <Label htmlFor="timezone" className="w-[80px] text-center">
               Timezone
             </Label>
@@ -247,8 +276,9 @@ const ScheduleDialog: React.FC<ScheduleDialogProps> = ({
                 ))}
               </SelectContent>
             </Select>
-          </div> */}
+          </div>
         </div>
+
         <Button
           className="rounded-lg bg-brand-purple-600 px-[1rem] font-light hover:bg-brand-purple-700"
           disabled={isLoading}

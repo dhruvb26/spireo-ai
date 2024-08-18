@@ -155,6 +155,13 @@ const DraftCard: React.FC<DraftCardProps> = ({ draft }) => {
       );
     } else if (contentType === "application/pdf") {
       return <PdfViewerComponent file={downloadUrl} device="mobile" />;
+    } else if (contentType?.startsWith("video/")) {
+      return (
+        <video controls className="w-full">
+          <source src={downloadUrl} type={contentType} />
+          Your browser does not support the video tag.
+        </video>
+      );
     } else {
       return null;
     }
@@ -190,6 +197,13 @@ const DraftCard: React.FC<DraftCardProps> = ({ draft }) => {
                   title="PDF Preview"
                   className="h-full w-full"
                 />
+              </div>
+            ) : draft.documentUrn?.includes("video") ? (
+              <div className="relative h-[50px] w-full overflow-hidden rounded-t-lg bg-gray-200">
+                <video className="h-full w-full object-cover">
+                  <source src={draft.downloadUrl} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
               </div>
             ) : (
               <div className="relative h-[50px] w-full overflow-hidden rounded-t-lg">

@@ -26,7 +26,6 @@ import { PostFormatSelector } from "../post-formatter";
 import { Loader2 } from "lucide-react";
 import { Tour } from "@frigade/react";
 import SuggestedIdeas from "../suggested-ideas";
-import { revalidateTag } from "next/cache";
 
 export const scratchStoryFormSchema = z.object({
   postContent: z.string().min(20, {
@@ -107,7 +106,6 @@ export function ScratchStoryForm({
 
   const handleSubmit = async (data: z.infer<typeof scratchStoryFormSchema>) => {
     await onSubmit(data);
-    revalidateTag("suggestions");
     fetchIdeas();
   };
 

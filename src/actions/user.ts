@@ -90,49 +90,39 @@ export async function getUserFromDb() {
         (step: any) => step.id === "checklist-step-three",
       );
 
-      if (targetStep) {
-        const isCompleted = targetStep.$state.completed;
+      if (targetStep && !targetStep.$state.completed) {
+        const startOptions = {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${env.FRIGADE_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId,
+            flowSlug: "flow_pUF3qW42",
+            stepId: "checklist-step-three",
+            actionType: "STARTED_STEP",
+          }),
+        };
 
-        if (!isCompleted) {
-          let startOptions = {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${env.FRIGADE_API_KEY}`,
-              "Content-Type": "application/json",
-            },
+        const startResponse = await fetch(
+          "https://api.frigade.com/v1/public/flowStates",
+          startOptions,
+        );
+
+        if (startResponse.ok) {
+          const completeOptions = {
+            ...startOptions,
             body: JSON.stringify({
-              userId: userId,
-              flowSlug: "flow_pUF3qW42",
-              stepId: "checklist-step-three",
-              actionType: "STARTED_STEP",
+              ...JSON.parse(startOptions.body),
+              actionType: "COMPLETED_STEP",
             }),
           };
 
-          const startResponse = await fetch(
+          await fetch(
             "https://api.frigade.com/v1/public/flowStates",
-            startOptions,
+            completeOptions,
           );
-
-          if (startResponse.ok) {
-            let completeOptions = {
-              method: "POST",
-              headers: {
-                Authorization: `Bearer ${env.FRIGADE_API_KEY}`,
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                userId: userId,
-                flowSlug: "flow_pUF3qW42",
-                stepId: "checklist-step-three",
-                actionType: "COMPLETED_STEP",
-              }),
-            };
-
-            await fetch(
-              "https://api.frigade.com/v1/public/flowStates",
-              completeOptions,
-            );
-          }
         }
       }
     }

@@ -5,6 +5,7 @@ import { Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import * as Frigade from "@frigade/react";
 import { getUserFromDb } from "@/actions/user";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata = {
   title: "Spireo - LinkedIn Growth Made Easy",
@@ -60,6 +61,7 @@ export default async function RootLayout({
             src="https://plausible.io/js/script.js"
             data-domain="app.spireo.ai"
           />
+          <SpeedInsights />
           <Analytics />
           <Toaster className="mt-8" position="top-right" richColors />
         </body>

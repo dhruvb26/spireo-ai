@@ -328,6 +328,12 @@ export async function POST(request: Request) {
             title: "PDF",
           },
         };
+      } else if (documentUrn.includes(":video:")) {
+        mediaContent = {
+          media: {
+            id: `urn:li:video:${urnId}`,
+          },
+        };
       }
     }
 

@@ -1,0 +1,1 @@
+DROP INDEX IF EXISTS "name_idx";

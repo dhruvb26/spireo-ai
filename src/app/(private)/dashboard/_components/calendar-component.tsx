@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import DraftCard from "./DraftCard";
 import { Draft } from "@/actions/draft";
-import { ArrowUpRight } from "@phosphor-icons/react";
+import { ArrowUpRight, Dot } from "@phosphor-icons/react";
 
 interface CalendarProps {
   drafts: Draft[];
@@ -34,8 +34,32 @@ const Calendar: React.FC<CalendarProps> = ({ drafts }) => {
     return dates;
   };
 
-  const formatMonthYear = (date: Date): string => {
-    return date.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+  const formatMonthYearWeek = (date: Date): React.ReactNode => {
+    const month = date.toLocaleDateString("en-US", { month: "long" });
+    const year = date.getFullYear();
+    const weekNumber = getWeekNumber(date);
+
+    return (
+      <div className="flex flex-row items-center">
+        <span className="text-lg font-medium tracking-tight">
+          {month} {year}
+        </span>
+        <Dot weight="bold" className="text-brand-gray-500" size={32} />
+        <span className="text-sm font-normal text-brand-gray-500">
+          Week {weekNumber}
+        </span>
+      </div>
+    );
+  };
+
+  const getWeekNumber = (date: Date): number => {
+    const d = new Date(
+      Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()),
+    );
+    const dayNum = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil(((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
   };
 
   const formatDayOfWeek = (date: Date): string => {
@@ -126,9 +150,9 @@ const Calendar: React.FC<CalendarProps> = ({ drafts }) => {
     <div className="calendar-container">
       <div className="mb-4 flex items-center justify-between">
         <div className="flex flex-row space-x-2">
-          <span className="text-xl font-semibold tracking-tight">
-            {formatMonthYear(currentDate)}
-          </span>
+          <>{formatMonthYearWeek(currentDate)}</>
+        </div>
+        <div className="flex items-center space-x-4">
           <div className="flex flex-row items-center space-x-4">
             <button
               onClick={goToPrevious}
@@ -146,8 +170,6 @@ const Calendar: React.FC<CalendarProps> = ({ drafts }) => {
               <ChevronRight className="h-4 w-4 text-blue-600" />
             </button>
           </div>
-        </div>
-        <div className="flex items-center space-x-4">
           <Select
             value={currentView}
             onValueChange={(value) =>

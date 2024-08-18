@@ -20,6 +20,14 @@ const SchedulerPage = async () => {
 
   return (
     <main>
+      <div className="mb-4">
+        <h1 className="text-xl font-semibold tracking-tight text-brand-gray-900">
+          Post Scheduler
+        </h1>
+        <p className="text-sm text-brand-gray-500">
+          Schedule your drafts for future publication with ease and efficiency.
+        </p>
+      </div>
       <Calendar drafts={drafts} />
     </main>
   );
