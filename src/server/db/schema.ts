@@ -27,31 +27,24 @@ export const createTable = pgTableCreator((name) => `spireo.ai_${name}`);
 
 export const statusEnum = pgEnum("status", ["saved", "scheduled", "published"]);
 
-export const drafts = createTable(
-  "draft",
-  {
-    id: varchar("id", { length: 512 }).primaryKey().notNull(),
-    name: varchar("name", { length: 512 }),
-    status: statusEnum("status"),
-    userId: varchar("user_id", { length: 512 }),
-    scheduledFor: timestamp("scheduled_for", { withTimezone: true }),
-    docTitle: varchar("doc_title", { length: 512 }),
-    linkedInId: varchar("linked_in_id", { length: 512 }),
-    content: text("content"),
-    documentUrn: varchar("document_urn", { length: 512 }),
-    downloadUrl: varchar("download_url", { length: 512 }),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: timestamp("updated_at", {
-      mode: "date",
-      precision: 3,
-    }).$onUpdate(() => new Date()),
-  },
-  (example) => ({
-    nameIndex: index("name").on(example.content),
-  }),
-);
+export const drafts = createTable("draft", {
+  id: varchar("id", { length: 512 }).primaryKey().notNull(),
+  name: varchar("name", { length: 512 }),
+  status: statusEnum("status"),
+  userId: varchar("user_id", { length: 512 }),
+  scheduledFor: timestamp("scheduled_for", { withTimezone: true }),
+  linkedInId: varchar("linked_in_id", { length: 512 }),
+  content: text("content"),
+  documentUrn: varchar("document_urn", { length: 512 }),
+  downloadUrl: varchar("download_url", { length: 512 }),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at", {
+    mode: "date",
+    precision: 3,
+  }).$onUpdate(() => new Date()),
+});
 
 export const ideas = createTable("idea", {
   id: varchar("id", { length: 256 }).primaryKey().notNull(),

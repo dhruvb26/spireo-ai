@@ -14,6 +14,9 @@ export async function getUserId() {
 
 export async function getUser() {
   const session = await getServerAuthSession();
+
+  console.log("Session:", session?.user);
+
   return session?.user;
 }
 

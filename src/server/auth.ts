@@ -6,7 +6,6 @@ import {
 } from "next-auth";
 import { type Adapter } from "next-auth/adapters";
 import LinkedInProvider from "next-auth/providers/linkedin";
-import GoogleProvider from "next-auth/providers/google";
 import { env } from "@/env";
 import { db } from "@/server/db";
 import { accounts, users } from "@/server/db/schema";
@@ -92,7 +91,6 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     jwt: async ({ token, account, user }) => {
       if (account && user) {
-        // Initial sign in
         token.id = user.id;
         token.accessToken = account.access_token;
         token.refreshToken = account.refresh_token;
@@ -165,12 +163,14 @@ export const authOptions: NextAuthOptions = {
       client: { token_endpoint_auth_method: "client_secret_post" },
       clientId: env.LINKEDIN_CLIENT_ID,
       clientSecret: env.LINKEDIN_CLIENT_SECRET,
-      profile: (profile) => ({
-        id: profile.sub,
-        name: profile.name,
-        email: profile.email,
-        image: profile.picture,
-      }),
+      profile: (profile) => {
+        return {
+          id: profile.sub,
+          name: profile.name,
+          email: profile.email,
+          image: profile.picture,
+        };
+      },
       authorization: {
         params: {
           scope: "openid profile email w_member_social r_basicprofile",
