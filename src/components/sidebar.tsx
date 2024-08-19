@@ -30,9 +30,7 @@ import { v4 as uuidv4 } from "uuid";
 import { differenceInDays } from "date-fns";
 import {
   Sparkle,
-  ImagesSquare,
   Folder,
-  Calendar,
   LightbulbFilament,
   SignOut,
   List,
@@ -44,9 +42,7 @@ import {
   MapPinSimple,
   Wrench,
   PencilSimpleLine,
-  ArrowCircleUpRight,
   GearSix,
-  ExclamationMark,
   CreditCard,
   UserCircleCheck,
   CalendarBlank,
@@ -379,9 +375,9 @@ const Sidebar = ({ children, user }: any) => {
       />
       <header className="flex min-h-14 w-screen items-center justify-between border-b border-brand-gray-200 px-4 md:px-8">
         <div className="flex w-full items-center justify-between md:w-auto">
-          <Link
-            href="/dashboard/post"
-            className="flex items-center justify-center font-semibold md:ml-0"
+          <Button
+            onClick={handleCreateDraft}
+            className="flex items-center justify-center bg-white font-semibold text-brand-gray-900 hover:bg-white md:ml-0"
           >
             <Image
               src="/Spireo Logo Symbol Custom.png"
@@ -390,7 +386,7 @@ const Sidebar = ({ children, user }: any) => {
               alt=""
             />
             <span className="text-2xl font-black tracking-tighter">Spireo</span>
-          </Link>
+          </Button>
         </div>
         <div className="flex flex-row items-center justify-center space-x-4">
           {userImage && (

@@ -3,6 +3,7 @@
 import { signIn } from "next-auth/react";
 import { Button } from "../ui/button";
 import Image from "next/image";
+import { v4 as uuidv4 } from "uuid";
 
 interface LinkedInSignInButtonProps {
   buttonText: string;
@@ -11,10 +12,11 @@ interface LinkedInSignInButtonProps {
 export default function LinkedInSignInButton({
   buttonText,
 }: LinkedInSignInButtonProps) {
+  const id = uuidv4();
   const handleLinkedInSignIn = () => {
     try {
       signIn("linkedin", {
-        callbackUrl: `/dashboard/post`,
+        callbackUrl: `/dashboard/draft/${id}`,
         redirect: true,
       });
     } catch (error) {

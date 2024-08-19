@@ -34,6 +34,7 @@ import {
 } from "react-icons/fa";
 import { Check } from "@phosphor-icons/react";
 import { completeOnboarding, skipOnboarding } from "@/actions/user";
+import { v4 as uuidv4 } from "uuid";
 
 const formSchema = z.object({
   role: z.string({
@@ -132,10 +133,11 @@ export function OnboardingForm() {
     setIsSubmitting(true);
     try {
       const result = await completeOnboarding(values);
+      const id = uuidv4();
 
       if (result.success) {
         toast.success("Welcome to Spireo! Your onboarding is complete.");
-        router.push("/dashboard/post");
+        router.push(`/dashboard/draft/${id}`);
         router.refresh();
       } else {
         throw new Error("Onboarding failed");

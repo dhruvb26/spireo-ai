@@ -8,6 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { toast } from "sonner";
 
 import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
 
@@ -197,6 +198,11 @@ export function PostFormatSelector({
                 if (selectedFormat) {
                   onSelectFormat(selectedFormat);
                   setIsDialogOpen(false);
+                } else {
+                  // Show toast if no format is selected
+                  toast.error(
+                    "Click on a format to use it in the post generation.",
+                  );
                 }
               }}
             >

@@ -5,12 +5,14 @@ import AvatarCircles from "@/components/ui/avatar-circles";
 import SparklesText from "@/components/ui/sparkles-text";
 import LinkedInSignInButton from "@/components/auth/linkedin-signin-button";
 import { redirect } from "next/navigation";
+import { v4 as uuidv4 } from "uuid";
 
 export default async function SignUp() {
   const session = await getServerSession();
 
   if (session) {
-    redirect("/dashboard/post");
+    const id = uuidv4();
+    redirect(`/dashboard/draft/${id}`);
   }
 
   const avatarUrls = [
