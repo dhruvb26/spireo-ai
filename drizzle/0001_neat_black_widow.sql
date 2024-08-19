@@ -1,0 +1,1 @@
+ALTER TABLE "spireo.ai_draft" ADD COLUMN "document_title" varchar(512);

@@ -1,0 +1,1 @@
+ALTER TABLE "spireo.ai_user" ADD COLUMN "headline" varchar(255);

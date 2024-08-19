@@ -36,6 +36,8 @@ export const drafts = createTable("draft", {
   linkedInId: varchar("linked_in_id", { length: 512 }),
   content: text("content"),
   documentUrn: varchar("document_urn", { length: 512 }),
+  documentTitle: varchar("document_title", { length: 512 }),
+  timeZone: varchar("time_zone", { length: 512 }),
   downloadUrl: varchar("download_url", { length: 512 }),
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
@@ -69,6 +71,7 @@ export const users = createTable("user", {
   hasAccess: boolean("hasAccess").default(true),
   priceId: varchar("price_id", { length: 255 }),
   stripeCustomerId: varchar("stripe_customer_id", { length: 255 }),
+  headline: varchar("headline", { length: 255 }),
   stripeSubscriptionId: varchar("stripe_subscription_id", { length: 255 }),
   trialEndsAt: timestamp("trial_ends_at"),
   onboardingCompleted: boolean("onboarding_complete").default(false),

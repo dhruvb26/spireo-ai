@@ -50,6 +50,7 @@ import {
   CreditCard,
   UserCircleCheck,
   CalendarBlank,
+  Slideshow,
 } from "@phosphor-icons/react";
 import { Tour } from "@frigade/react";
 
@@ -234,8 +235,8 @@ const Sidebar = ({ children, user }: any) => {
       )}
       {renderNavLink(
         "/dashboard/carousel",
-        <ImagesSquare size={20} />,
-        <ImagesSquare weight="duotone" size={20} />,
+        <Slideshow size={20} />,
+        <Slideshow weight="duotone" size={20} />,
         "Carousels",
       )}
       {renderNavLink(

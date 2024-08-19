@@ -36,6 +36,7 @@ interface User {
   name?: string | null;
   email?: string | null;
   image?: string | null;
+  headline?: string | null;
 }
 
 const LinkedInPostPreview: React.FC<LinkedInPostPreviewProps> = ({
@@ -193,7 +194,7 @@ const LinkedInPostPreview: React.FC<LinkedInPostPreviewProps> = ({
         }`}
       >
         <div className="mb-2 flex items-center p-4">
-          <div className="relative mr-2 h-12 w-12">
+          <div className="relative mr-2 h-12 w-12 flex-shrink-0">
             <img
               src={user?.image || "https://i.pravatar.cc/300"}
               alt="Profile"
@@ -204,6 +205,11 @@ const LinkedInPostPreview: React.FC<LinkedInPostPreviewProps> = ({
             <p className="text-sm font-semibold text-black">
               {user?.name || "..."}
             </p>
+            {user?.headline && (
+              <p className="w-full overflow-hidden text-ellipsis whitespace-nowrap text-xs font-normal text-brand-gray-500">
+                {user.headline}
+              </p>
+            )}
             <p className="flex items-center text-xs text-gray-500">
               Now •
               <span className="ml-1">

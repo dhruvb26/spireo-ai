@@ -19,6 +19,7 @@ export type Draft = {
   userId: string;
   status: string;
   linkedInId: string;
+  timeZone?: string;
   documentUrn?: string;
   downloadUrl?: string;
 };

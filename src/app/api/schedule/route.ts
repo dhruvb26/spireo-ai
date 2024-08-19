@@ -10,7 +10,7 @@ import { getDraft, deleteDraft } from "@/actions/draft";
 import { type Queue } from "bullmq";
 import { type JobsOptions } from "bullmq";
 import { fromZonedTime } from "date-fns-tz";
-import { format, isAfter, isBefore } from "date-fns";
+import { isBefore } from "date-fns";
 
 interface ScheduleData {
   userId: string;
@@ -104,6 +104,7 @@ export async function POST(req: Request) {
       name,
       documentUrn,
       scheduledDate.toISOString(),
+      timezone,
     );
 
     await queue.close();
@@ -115,6 +116,7 @@ export async function POST(req: Request) {
         : "Post scheduled successfully!",
       jobId: job.id,
       scheduledFor: scheduledDate.toISOString(),
+      timezone: timezone,
     });
   } catch (error) {
     console.error("Error scheduling post:", error);
@@ -141,6 +143,35 @@ function prepareJobOptions(scheduledDate: Date): JobsOptions {
   console.log(`Job scheduled for ${scheduledDate.toISOString()}`);
 
   return jobOptions;
+}
+
+async function updateDraft(
+  db: any,
+  postId: string,
+  content: string,
+  name: string,
+  documentUrn: string,
+  scheduledTime: string,
+  timezone: string,
+) {
+  const updatedDraft = await db
+    .update(drafts)
+    .set({
+      status: "scheduled",
+      content: content,
+      name: name,
+      documentUrn: documentUrn,
+      scheduledFor: scheduledTime ? new Date(scheduledTime) : null,
+      timeZone: timezone,
+      updatedAt: new Date(),
+    })
+    .where(eq(drafts.id, postId))
+    .returning();
+
+  if (updatedDraft.length === 0) {
+    throw new Error(`Failed to update draft for post ${postId}`);
+  }
+  console.log(`Draft updated successfully for post ${postId}`);
 }
 
 async function handleExistingJob(
@@ -185,33 +216,6 @@ async function ensureDraftExists(
     });
     console.log(`New draft created for post ${postId}`);
   }
-}
-
-async function updateDraft(
-  db: any,
-  postId: string,
-  content: string,
-  name: string,
-  documentUrn: string,
-  scheduledTime: string,
-) {
-  const updatedDraft = await db
-    .update(drafts)
-    .set({
-      status: "scheduled",
-      content: content,
-      name: name,
-      documentUrn: documentUrn,
-      scheduledFor: scheduledTime ? new Date(scheduledTime) : null,
-      updatedAt: new Date(),
-    })
-    .where(eq(drafts.id, postId))
-    .returning();
-
-  if (updatedDraft.length === 0) {
-    throw new Error(`Failed to update draft for post ${postId}`);
-  }
-  console.log(`Draft updated successfully for post ${postId}`);
 }
 
 export async function DELETE(req: Request) {

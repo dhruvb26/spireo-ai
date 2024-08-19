@@ -81,32 +81,29 @@ export function ScratchStoryForm({
     },
   });
 
-  const fetchIdeas = useCallback(async () => {
-    setIsLoadingIdeas(true);
-    try {
-      const response = await fetch("/api/ai/generate-suggestions", {
-        cache: "force-cache",
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+  useEffect(() => {
+    const fetchIdeas = async () => {
+      setIsLoadingIdeas(true);
+      try {
+        const response = await fetch("/api/ai/generate-suggestions", {});
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setIdeas(data.ideas);
+      } catch (error) {
+        console.error("Fetch error:", error);
+        setIdeasError("Oops! No suggestions found.");
+      } finally {
+        setIsLoadingIdeas(false);
       }
-      const data = await response.json();
-      setIdeas(data.ideas);
-    } catch (error) {
-      console.error("Fetch error:", error);
-      setIdeasError("Oops! No suggestions found.");
-    } finally {
-      setIsLoadingIdeas(false);
-    }
+    };
+
+    fetchIdeas();
   }, []);
 
-  useEffect(() => {
-    fetchIdeas();
-  }, [fetchIdeas]);
-
   const handleSubmit = async (data: z.infer<typeof scratchStoryFormSchema>) => {
-    await onSubmit(data);
-    fetchIdeas();
+    onSubmit(data);
   };
 
   const handleGenerateInstructions = async () => {

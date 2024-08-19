@@ -8,6 +8,9 @@ import {
 } from "@/actions/user";
 export const maxDuration = 60;
 
+// Cache to store recent responses
+const responseCache = new Map<string, { ideas: string[]; timestamp: number }>();
+
 export async function GET(req: Request) {
   try {
     // Get the user session
@@ -28,6 +31,17 @@ export async function GET(req: Request) {
       return NextResponse.json(
         { message: "Onboarding not completed yet" },
         { status: 403 },
+      );
+    }
+
+    // Check if there's a cached response for this user
+    const cachedResponse = responseCache.get(user.id);
+    const currentTime = Date.now();
+    if (cachedResponse && currentTime - cachedResponse.timestamp < 60000) {
+      // If the cached response is less than a minute old, return it
+      return NextResponse.json(
+        { ideas: cachedResponse.ideas },
+        { status: 200 },
       );
     }
 
@@ -115,10 +129,16 @@ export async function GET(req: Request) {
       .map((idea) => idea.trim())
       .filter((idea) => idea !== "");
 
+    // Cache the response for this user
+    responseCache.set(user.id, {
+      ideas: ideasList || [],
+      timestamp: currentTime,
+    });
+
     // Return the ideas as a response
     return NextResponse.json({ ideas: ideasList }, { status: 200 });
   } catch (error) {
-    console.error("Error in POST request:", error);
+    console.error("Error in GET request:", error);
     return NextResponse.json(
       { message: "Internal server error" },
       { status: 500 },

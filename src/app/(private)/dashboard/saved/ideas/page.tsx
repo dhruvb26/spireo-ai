@@ -82,7 +82,7 @@ const SavedIdeasPage = () => {
             </span>
             <Link
               href="/dashboard/ideas"
-              className="flex items-center text-sm text-brand-purple-600 hover:text-brand-purple-700"
+              className="flex items-center text-sm text-brand-purple-600 hover:text-brand-purple-700 hover:underline"
             >
               Generate Ideas
               <ArrowUpRight className="ml-1" size={14} />

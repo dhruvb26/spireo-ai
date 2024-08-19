@@ -51,6 +51,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { toZonedTime } from "date-fns-tz";
 
 const PdfViewerComponent = dynamic(() => import("./PdfViewer"), {
   ssr: false,
@@ -66,6 +67,7 @@ interface User {
   name?: string | null;
   email?: string | null;
   image?: string | null;
+  headline?: string | null;
 }
 
 interface DraftCardProps {
@@ -304,7 +306,7 @@ const DraftCard: React.FC<DraftCardProps> = ({ draft }) => {
           </div>
         </div>
       </SheetTrigger>
-      <SheetContent>
+      <SheetContent className="overflow-y-auto">
         <SheetHeader>
           <SheetTitle className="flex items-center justify-start space-x-2 text-lg font-semibold tracking-tight">
             <span>
@@ -328,7 +330,7 @@ const DraftCard: React.FC<DraftCardProps> = ({ draft }) => {
           <div className="flex w-full flex-col items-center justify-center shadow">
             <div className="w-full rounded bg-white shadow">
               <div className="mb-2 flex items-center p-3">
-                <div className="relative mr-2 h-10 w-10">
+                <div className="relative mr-2 h-12 w-12 flex-shrink-0">
                   <img
                     src={user?.image || "https://i.pravatar.cc/300"}
                     alt="Profile"
@@ -339,10 +341,15 @@ const DraftCard: React.FC<DraftCardProps> = ({ draft }) => {
                   <p className="text-sm font-semibold text-black">
                     {user?.name || "..."}
                   </p>
+                  {user?.headline && (
+                    <p className="w-full overflow-hidden text-ellipsis whitespace-nowrap text-xs font-normal text-brand-gray-500">
+                      {user.headline}
+                    </p>
+                  )}
                   <p className="flex items-center text-xs text-gray-500">
                     Now •
                     <span className="ml-1">
-                      <GlobeHemisphereWest weight="fill" size={12} />
+                      <GlobeHemisphereWest weight="fill" />
                     </span>
                   </p>
                 </div>
@@ -403,7 +410,16 @@ const DraftCard: React.FC<DraftCardProps> = ({ draft }) => {
           <div className="my-4 w-full space-y-2 text-xs text-gray-600">
             <p>
               <span className="font-medium">Scheduled for:</span>{" "}
-              {draft.scheduledFor?.toLocaleString()}
+              {draft.scheduledFor && draft.timeZone
+                ? toZonedTime(
+                    draft.scheduledFor,
+                    draft.timeZone,
+                  ).toLocaleString() +
+                  " " +
+                  "(" +
+                  draft.timeZone +
+                  ")"
+                : "Not scheduled"}
             </p>
             <p>
               <span className="font-medium">Created:</span>{" "}

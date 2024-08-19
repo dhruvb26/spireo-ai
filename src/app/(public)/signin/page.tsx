@@ -7,11 +7,11 @@ import LinkedInSignInButton from "@/components/auth/linkedin-signin-button";
 import { redirect } from "next/navigation";
 
 export default async function SignUp() {
-  // const session = await getServerSession();
+  const session = await getServerSession();
 
-  // if (session) {
-  //   redirect("/dashboard/post");
-  // }
+  if (session) {
+    redirect("/dashboard/post");
+  }
 
   const avatarUrls = [
     "https://media.licdn.com/dms/image/D5603AQE1mcDQhAvINg/profile-displayphoto-shrink_100_100/0/1722469152073?e=2147483647&v=beta&t=DohYF7jtDgmhP-thFsuSZrnpUL7-c5s3k6pPdxPGB4s",

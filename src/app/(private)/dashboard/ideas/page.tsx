@@ -4,7 +4,12 @@ import { useState } from "react";
 import { IdeaForm } from "@/components/forms/idea-form";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Link from "next/link";
-import { BookmarkSimple, HardDrive, ShareFat } from "@phosphor-icons/react";
+import {
+  ArrowUpRight,
+  BookmarkSimple,
+  HardDrive,
+  ShareFat,
+} from "@phosphor-icons/react";
 import { toast } from "sonner";
 import SuggestedIdeas from "@/components/suggested-ideas";
 import {
@@ -74,9 +79,15 @@ export default function IdeasPage() {
                   className="mb-2 text-brand-gray-500"
                   size={42}
                 />
-                <p className="text-sm text-brand-gray-500">
-                  Nothing to see here yet.
-                </p>
+                <span className="text-sm text-brand-gray-500">
+                  Nothing to see here yet.{" "}
+                  <Link href="/dashboard/saved/ideas">
+                    Saved ones{" "}
+                    <span className="hover:underline">
+                      here <ArrowUpRight className="inline h-3 w-3" />
+                    </span>
+                  </Link>
+                </span>
               </div>
             ) : (
               <ScrollArea className="h-full w-full pr-4">

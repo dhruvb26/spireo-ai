@@ -15,9 +15,50 @@ export async function getUserId() {
 export async function getUser() {
   const session = await getServerAuthSession();
 
-  console.log("Session:", session?.user);
+  if (!session) return null;
 
-  return session?.user;
+  let user = await db.query.users.findFirst({
+    where: eq(users.id, session.user.id),
+    columns: {
+      id: true,
+      name: true,
+      email: true,
+      image: true,
+      headline: true,
+    },
+  });
+
+  if (!user) return null;
+
+  try {
+    const accessToken = await getAccessToken(user.id);
+
+    const response = await fetch("https://api.linkedin.com/v2/me", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "X-Restli-Protocol-Version": "2.0.0",
+        "LinkedIn-Version": "202406",
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      const headline = data.localizedHeadline;
+
+      await db.update(users).set({ headline }).where(eq(users.id, user.id));
+
+      user.headline = headline;
+    } else if (response.status === 401) {
+      console.log("Unauthorized access to LinkedIn API");
+    } else {
+      console.error("Error fetching LinkedIn data:", response.statusText);
+    }
+  } catch (error) {
+    console.error("Error in LinkedIn API request:", error);
+  }
+
+  return user;
 }
 
 export async function getLinkedInId(userId: string) {

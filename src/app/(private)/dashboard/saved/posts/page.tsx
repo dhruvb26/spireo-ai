@@ -93,7 +93,7 @@ const SavedDraftsPage = () => {
           </span>
           <Link
             href="/dashboard/post"
-            className="flex items-center text-sm text-brand-purple-600 hover:text-brand-purple-700"
+            className="flex items-center text-sm text-brand-purple-600 hover:text-brand-purple-700 hover:underline"
           >
             Generate Posts
             <ArrowUpRight className="ml-1" size={14} />
