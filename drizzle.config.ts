@@ -9,7 +9,7 @@ export default {
     host: "aws-0-us-west-1.pooler.supabase.com",
     port: 6543,
     url: env.DATABASE_URL,
-    password: "PJbxQrac5af0SYBx",
+    password: env.DATABASE_PASSWORD,
     user: "postgres.cwhreifatenhdzazycsn",
     ssl: {
       rejectUnauthorized: false,
