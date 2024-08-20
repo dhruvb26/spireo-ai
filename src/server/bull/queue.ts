@@ -24,7 +24,7 @@ export function initializeQueue() {
   worker = new Worker(
     "linkedin-posts",
     async (job) => {
-      const { userId, postId, content, documentUrn } = job.data;
+      const { userId, postId, content, documentUrn, documentTitle } = job.data;
 
       console.log(`Processing post ${postId} for user ${userId}`);
 
@@ -41,6 +41,7 @@ export function initializeQueue() {
               postId,
               content,
               documentUrn,
+              documentTitle,
             }),
           },
         );

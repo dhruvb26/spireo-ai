@@ -45,12 +45,12 @@ export const RepurposeFormSchema = z.object({
   CTA: z.string().optional(),
 });
 
-interface YouTubeFormProps {
+interface BlogFormProps {
   onSubmit: (values: z.infer<typeof RepurposeFormSchema>) => void;
   isLoading: boolean;
 }
 
-export function YouTubeForm({ onSubmit, isLoading }: YouTubeFormProps) {
+export function BlogForm({ onSubmit, isLoading }: BlogFormProps) {
   const form = useForm<z.infer<typeof RepurposeFormSchema>>({
     resolver: zodResolver(RepurposeFormSchema),
     defaultValues: {
@@ -114,6 +114,7 @@ export function YouTubeForm({ onSubmit, isLoading }: YouTubeFormProps) {
       setIsGeneratingInstructions(false);
     }
   };
+
   const handleToggleCollapsible = (e: React.MouseEvent) => {
     e.preventDefault();
     setIsOpen(!isOpen);
@@ -166,13 +167,13 @@ export function YouTubeForm({ onSubmit, isLoading }: YouTubeFormProps) {
               <FormControl>
                 <Input
                   autoComplete="off"
-                  placeholder="Enter a YouTube video URL"
+                  placeholder="Enter a blog URL"
                   {...field}
                   disabled={isLoading}
                 />
               </FormControl>
               <FormDescription>
-                Drop in the URL for the YouTube content you want to repurpose.
+                Drop in the URL for the blog content you want to repurpose.
               </FormDescription>
               <FormMessage />
             </FormItem>

@@ -8,10 +8,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
 import DraftCard from "./DraftCard";
 import { Draft } from "@/actions/draft";
-import { ArrowUpRight, Dot } from "@phosphor-icons/react";
+import { Dot } from "@phosphor-icons/react";
 
 interface CalendarProps {
   drafts: Draft[];
@@ -19,7 +18,9 @@ interface CalendarProps {
 
 const Calendar: React.FC<CalendarProps> = ({ drafts }) => {
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
-  const [currentView, setCurrentView] = useState<"1week" | "2weeks">("1week");
+  const [currentView, setCurrentView] = useState<"1week" | "2weeks" | "month">(
+    "1week",
+  );
 
   const getWeekDates = (date: Date, weeks: number = 1): Date[] => {
     const dates: Date[] = [];
@@ -34,6 +35,35 @@ const Calendar: React.FC<CalendarProps> = ({ drafts }) => {
     return dates;
   };
 
+  const getMonthDates = (date: Date): Date[] => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const dates: Date[] = [];
+
+    // Add days from previous month to start on Sunday
+    for (let i = firstDay.getDay(); i > 0; i--) {
+      const prevDate = new Date(year, month, 1 - i);
+      dates.push(prevDate);
+    }
+
+    // Add all days of the current month
+    for (let i = 1; i <= lastDay.getDate(); i++) {
+      dates.push(new Date(year, month, i));
+    }
+
+    // Add days from next month to complete the grid
+    const remainingDays = 7 - (dates.length % 7);
+    if (remainingDays < 7) {
+      for (let i = 1; i <= remainingDays; i++) {
+        dates.push(new Date(year, month + 1, i));
+      }
+    }
+
+    return dates;
+  };
+
   const formatMonthYearWeek = (date: Date): React.ReactNode => {
     const month = date.toLocaleDateString("en-US", { month: "long" });
     const year = date.getFullYear();
@@ -44,10 +74,14 @@ const Calendar: React.FC<CalendarProps> = ({ drafts }) => {
         <span className="text-lg font-medium tracking-tight">
           {month} {year}
         </span>
-        <Dot weight="bold" className="text-brand-gray-500" size={32} />
-        <span className="text-sm font-normal text-brand-gray-500">
-          Week {weekNumber}
-        </span>
+        {currentView !== "month" && (
+          <>
+            <Dot weight="bold" className="text-brand-gray-500" size={32} />
+            <span className="text-sm font-normal text-brand-gray-500">
+              Week {weekNumber}
+            </span>
+          </>
+        )}
       </div>
     );
   };
@@ -73,7 +107,11 @@ const Calendar: React.FC<CalendarProps> = ({ drafts }) => {
   const goToPrevious = () => {
     setCurrentDate((prevDate) => {
       const newDate = new Date(prevDate);
-      newDate.setDate(newDate.getDate() - (currentView === "1week" ? 7 : 14));
+      if (currentView === "month") {
+        newDate.setMonth(newDate.getMonth() - 1);
+      } else {
+        newDate.setDate(newDate.getDate() - (currentView === "1week" ? 7 : 14));
+      }
       return newDate;
     });
   };
@@ -81,7 +119,11 @@ const Calendar: React.FC<CalendarProps> = ({ drafts }) => {
   const goToNext = () => {
     setCurrentDate((prevDate) => {
       const newDate = new Date(prevDate);
-      newDate.setDate(newDate.getDate() + (currentView === "1week" ? 7 : 14));
+      if (currentView === "month") {
+        newDate.setMonth(newDate.getMonth() + 1);
+      } else {
+        newDate.setDate(newDate.getDate() + (currentView === "1week" ? 7 : 14));
+      }
       return newDate;
     });
   };
@@ -99,41 +141,50 @@ const Calendar: React.FC<CalendarProps> = ({ drafts }) => {
   };
 
   const renderCalendarView = () => {
-    const dates = getWeekDates(currentDate, currentView === "1week" ? 1 : 2);
+    const dates =
+      currentView === "month"
+        ? getMonthDates(currentDate)
+        : getWeekDates(currentDate, currentView === "1week" ? 1 : 2);
     const today = new Date().toDateString();
+    const currentMonth = currentDate.getMonth();
+
     return (
-      <div className="grid grid-cols-7 gap-px bg-gray-200">
+      <div
+        className={`grid ${currentView === "month" ? "grid-cols-7" : "grid-cols-7"} gap-px bg-gray-200`}
+      >
         {dates.map((date, index) => (
           <div
             key={index}
             className={`flex ${
-              currentView === "1week" ? "h-[75vh]" : "h-[50vh]"
+              currentView === "month"
+                ? "h-[25vh]"
+                : currentView === "1week"
+                  ? "h-[75vh]"
+                  : "h-[50vh]"
             } flex-col ${
               date.toDateString() === today ? "bg-blue-50" : "bg-white"
-            } ${isFirstDayOfMonth(date) ? "bg-blue-100" : ""}`}
+            } ${isFirstDayOfMonth(date) ? "bg-blue-100" : ""} ${
+              currentView === "month" && date.getMonth() !== currentMonth
+                ? "opacity-50"
+                : ""
+            }`}
           >
             <div
               className={`flex-shrink-0 border-b p-2 ${
                 date.toDateString() === today ? "bg-blue-100" : ""
               } ${isFirstDayOfMonth(date) ? "bg-blue-50 " : ""}`}
             >
-              <div className="text-sm font-semibold text-blue-700">
-                {formatDayOfWeek(date).toUpperCase()}
-              </div>
-              <div className="flex flex-row items-end space-x-2">
-                <div className="text-sm font-semibold">
-                  {formatDayOfMonth(date)}
+              <div className="flex h-4 flex-row items-end space-x-2">
+                <div className="text-xs text-blue-700">
+                  {formatDayOfWeek(date).toUpperCase()}
                 </div>
-                {isFirstDayOfMonth(date) && (
-                  <div className="text-xs font-medium text-blue-600">
-                    {date.toLocaleString("default", { month: "long" })}
-                  </div>
-                )}
+
+                <div className="text-xs">{formatDayOfMonth(date)}</div>
               </div>
             </div>
             <div className="relative flex-grow space-y-2 overflow-hidden p-2">
               {getDraftsForDate(date).map((draft) => (
-                <DraftCard key={draft.id} draft={draft} />
+                <DraftCard key={draft.id} draft={draft} view={currentView} />
               ))}
             </div>
           </div>
@@ -173,7 +224,7 @@ const Calendar: React.FC<CalendarProps> = ({ drafts }) => {
           <Select
             value={currentView}
             onValueChange={(value) =>
-              setCurrentView(value as "1week" | "2weeks")
+              setCurrentView(value as "1week" | "2weeks" | "month")
             }
           >
             <SelectTrigger className="w-[120px] rounded-lg text-sm ">
@@ -185,6 +236,9 @@ const Calendar: React.FC<CalendarProps> = ({ drafts }) => {
               </SelectItem>
               <SelectItem value="2weeks" className="text-sm">
                 2 Weeks
+              </SelectItem>
+              <SelectItem value="month" className="text-sm">
+                Month
               </SelectItem>
             </SelectContent>
           </Select>

@@ -5,8 +5,14 @@ import { drafts } from "@/server/db/schema";
 import { and, eq } from "drizzle-orm";
 import { getQueue } from "@/server/bull/queue";
 import { saveJobId, getJobId, deleteJobId } from "@/server/redis";
-import { checkAccess } from "@/actions/user";
-import { getDraft, deleteDraft } from "@/actions/draft";
+import { checkAccess, getUserId } from "@/actions/user";
+import {
+  getDraft,
+  deleteDraft,
+  getDrafts,
+  getDraftDocumentTitle,
+  updateDraft,
+} from "@/actions/draft";
 import { type Queue } from "bullmq";
 import { type JobsOptions } from "bullmq";
 import { fromZonedTime } from "date-fns-tz";
@@ -26,6 +32,7 @@ interface JobData {
   postId: string;
   content: string;
   documentUrn: string;
+  documentTitle?: string;
 }
 
 export async function POST(req: Request) {
@@ -55,6 +62,7 @@ export async function POST(req: Request) {
   const scheduledDate = fromZonedTime(new Date(scheduledTime), timezone);
 
   const draft = await getDraft(postId);
+
   const content = draft?.data?.content;
 
   if (!userId || !postId || !content) {
@@ -85,8 +93,21 @@ export async function POST(req: Request) {
     // Ensure draft exists
     await ensureDraftExists(db, userId, postId, name, content);
 
+    const result = await getDraftDocumentTitle(postId);
+    let documentTitle;
+    if (result.success) {
+      documentTitle = result.data;
+    }
+    documentTitle = "PDF Document";
+
     // Prepare job data and options
-    const jobData: JobData = { userId, postId, content, documentUrn };
+    const jobData: JobData = {
+      userId,
+      postId,
+      content,
+      documentUrn,
+      documentTitle,
+    };
     const jobOptions = prepareJobOptions(scheduledDate);
 
     // Add new job to queue
@@ -97,7 +118,7 @@ export async function POST(req: Request) {
     await saveJobId(userId, postId, job.id || "");
 
     // Update draft in database
-    await updateDraft(
+    await updateThisDraft(
       db,
       postId,
       content,
@@ -145,7 +166,7 @@ function prepareJobOptions(scheduledDate: Date): JobsOptions {
   return jobOptions;
 }
 
-async function updateDraft(
+async function updateThisDraft(
   db: any,
   postId: string,
   content: string,
@@ -221,7 +242,10 @@ async function ensureDraftExists(
 export async function DELETE(req: Request) {
   console.log("DELETE request received for scheduled post");
   const body = await req.json();
-  const { userId, postId } = body;
+
+  const userId = await getUserId();
+
+  const { postId } = body;
 
   if (!userId || !postId) {
     console.log("Missing required fields for DELETE request");
@@ -268,14 +292,21 @@ export async function DELETE(req: Request) {
       );
     }
 
-    // Now delete the draft
-    const result = await deleteDraft(postId);
+    // Now update the draft status to 'saved' instead of deleting it
+    const result = await updateDraft(postId, "saved");
+
+    await db
+      .update(drafts)
+      .set({
+        scheduledFor: null,
+      })
+      .where(eq(drafts.id, postId));
 
     if (result.success) {
-      console.log(`Draft deleted successfully for post ${postId}`);
+      console.log(`Draft status updated to 'saved' for post ${postId}`);
       return NextResponse.json({ message: result.message });
     } else {
-      console.log(`Failed to delete draft for post ${postId}`);
+      console.log(`Failed to update draft status for post ${postId}`);
       return NextResponse.json({ error: result.message }, { status: 404 });
     }
   } catch (error) {

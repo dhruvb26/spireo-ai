@@ -27,7 +27,7 @@ export default function LinkedInSignInButton({
   return (
     <Button
       onClick={handleLinkedInSignIn}
-      className="flex w-full items-center justify-center rounded-lg border border-neutral-100 bg-neutral-50 px-4 py-2 text-sm text-brand-gray-900 shadow hover:bg-neutral-100"
+      className="group flex w-full select-none items-center justify-center rounded-lg border border-zinc-50 bg-white leading-8 text-zinc-950 shadow-[0_-1px_0_0px_#d4d4d8_inset,0_0_0_1px_#f4f4f5_inset,0_0.5px_0_1.5px_#fff_inset] hover:bg-zinc-50 hover:via-zinc-900 hover:to-zinc-800 active:shadow-[-1px_0px_1px_0px_#e4e4e7_inset,1px_0px_1px_0px_#e4e4e7_inset,0px_0.125rem_1px_0px_#d4d4d8_inset]"
     >
       <Image
         src="/icons8-linkedin (1).svg"

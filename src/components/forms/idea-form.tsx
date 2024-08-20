@@ -16,6 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { CustomIdeaComponent } from "../custom-idea-component";
 
 const formSchema = z.object({
   topic: z.string().min(2, {
@@ -83,13 +84,16 @@ export function IdeaForm({ onIdeasGenerated, onLoading }: IdeaFormProps) {
             </FormItem>
           )}
         />
-        <Button
-          className="rounded-lg bg-brand-purple-600 font-light hover:bg-brand-purple-700"
-          type="submit"
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? "Generating" : "Generate Ideas"}
-        </Button>
+        <div className="flex flex-row space-x-2">
+          <Button
+            className="rounded-lg bg-brand-purple-600 font-light hover:bg-brand-purple-700"
+            type="submit"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Generating" : "Generate Ideas"}
+          </Button>
+          <CustomIdeaComponent />
+        </div>
       </form>
     </Form>
   );

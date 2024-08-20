@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { PencilSimpleLine, TrashSimple } from "@phosphor-icons/react";
+import { PencilSimpleLine, TrashSimple, Clock } from "@phosphor-icons/react";
 import {
   TooltipProvider,
   Tooltip,
@@ -12,6 +12,8 @@ import {
   TooltipContent,
 } from "@/components/ui/tooltip";
 import { Badge } from "./badge";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export const ParallaxScroll = ({
   posts,
@@ -36,6 +38,7 @@ export const ParallaxScroll = ({
   const translateFirst = useTransform(scrollYProgress, [0, 1], [0, -200]);
   const translateSecond = useTransform(scrollYProgress, [0, 1], [0, 200]);
   const translateThird = useTransform(scrollYProgress, [0, 1], [0, -200]);
+  const router = useRouter();
 
   const third = Math.ceil(posts.length / 3);
 
@@ -67,6 +70,28 @@ export const ParallaxScroll = ({
     return truncatedContent.join(" ");
   };
 
+  const cancelSchedule = async (postId: string) => {
+    try {
+      const response = await fetch("/api/schedule", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ postId }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to cancel schedule");
+      }
+
+      toast.success("Post scheduling cancelled");
+      window.location.reload();
+    } catch (error) {
+      toast.error("Error cancelling the scheduled post");
+      console.error("Error cancelling schedule:", error);
+    }
+  };
+
   const PostCard = ({ post, translateY }: { post: any; translateY: any }) => (
     <motion.div
       style={{ y: translateY }}
@@ -89,7 +114,9 @@ export const ParallaxScroll = ({
           className={
             post.status === "published"
               ? "bg-green-50 text-xs font-normal text-green-600 hover:bg-green-100"
-              : "bg-blue-50 text-xs font-normal text-blue-600 hover:bg-blue-100"
+              : post.status === "scheduled"
+                ? "bg-yellow-50 text-xs font-normal text-yellow-600 hover:bg-yellow-100"
+                : "bg-blue-50 text-xs font-normal text-blue-600 hover:bg-blue-100"
           }
         >
           {post.status}
@@ -111,6 +138,24 @@ export const ParallaxScroll = ({
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
+
+            {post.status === "scheduled" && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => cancelSchedule(post.id)}
+                      className="text-brand-purple-600 transition-colors hover:text-brand-purple-700"
+                    >
+                      <Clock className="h-5 w-5" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Cancel Schedule</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
 
             <TooltipProvider>
               <Tooltip>

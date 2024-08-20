@@ -7,6 +7,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import WordsCard from "./words-card";
 import FadeSeparator from "./ui/fade-separator";
 import { Badge } from "./ui/badge";
+
 import {
   Tooltip,
   TooltipContent,
@@ -176,20 +177,6 @@ const Sidebar = ({ children, user }: any) => {
 
   const renderNavigation = () => (
     <nav className="flex-grow overflow-y-auto px-2 py-4">
-      {renderNavLink(
-        "/dashboard/getting-started",
-        <MapPinSimple size={20} />,
-        <MapPinSimple weight="duotone" size={20} />,
-        "Get Started",
-        true,
-      )}
-      <FadeSeparator />
-
-      <h3
-        className={`my-2 px-6 text-xs font-semibold uppercase text-brand-gray-400 ${isSidebarCollapsed ? "hidden" : ""}`}
-      >
-        Creation
-      </h3>
       {isSidebarCollapsed ? (
         <TooltipProvider>
           <Tooltip>
@@ -209,14 +196,30 @@ const Sidebar = ({ children, user }: any) => {
           </Tooltip>
         </TooltipProvider>
       ) : (
-        <button
-          onClick={handleCreateDraft}
-          className="relative flex w-full items-center gap-3 px-6 py-2 text-sm font-normal text-brand-gray-500 transition-all hover:text-blue-700"
-        >
-          <PencilSimpleLine weight="duotone" size={20} />
-          <span>New Post</span>
-        </button>
+        <div className="flex w-full items-center justify-center px-4">
+          <button
+            onClick={handleCreateDraft}
+            className="group relative inline-flex h-10 w-full items-center justify-center overflow-hidden rounded-lg p-4 px-4 py-0.5 text-sm text-white shadow-sm"
+          >
+            <span className="ease absolute left-0 top-0 -ml-3 -mt-10 h-40 w-40 rounded-full bg-blue-700 blur-md transition-all duration-100"></span>
+            <span className="ease absolute inset-0 h-full w-full transition duration-100 group-hover:rotate-180">
+              <span className="absolute bottom-0 left-0 -ml-10 h-40 w-40 rounded-full bg-blue-700 blur-md"></span>
+              <span className="absolute bottom-0 right-0 -mr-10 h-40 w-40 rounded-full bg-blue-600 blur-md"></span>
+            </span>
+            <span className="relative flex items-center">
+              Write Post
+              <PencilSimpleLine weight="duotone" className="ml-2" size={20} />
+            </span>
+          </button>
+        </div>
       )}
+
+      <h3
+        className={`my-2 px-6 text-xs font-semibold uppercase text-brand-gray-400 ${isSidebarCollapsed ? "hidden" : ""}`}
+      >
+        Creation
+      </h3>
+
       {renderNavLink(
         "/dashboard/post",
         <Sparkle size={20} />,
@@ -282,7 +285,7 @@ const Sidebar = ({ children, user }: any) => {
               onClick={() => setIsSavedOpen(!isSavedOpen)}
               className={`flex w-full items-center justify-between px-6 py-2 text-sm transition-all hover:text-blue-700 ${
                 isLinkActive("/dashboard/saved")
-                  ? "bg-brand-gray-100 text-blue-700"
+                  ? "rounded-lg bg-brand-gray-100 text-blue-700"
                   : "text-brand-gray-500"
               }`}
             >
@@ -326,6 +329,13 @@ const Sidebar = ({ children, user }: any) => {
       >
         Account
       </h3>
+      {renderNavLink(
+        "/dashboard/getting-started",
+        <MapPinSimple size={20} />,
+        <MapPinSimple weight="duotone" size={20} />,
+        "Get Started",
+        true,
+      )}
       {renderNavLink(
         "/dashboard/preferences",
         <Wrench size={20} />,
@@ -385,7 +395,9 @@ const Sidebar = ({ children, user }: any) => {
               height={30}
               alt=""
             />
-            <span className="text-2xl font-black tracking-tighter">Spireo</span>
+            <span className="text-2xl font-black tracking-tighter text-black">
+              Spireo
+            </span>
           </Button>
         </div>
         <div className="flex flex-row items-center justify-center space-x-4">

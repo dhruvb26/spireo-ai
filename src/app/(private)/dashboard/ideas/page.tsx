@@ -21,6 +21,7 @@ import {
 import { saveIdea } from "@/actions/idea";
 import { v4 as uuid } from "uuid";
 import { Loader2 } from "lucide-react";
+import { CustomIdeaComponent } from "@/components/custom-idea-component";
 
 export default function IdeasPage() {
   const [ideas, setIdeas] = useState<string[]>([]);

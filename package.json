@@ -17,6 +17,7 @@
     "@auth/drizzle-adapter": "1.4.1",
     "@canva/app-ui-kit": "^3.8.0",
     "@draft-js-plugins/editor": "^4.1.4",
+    "@extractus/article-extractor": "^8.0.10",
     "@frigade/react": "^2.4.15",
     "@google-cloud/speech": "^6.7.0",
     "@hookform/resolvers": "^3.9.0",

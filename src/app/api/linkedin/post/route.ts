@@ -274,7 +274,8 @@ function extractText(content: Node | Node[]): string {
 
 export async function POST(request: Request) {
   try {
-    const { userId, postId, content, documentUrn } = await request.json();
+    const { userId, postId, content, documentUrn, documentTitle } =
+      await request.json();
 
     console.log("Content received: ", content);
     await saveDraft(postId, content);
@@ -325,7 +326,7 @@ export async function POST(request: Request) {
         mediaContent = {
           media: {
             id: `urn:li:document:${urnId}`,
-            title: "PDF",
+            title: documentTitle,
           },
         };
       } else if (documentUrn.includes(":video:")) {
@@ -374,8 +375,11 @@ export async function POST(request: Request) {
       console.log("LinkedIn Post ID:", linkedInPostId);
     } else {
       try {
-        responseData = await response.text();
-        console.log("LinkedIn API response:", responseData);
+        responseData = await response.json();
+        console.log(
+          "LinkedIn API response:",
+          JSON.stringify(responseData, null, 2),
+        );
       } catch (error) {
         console.error("Error reading LinkedIn API response:", error);
       }
@@ -384,7 +388,7 @@ export async function POST(request: Request) {
     if (!response.ok) {
       console.error("Error publishing draft", response.status, responseData);
       return NextResponse.json(
-        { error: `Error publishing draft: ${responseData}` },
+        { error: `Error publishing draft: ${JSON.stringify(responseData)}` },
         { status: response.status },
       );
     }

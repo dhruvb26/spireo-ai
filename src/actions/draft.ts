@@ -526,6 +526,93 @@ export async function updateDraftDocumentUrn(
   }
 }
 
+export async function updateDraftDocumentTitle(
+  id: string,
+  documentTitle: string,
+): Promise<Result> {
+  try {
+    const userId = await getUserId();
+
+    if (!userId) {
+      return {
+        success: false,
+        message: "User not authenticated",
+      };
+    }
+
+    const updatedDraft = await db
+      .update(drafts)
+      .set({
+        documentTitle: documentTitle,
+        updatedAt: new Date(),
+      })
+      .where(and(eq(drafts.id, id), eq(drafts.userId, userId)))
+      .returning();
+
+    if (updatedDraft.length === 0) {
+      return {
+        success: false,
+        message: "Failed to update draft document title",
+      };
+    }
+
+    return {
+      success: true,
+      message: "Draft document title updated successfully",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Failed to update draft document title",
+    };
+  }
+}
+
+export async function getDraftDocumentTitle(
+  id: string,
+): Promise<Result<string | null>> {
+  try {
+    const userId = await getUserId();
+
+    if (!userId) {
+      return {
+        success: false,
+        message: "User not authenticated",
+        data: null,
+      };
+    }
+
+    const draft = await db
+      .select({
+        documentTitle: drafts.documentTitle,
+      })
+      .from(drafts)
+      .where(and(eq(drafts.id, id), eq(drafts.userId, userId)))
+      .limit(1);
+
+    if (draft.length === 0) {
+      return {
+        success: false,
+        message: "Draft not found",
+        data: null,
+      };
+    }
+
+    return {
+      success: true,
+      message: "Document title retrieved successfully",
+      data: draft[0]?.documentTitle ?? null,
+    };
+  } catch (error) {
+    console.error("Error retrieving draft document title:", error);
+    return {
+      success: false,
+      message: "Failed to retrieve draft document title",
+      data: null,
+    };
+  }
+}
+
 export async function removeDraftDocumentUrn(id: string): Promise<Result> {
   try {
     const userId = await getUserId();

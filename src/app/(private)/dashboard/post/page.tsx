@@ -22,7 +22,7 @@ const PostsPage = () => {
         <h2 className="mb-4 text-lg font-semibold tracking-tight text-brand-gray-900">
           Repurpose Content
         </h2>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           <Link href="/dashboard/post/youtube-linkedin">
             <div className="group h-full overflow-hidden rounded-lg border border-brand-gray-200 transition-all hover:-translate-y-1 hover:shadow-sm ">
               <img
@@ -42,6 +42,29 @@ const PostsPage = () => {
                 <p className="mt-2 flex-grow text-sm text-brand-gray-500">
                   Transform YouTube content into LinkedIn gold. Just drop the
                   video link and watch the magic happen.
+                </p>
+              </div>
+            </div>
+          </Link>
+          <Link href="/dashboard/post/blog-linkedin">
+            <div className="group h-full overflow-hidden rounded-lg border border-brand-gray-200 transition-all hover:-translate-y-1 hover:shadow-sm ">
+              <img
+                src="/Blog.svg"
+                alt="Blog to LinkedIn"
+                className="h-36 w-full p-10"
+              />
+              <div className="flex h-[calc(100%-144px)] flex-col bg-card p-4 text-brand-gray-900">
+                <h3 className="text-md font-semibold tracking-tight">
+                  Blog{" "}
+                  <ArrowRight
+                    size={12}
+                    className="inline text-brand-gray-900"
+                  />{" "}
+                  LinkedIn
+                </h3>
+                <p className="mt-2 flex-grow text-sm text-brand-gray-500">
+                  Convert insightful blog posts into engaging LinkedIn content.
+                  Simply input the URL and let our AI do the rest.
                 </p>
               </div>
             </div>

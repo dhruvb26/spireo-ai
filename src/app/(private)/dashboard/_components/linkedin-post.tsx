@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { getUser } from "@/actions/user";
 import { Descendant } from "slate";
 import ContentViewer from "@/app/(private)/dashboard/_components/content-viewer";
-import { getDownloadUrl } from "@/actions/draft";
+import { getDownloadUrl, getDraftDocumentTitle } from "@/actions/draft";
 import { MdSmartphone, MdTablet, MdLaptop } from "react-icons/md";
 import {
   ChatCircleText,
@@ -15,6 +15,7 @@ import {
 } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import Image from "next/image";
 
 const PdfViewerComponent = dynamic(() => import("./PdfViewer"), {
   ssr: false,
@@ -52,6 +53,7 @@ const LinkedInPostPreview: React.FC<LinkedInPostPreviewProps> = ({
     "mobile",
   );
   const containerRef = useRef<HTMLDivElement>(null);
+  const [documentTitle, setDocumentTitle] = useState<string | null>(null);
 
   useEffect(() => {
     const updateDeviceBasedOnSize = () => {
@@ -80,6 +82,12 @@ const LinkedInPostPreview: React.FC<LinkedInPostPreviewProps> = ({
       try {
         const userData = await getUser();
         setUser(userData as User);
+
+        const titleResult = await getDraftDocumentTitle(postId);
+
+        if (titleResult.success) {
+          setDocumentTitle(titleResult.data || "");
+        }
 
         const result = await getDownloadUrl(postId);
 
@@ -146,7 +154,13 @@ const LinkedInPostPreview: React.FC<LinkedInPostPreviewProps> = ({
         />
       );
     } else if (contentType === "application/pdf") {
-      return <PdfViewerComponent file={downloadUrl} device={device} />;
+      return (
+        <PdfViewerComponent
+          title={documentTitle || "PDF Document"}
+          file={downloadUrl}
+          device={device}
+        />
+      );
     } else if (contentType?.startsWith("video/")) {
       return (
         <video src={downloadUrl} controls className="h-auto w-full">
@@ -195,15 +209,18 @@ const LinkedInPostPreview: React.FC<LinkedInPostPreviewProps> = ({
       >
         <div className="mb-2 flex items-center p-4">
           <div className="relative mr-2 h-12 w-12 flex-shrink-0">
-            <img
-              src={user?.image || "https://i.pravatar.cc/300"}
+            <Image
+              height={48}
+              width={48}
+              src={user?.image || "/Spireo Logo Symbol Custom.png"}
               alt="Profile"
               className="h-full w-full rounded-full object-cover"
+              quality={100}
             />
           </div>
           <div className="min-w-0 flex-grow">
             <p className="text-sm font-semibold text-black">
-              {user?.name || "..."}
+              {user?.name || ""}
             </p>
             {user?.headline && (
               <p className="w-full overflow-hidden text-ellipsis whitespace-nowrap text-xs font-normal text-brand-gray-500">

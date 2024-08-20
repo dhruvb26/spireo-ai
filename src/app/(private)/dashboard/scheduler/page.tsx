@@ -12,7 +12,7 @@ interface GetDraftsResult {
 const SchedulerPage = async () => {
   let drafts: Draft[] = [];
   try {
-    const result = (await getDrafts()) as GetDraftsResult;
+    const result = (await getDrafts("scheduled")) as GetDraftsResult;
     drafts = result.success ? result.data : [];
   } catch (error) {
     console.error("Error fetching drafts:", error);

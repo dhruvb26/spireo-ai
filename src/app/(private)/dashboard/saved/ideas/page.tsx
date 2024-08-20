@@ -17,6 +17,7 @@ import {
   TrashSimple,
 } from "@phosphor-icons/react";
 import { Loader2 } from "lucide-react";
+import { CustomIdeaComponent } from "@/components/custom-idea-component";
 
 const SavedIdeasPage = () => {
   const [ideas, setIdeas] = useState<Idea[]>([]);
@@ -87,6 +88,7 @@ const SavedIdeasPage = () => {
               Generate Ideas
               <ArrowUpRight className="ml-1" size={14} />
             </Link>
+            <CustomIdeaComponent />
           </div>
         ) : (
           <ul className="mt-4 space-y-4">
@@ -132,7 +134,7 @@ const SavedIdeasPage = () => {
                         </button>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>Delete idea</p>
+                        <p>Delete</p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>

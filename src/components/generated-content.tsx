@@ -14,6 +14,12 @@ import { v4 as uuid } from "uuid";
 import { Button } from "./ui/button";
 import { saveDraft } from "@/actions/draft";
 import { Loader2 } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface GeneratedContentProps {
   isLoading: boolean;
@@ -87,34 +93,52 @@ export function GeneratedContent({
     return (
       <div className="flex flex-col rounded-lg border border-brand-gray-200">
         <div className="flex items-center justify-end border-brand-gray-200 p-2 py-1">
-          <div className="flex items-center justify-center space-x-1">
-            <Button
-              size={"sm"}
-              onClick={handleCopy}
-              className="rounded-lg bg-white text-brand-gray-500 hover:bg-white hover:text-brand-gray-600"
-              disabled={!isStreamComplete || copied}
-            >
-              {copied ? (
-                "Copied!"
-              ) : (
-                <Copy weight="duotone" className="h-5 w-5" />
-              )}
-            </Button>
-            <Button
-              size={"sm"}
-              onClick={handleSave}
-              className="rounded-lg bg-white text-brand-gray-500 hover:bg-white hover:text-brand-gray-600"
-              disabled={!isStreamComplete || copied}
-            >
-              {<DownloadSimple className="h-5 w-5" />}
-            </Button>
+          <div className="flex w-full items-center justify-between space-x-1 py-1">
+            <div className="flex items-center">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      size={"sm"}
+                      onClick={handleCopy}
+                      className="rounded-lg bg-white text-brand-gray-500 hover:bg-white hover:text-brand-gray-900"
+                      disabled={!isStreamComplete || copied}
+                    >
+                      {copied ? (
+                        "Copied!"
+                      ) : (
+                        <Copy weight="duotone" className="h-5 w-5" />
+                      )}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>{copied ? "Copied!" : "Copy"}</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      size={"sm"}
+                      onClick={handleSave}
+                      className="rounded-lg bg-white text-brand-gray-500 hover:bg-white hover:text-brand-gray-900"
+                      disabled={!isStreamComplete || copied}
+                    >
+                      {<DownloadSimple className="h-5 w-5" />}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Save </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+
             <Button
               size={"sm"}
               onClick={handleEdit}
-              className="rounded-lg bg-white text-brand-gray-500 hover:bg-white hover:text-brand-gray-600"
-              disabled={!isStreamComplete}
+              className="rounded-md bg-blue-600 text-xs hover:bg-blue-700 "
+              disabled={!isStreamComplete || copied}
             >
-              <PencilSimpleLine className="h-5 w-5" />
+              Edit Post
+              {/* <PencilSimpleLine className="ml-1" size={16} /> */}
             </Button>
           </div>
         </div>

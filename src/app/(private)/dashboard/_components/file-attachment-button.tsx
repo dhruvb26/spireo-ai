@@ -10,22 +10,31 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Paperclip, Loader2 } from "lucide-react";
+import { updateDraftDocumentTitle } from "@/actions/draft";
 
 const FileAttachmentButton = ({
   postId,
   onFileUploaded,
 }: {
-  onFileUploaded: (urn: string, fileType: string) => void;
+  onFileUploaded: (
+    urn: string,
+    fileType: string,
+    documentName?: string,
+  ) => void;
   postId: string;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [documentName, setDocumentName] = useState("");
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       setSelectedFile(file);
+      if (file.type === "application/pdf") {
+        setDocumentName(file.name.replace(".pdf", ""));
+      }
     }
   };
 
@@ -36,6 +45,9 @@ const FileAttachmentButton = ({
         const formData = new FormData();
         formData.append("file", selectedFile);
         formData.append("postId", postId);
+        if (selectedFile.type === "application/pdf") {
+          formData.append("documentName", documentName);
+        }
 
         const isDocument = [
           "application/pdf",
@@ -68,6 +80,7 @@ const FileAttachmentButton = ({
         if (result.success) {
           let urn, fileType;
           if (isDocument) {
+            await updateDraftDocumentTitle(postId, documentName);
             urn = result.documentUrn;
             fileType =
               selectedFile.type === "application/pdf" ? "pdf" : "document";
@@ -79,8 +92,13 @@ const FileAttachmentButton = ({
             fileType = "image";
           }
 
-          onFileUploaded(urn, fileType);
+          onFileUploaded(
+            urn,
+            fileType,
+            selectedFile.type === "application/pdf" ? documentName : undefined,
+          );
           setSelectedFile(null);
+          setDocumentName("");
           setIsOpen(false);
         } else {
           throw new Error(result.message || "Upload failed");
@@ -106,22 +124,45 @@ const FileAttachmentButton = ({
             Attach File
           </DialogTitle>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <Input
-            id="file-upload"
-            type="file"
-            onChange={handleFileChange}
-            accept="image/jpeg,image/gif,image/png,image/heic,image/heif,image/webp,image/bmp,image/tiff,.pdf,.pptx,.docx,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.openxmlformats-officedocument.wordprocessingml.document,video/mp4,video/x-ms-asf,audio/mpeg,video/mpeg"
-          />
-          {selectedFile && (
-            <p className="text-sm text-gray-500">
-              Selected file: {selectedFile.name}
-            </p>
+        <div className="flex flex-col space-y-3 py-4">
+          <div>
+            <Input
+              id="file-upload"
+              type="file"
+              className="mb-1"
+              onChange={handleFileChange}
+              accept="image/jpeg,image/gif,image/png,image/heic,image/heif,image/webp,image/bmp,image/tiff,.pdf,.pptx,.docx,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.openxmlformats-officedocument.wordprocessingml.document,video/mp4,video/x-ms-asf,audio/mpeg,video/mpeg"
+            />
+            {selectedFile && (
+              <p className="text-sm text-gray-500">
+                <span className="font-medium">Selected file: </span>
+                {selectedFile.name}
+              </p>
+            )}
+          </div>
+          {selectedFile && selectedFile.type === "application/pdf" && (
+            <div>
+              <Input
+                className="mb-1"
+                type="text"
+                placeholder="Enter document name"
+                value={documentName}
+                onChange={(e) => setDocumentName(e.target.value)}
+              />
+              <p className="text-sm text-gray-500">
+                This name will appear as the title for your document on
+                LinkedIn.
+              </p>
+            </div>
           )}
           <Button
             className="rounded-lg bg-blue-600 hover:bg-blue-700"
             onClick={handleAttach}
-            disabled={!selectedFile || isUploading}
+            disabled={
+              !selectedFile ||
+              isUploading ||
+              (selectedFile.type === "application/pdf" && !documentName)
+            }
           >
             {isUploading ? (
               <>

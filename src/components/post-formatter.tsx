@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useEffect } from "react";
 import {
   Dialog,
@@ -6,11 +7,18 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { toast } from "sonner";
-
+import { Tour } from "@frigade/react";
 import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
+import { CircleAlert } from "lucide-react";
+import {
+  TooltipProvider,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "./ui/tooltip";
 
 interface PostFormat {
   templates: string[];
@@ -120,21 +128,50 @@ export function PostFormatSelector({
   }, [triggerDialog]);
 
   const buttonRef = React.useRef<HTMLButtonElement>(null);
+  const [isAnimating, setIsAnimating] = useState(true);
 
   return (
     <>
+      <Tour
+        onPrimary={(step) => {
+          if (step.order === 0) setIsDialogOpen(true);
+          return true;
+        }}
+        className="[&_.fr-title]:text-md [&_.fr-button-primary:hover]:bg-blue-700 [&_.fr-button-primary]:rounded-lg [&_.fr-button-primary]:bg-blue-600 [&_.fr-title]:font-semibold [&_.fr-title]:tracking-tight [&_.fr-title]:text-brand-gray-900"
+        flowId="flow_JNu34mog"
+      />
+
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <div className="relative flex items-center justify-start space-x-2">
           <DialogTrigger asChild>
             <Button
               ref={buttonRef}
-              className="inline-flex h-10 animate-shimmer items-center justify-center rounded-lg bg-[linear-gradient(110deg,#1d4ed8,45%,#3b82f6,55%,#1d4ed8)] bg-[length:200%_100%] px-4 py-0.5 font-light text-white transition-colors"
+              className="rounded-lg bg-blue-600 font-light text-white hover:bg-blue-700"
               onClick={() => setIsDialogOpen(true)}
+              id="post-format-tooltip"
             >
               Post Format
             </Button>
           </DialogTrigger>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger disabled>
+                <CircleAlert className={`animate-bounce text-blue-600 `} />
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                <div className="max-w-xs">
+                  <p>
+                    Boost engagement with structured, professional content. Save
+                    time and ensure consistency across your posts.{" "}
+                    <strong>Click on Post Format</strong> and choose one of the
+                    templates.
+                  </p>
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
+
         <DialogContent
           aria-describedby={undefined}
           className="min-h-[80vh] sm:max-w-[800px]"
@@ -167,26 +204,29 @@ export function PostFormatSelector({
                 className="h-[500px] w-full"
               >
                 <ScrollArea className="h-full">
-                  {postFormats
-                    .find((format) => format.category === category)
-                    ?.templates.map((template, index) => (
-                      <div
-                        key={index}
-                        className={`mb-4 rounded-lg p-4 transition-all duration-200 ${
-                          selectedFormat === template
-                            ? "border-2 border-blue-500 bg-blue-100"
-                            : "border border-gray-200 bg-gray-50 hover:bg-gray-100"
-                        }`}
-                        onClick={() => setSelectedFormat(template)}
-                      >
-                        <div className="mb-2 text-sm font-semibold text-blue-600">
-                          #{index + 1}
+                  <div className="pr-4">
+                    {postFormats
+                      .find((format) => format.category === category)
+                      ?.templates.map((template, index) => (
+                        <div
+                          key={index}
+                          className={`mb-4 rounded-lg p-4 transition-all duration-200 ${
+                            selectedFormat === template
+                              ? "border-2 border-blue-500 bg-blue-100"
+                              : "border border-gray-200 bg-gray-50 hover:bg-gray-100"
+                          }`}
+                          onClick={() => setSelectedFormat(template)}
+                        >
+                          <div className="mb-2 text-sm font-semibold text-blue-600">
+                            #{index + 1}
+                          </div>
+                          <pre className="whitespace-pre-wrap font-sans ">
+                            {template}
+                          </pre>
                         </div>
-                        <pre className="whitespace-pre-wrap font-sans ">
-                          {template}
-                        </pre>
-                      </div>
-                    ))}
+                      ))}
+                  </div>
+                  <ScrollBar />
                 </ScrollArea>
               </TabsContent>
             ))}
@@ -201,7 +241,7 @@ export function PostFormatSelector({
                 } else {
                   // Show toast if no format is selected
                   toast.error(
-                    "Click on a format to use it in the post generation.",
+                    "Click on a particular style to use it for the post.",
                   );
                 }
               }}

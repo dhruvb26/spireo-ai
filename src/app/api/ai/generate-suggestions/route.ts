@@ -37,8 +37,8 @@ export async function GET(req: Request) {
     // Check if there's a cached response for this user
     const cachedResponse = responseCache.get(user.id);
     const currentTime = Date.now();
-    if (cachedResponse && currentTime - cachedResponse.timestamp < 60000) {
-      // If the cached response is less than a minute old, return it
+    if (cachedResponse && currentTime - cachedResponse.timestamp < 300000) {
+      // If the cached response is less than 5 minutes old, return it
       return NextResponse.json(
         { ideas: cachedResponse.ideas },
         { status: 200 },

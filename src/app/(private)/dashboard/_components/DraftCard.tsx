@@ -3,12 +3,13 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
-import { Draft } from "@/actions/draft";
+import { Draft, getDraftDocumentTitle } from "@/actions/draft";
 import { Badge } from "@/components/ui/badge";
 import {
   CalendarBlank,
   Check,
   Circle,
+  Clock,
   PencilSimpleLine,
   TrashSimple,
 } from "@phosphor-icons/react";
@@ -72,18 +73,22 @@ interface User {
 
 interface DraftCardProps {
   draft: Draft;
+  view: "1week" | "2weeks" | "month";
 }
 
-const DraftCard: React.FC<DraftCardProps> = ({ draft }) => {
+const DraftCard: React.FC<DraftCardProps> = ({ draft, view }) => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
+  const [documentTitle, setDocumentTitle] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [contentType, setContentType] = useState<string | null>(null);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const router = useRouter();
 
   const renderContent = (content: any) => {
+    if (view === "2weeks" || view === "month") return null;
+
     const maxLength = 10;
     let totalLength = 0;
     let truncatedContent = [];
@@ -112,6 +117,12 @@ const DraftCard: React.FC<DraftCardProps> = ({ draft }) => {
       try {
         const userData = await getUser();
         setUser(userData as User);
+
+        const titleResult = await getDraftDocumentTitle(draft.id);
+
+        if (titleResult.success) {
+          setDocumentTitle(titleResult.data || "");
+        }
 
         const result = await getDownloadUrl(draft.id);
 
@@ -156,7 +167,13 @@ const DraftCard: React.FC<DraftCardProps> = ({ draft }) => {
         </div>
       );
     } else if (contentType === "application/pdf") {
-      return <PdfViewerComponent file={downloadUrl} device="mobile" />;
+      return (
+        <PdfViewerComponent
+          title={documentTitle || "PDF Document"}
+          file={downloadUrl}
+          device="mobile"
+        />
+      );
     } else if (contentType?.startsWith("video/")) {
       return (
         <video controls className="w-full">
@@ -187,11 +204,34 @@ const DraftCard: React.FC<DraftCardProps> = ({ draft }) => {
     }
   };
 
+  const cancelSchedule = async (postId: string) => {
+    try {
+      const response = await fetch("/api/schedule", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ postId }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to cancel schedule");
+      }
+
+      toast.success("Post scheduling cancelled");
+      window.location.reload();
+    } catch (error) {
+      toast.error("Error cancelling the scheduled post");
+      console.error("Error cancelling schedule:", error);
+    }
+  };
+
   return (
     <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
       <SheetTrigger asChild>
         <div className="relative max-w-sm cursor-pointer rounded-lg border border-brand-gray-200 bg-white shadow transition-all duration-300 ease-in-out hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
-          {draft.downloadUrl &&
+          {view === "1week" &&
+            draft.downloadUrl &&
             (draft.documentUrn?.includes("document") ? (
               <div className="relative flex h-[50px] w-full items-center justify-center overflow-hidden rounded-t-lg bg-gray-200">
                 <iframe
@@ -219,13 +259,16 @@ const DraftCard: React.FC<DraftCardProps> = ({ draft }) => {
               </div>
             ))}
 
-          <div className="p-4">
+          <div className={`p-4 ${view !== "1week" ? "py-2" : ""}`}>
             <div className="mb-2 flex items-center justify-between">
-              <h5 className="text-sm font-semibold tracking-tight text-brand-gray-900 transition-colors duration-300 ease-in-out group-hover:text-brand-gray-700 dark:text-white dark:group-hover:text-gray-300">
+              <h5
+                className={`${view === "1week" ? "text-sm" : "text-xs"} font-semibold tracking-tight text-brand-gray-900 transition-colors duration-300 ease-in-out group-hover:text-brand-gray-700 dark:text-white dark:group-hover:text-gray-300`}
+              >
                 {(draft.name && draft.name.length > 15
                   ? draft.name.slice(0, 15) + "..."
                   : draft.name) || "Untitled Post"}
               </h5>
+
               <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
                 <AlertDialogTrigger asChild>
                   <TooltipProvider>
@@ -276,9 +319,11 @@ const DraftCard: React.FC<DraftCardProps> = ({ draft }) => {
                 </AlertDialogContent>
               </AlertDialog>
             </div>
-            <p className="mb-3 text-xs text-brand-gray-500 transition-colors duration-300 ease-in-out group-hover:text-brand-gray-700 dark:text-gray-400 dark:group-hover:text-gray-300">
-              {renderContent(JSON.parse(draft.content))}
-            </p>
+            {view === "1week" && (
+              <p className="mb-3 text-xs text-brand-gray-500 transition-colors duration-300 ease-in-out group-hover:text-brand-gray-700 dark:text-gray-400 dark:group-hover:text-gray-300">
+                {renderContent(JSON.parse(draft.content))}
+              </p>
+            )}
             <div className="flex items-center space-x-2">
               {draft.status === "scheduled" ? (
                 <Circle
@@ -442,6 +487,14 @@ const DraftCard: React.FC<DraftCardProps> = ({ draft }) => {
                   <PencilSimpleLine className="ml-2" weight="bold" size={16} />
                 </Button>
               </Link>
+              <Button
+                onClick={() => cancelSchedule(draft.id)}
+                variant={"outline"}
+                className="mt-2 w-full rounded-lg text-black"
+              >
+                Cancel Schedule
+                <Clock className="ml-2" weight="bold" size={16} />
+              </Button>
             </div>
           )}
         </SheetDescription>

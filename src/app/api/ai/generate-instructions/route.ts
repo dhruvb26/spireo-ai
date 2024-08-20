@@ -1,16 +1,25 @@
 import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { env } from "@/env";
+import { checkAccess, updateGeneratedWords } from "@/actions/user";
 export const maxDuration = 60;
 
 export async function POST(req: Request) {
   try {
+    // Get the user session
+    const hasAccess = await checkAccess();
+
+    // Check if the user has access
+    if (!hasAccess) {
+      return NextResponse.json({ error: "Not authorized!" }, { status: 401 });
+    }
+
     const anthropic = new Anthropic({
       apiKey: env.SPIREO_SECRET_KEY,
     });
 
     const stream = await anthropic.messages.create({
-      model: "claude-3-haiku-20240307",
+      model: env.MODEL,
       max_tokens: 300,
       stream: true,
       messages: [
@@ -36,6 +45,7 @@ export async function POST(req: Request) {
 
     const encoder = new TextEncoder();
     let isWithinTags = false;
+    let wordCount = 0;
     const readable = new ReadableStream({
       async start(controller) {
         let isFirstChunk = true;
@@ -58,6 +68,9 @@ export async function POST(req: Request) {
               isWithinTags = true;
               text = buffer.split("</generated>")[0] as any;
               controller.enqueue(encoder.encode(text));
+              wordCount += text
+                .split(/\s+/)
+                .filter((word: string) => word.length > 0).length;
               controller.close();
               break;
             }
@@ -68,6 +81,9 @@ export async function POST(req: Request) {
                 isFirstChunk = false;
               }
               controller.enqueue(encoder.encode(text));
+              wordCount += text
+                .split(/\s+/)
+                .filter((word: string) => word.length > 0).length;
               buffer = "";
             }
           }
@@ -75,6 +91,9 @@ export async function POST(req: Request) {
         if (isWithinTags) {
           controller.close();
         }
+
+        // Call the updateGeneratedWords action with the total word count
+        await updateGeneratedWords(wordCount);
       },
     });
 

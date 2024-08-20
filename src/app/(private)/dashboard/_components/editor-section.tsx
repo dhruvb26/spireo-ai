@@ -16,6 +16,15 @@ import {
 } from "@/components/ui/tooltip";
 import { Slate, Editable, ReactEditor, useSlate } from "slate-react";
 import { Button } from "@/components/ui/button";
+import {
+  TbFishHook,
+  TbPencilCog,
+  TbPencilPlus,
+  TbTextGrammar,
+} from "react-icons/tb";
+import { PiTextIndent, PiTextOutdent } from "react-icons/pi";
+import { HiOutlineSparkles } from "react-icons/hi2";
+import { HiOutlineCursorClick } from "react-icons/hi";
 import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
 import ScheduleDialog from "./schedule-dialog";
@@ -35,10 +44,18 @@ import {
   updateDraftDocumentUrn,
   removeDraftDocumentUrn,
   deleteDownloadUrl,
+  getDraftDocumentTitle,
 } from "@/actions/draft";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import FileAttachmentButton from "./file-attachment-button";
 import { Loader2, Send } from "lucide-react";
 import { HistoryEditor } from "slate-history";
+import { FaWindowMaximize, FaWindowMinimize } from "react-icons/fa";
+import FadeSeparator from "@/components/ui/fade-separator";
 
 export const serializeContent = (nodes: Descendant[]): string => {
   return JSON.stringify(nodes);
@@ -323,6 +340,12 @@ function EditorSection({
         publishData.documentUrn = documentUrn;
       }
 
+      const titleResult = await getDraftDocumentTitle(id);
+
+      if (titleResult.success) {
+        publishData.documentTitle = titleResult.data;
+      }
+
       const response = await fetch("/api/linkedin/post", {
         method: "POST",
         headers: {
@@ -352,49 +375,6 @@ function EditorSection({
       setIsPublishing(false);
     }
   };
-
-  const handleRewrite = useCallback(async () => {
-    const { selection } = editor;
-    if (!selection || Editor.string(editor, selection) === "") {
-      toast.error("Please select some text to rewrite.");
-      return;
-    }
-
-    setIsRewriting(true);
-
-    const selectedText = Editor.string(editor, selection);
-    const fullContent = extractContent(value);
-
-    try {
-      const response = await fetch("/api/ai/rewrite", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          selectedText,
-          fullContent,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to rewrite text");
-      }
-
-      const { rewrittenText } = await response.json();
-
-      // Replace the selected text with the rewritten text
-      Transforms.delete(editor, { at: selection });
-      Transforms.insertText(editor, rewrittenText, { at: selection.anchor });
-
-      toast.success("Text rewritten successfully");
-    } catch (error) {
-      console.error("Error rewriting text:", error);
-      toast.error("Failed to rewrite text");
-    } finally {
-      setIsRewriting(false);
-    }
-  }, [editor, value]);
 
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -431,6 +411,71 @@ function EditorSection({
     },
     [editor],
   );
+  const [open, setOpen] = useState(false);
+
+  const handleRewrite = useCallback(
+    async (option: string) => {
+      const { selection } = editor;
+      if (!selection && option !== "hook" && option !== "cta") {
+        toast.error("Please select some text to rewrite.");
+        return;
+      }
+
+      setIsRewriting(true);
+
+      const selectedText = selection ? Editor.string(editor, selection) : "";
+      const fullContent = extractContent(value);
+
+      try {
+        const response = await fetch("/api/ai/rewrite", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            selectedText,
+            fullContent,
+            option,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to rewrite text");
+        }
+
+        const { rewrittenText } = await response.json();
+
+        if (!rewrittenText) {
+          throw new Error("Rewritten text is empty");
+        }
+
+        if (selection) {
+          // Replace the selected text with the rewritten text
+          Transforms.select(editor, selection);
+          Transforms.delete(editor);
+          Transforms.insertText(editor, rewrittenText);
+        } else {
+          // Insert the new content at the current cursor position
+          Transforms.insertText(editor, rewrittenText);
+        }
+
+        toast.success("Text rewritten successfully");
+      } catch (error) {
+        console.error("Error rewriting text:", error);
+        toast.error(
+          error instanceof Error ? error.message : "Failed to rewrite text",
+        );
+      } finally {
+        setIsRewriting(false);
+        setOpen(false);
+      }
+    },
+    [editor, value],
+  );
+
+  const handleOptionClick = (option: string) => {
+    handleRewrite(option);
+  };
 
   return (
     <>
@@ -502,15 +547,98 @@ function EditorSection({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-600"
-                    onClick={handleRewrite}
-                    disabled={isRewriting}
-                  >
-                    <Brain weight="duotone" className="h-4 w-4" />
-                  </Button>
+                  <Popover open={open} onOpenChange={setOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-600"
+                        disabled={isRewriting}
+                      >
+                        <Brain weight="duotone" className="h-4 w-4" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent side="right" className="w-56 rounded p-1">
+                      <div className="flex flex-col rounded">
+                        <FadeSeparator
+                          className="mx-0 ml-4 mr-2"
+                          side="left"
+                          text="Rewrite with AI"
+                        />
+                        <Button
+                          variant="ghost"
+                          className="h-8 justify-start rounded text-sm font-normal text-black hover:bg-brand-gray-50 hover:text-blue-600"
+                          onClick={() => handleOptionClick("continue")}
+                        >
+                          <TbPencilPlus className="mr-2 h-5 w-5 stroke-2 text-blue-600" />
+                          Continue writing
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          className="h-8  justify-start rounded text-sm font-normal text-black hover:bg-brand-gray-50 hover:text-blue-600"
+                          onClick={() => handleOptionClick("improve")}
+                        >
+                          <TbPencilCog className="mr-2 h-5 w-5 text-blue-600" />
+                          Improve writing
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          className="h-8  justify-start rounded text-sm font-normal text-black hover:bg-brand-gray-50 hover:text-blue-600"
+                          onClick={() => handleOptionClick("fixGrammar")}
+                        >
+                          <TbTextGrammar className="mr-2 h-5 w-5 text-blue-600" />
+                          Fix grammar
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          className="h-8  justify-start rounded text-sm font-normal text-black hover:bg-brand-gray-50 hover:text-blue-600"
+                          onClick={() => handleOptionClick("makeShorter")}
+                        >
+                          <PiTextOutdent className="mr-2 h-5 w-5 text-blue-600" />
+                          Make shorter
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          className="h-8  justify-start rounded text-sm font-normal text-black hover:bg-brand-gray-50 hover:text-blue-600"
+                          onClick={() => handleOptionClick("makeLonger")}
+                        >
+                          <PiTextIndent className="mr-2 h-5 w-5 text-blue-600" />
+                          Make longer
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          className="h-8 justify-start rounded text-sm font-normal text-black hover:bg-brand-gray-50 hover:text-blue-600"
+                          onClick={() => handleOptionClick("simplify")}
+                        >
+                          <HiOutlineSparkles className="mr-2 h-5 w-5 text-blue-600" />
+                          Simplify text
+                        </Button>
+
+                        <FadeSeparator
+                          className="mx-0 ml-4 mr-2"
+                          side="left"
+                          text="Add content with AI"
+                        />
+
+                        <Button
+                          variant="ghost"
+                          className="h-8 justify-start rounded text-sm font-normal text-black hover:bg-brand-gray-50 hover:text-blue-600"
+                          onClick={() => handleOptionClick("hook")}
+                        >
+                          <TbFishHook className="mr-2 h-5 w-5 text-blue-600" />
+                          Add a hook
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          className="h-8 justify-start rounded text-sm font-normal text-black hover:bg-brand-gray-50 hover:text-blue-600"
+                          onClick={() => handleOptionClick("cta")}
+                        >
+                          <HiOutlineCursorClick className="mr-2 h-5 w-5 text-blue-600" />
+                          Add a CTA
+                        </Button>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>{isRewriting ? "Rewriting" : "Rewrite w/ AI"}</p>
