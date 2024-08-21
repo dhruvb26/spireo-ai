@@ -10,7 +10,7 @@ import { getDraft, getDraftDocumentTitle, updateDraft } from "@/actions/draft";
 import { type Queue } from "bullmq";
 import { type JobsOptions } from "bullmq";
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
-import { isBefore } from "date-fns";
+import { isBefore, subHours } from "date-fns";
 
 interface ScheduleData {
   userId: string;
@@ -53,10 +53,8 @@ export async function POST(req: Request) {
     name,
   }: ScheduleData = await req.json();
 
-  const scheduledDate = new Date(
-    fromZonedTime(scheduledDateTimeISO, timezone).getTime() -
-      4 * 60 * 60 * 1000,
-  );
+  const scheduledDate = fromZonedTime(scheduledDateTimeISO, timezone);
+  const adjustedScheduledDate = subHours(scheduledDate, 4);
 
   const draft = await getDraft(postId);
 
@@ -73,7 +71,7 @@ export async function POST(req: Request) {
   try {
     // Check if the scheduled time is in the past
     const now = new Date();
-    if (isBefore(scheduledDate.toUTCString(), now.toUTCString())) {
+    if (isBefore(adjustedScheduledDate.toUTCString(), now.toUTCString())) {
       console.log("Scheduled time is in the past");
       return NextResponse.json(
         { error: "Scheduled time must be in the future" },
@@ -105,7 +103,7 @@ export async function POST(req: Request) {
       documentUrn,
       documentTitle,
     };
-    const jobOptions = prepareJobOptions(scheduledDate);
+    const jobOptions = prepareJobOptions(adjustedScheduledDate);
 
     // Add new job to queue
     const job = await queue.add("post", jobData, jobOptions);
@@ -121,7 +119,7 @@ export async function POST(req: Request) {
       content,
       name,
       documentUrn,
-      scheduledDate.toUTCString(),
+      adjustedScheduledDate.toUTCString(),
       timezone,
     );
 
@@ -133,7 +131,7 @@ export async function POST(req: Request) {
         ? "Post rescheduled successfully!"
         : "Post scheduled successfully!",
       jobId: job.id,
-      scheduledFor: scheduledDate.toUTCString(),
+      scheduledFor: adjustedScheduledDate.toUTCString(),
       timezone: timezone,
     });
   } catch (error) {
