@@ -107,7 +107,7 @@ const ScheduleDialog: React.FC<ScheduleDialogProps> = ({
         scheduleData.documentUrn = documentUrn;
       }
 
-      const response = await fetch(`/api/test`, {
+      const response = await fetch(`/api/schedule`, {
         method: "POST",
         body: JSON.stringify(scheduleData),
         headers: {
