@@ -131,6 +131,9 @@ importers:
       '@vercel/speed-insights':
         specifier: ^1.0.12
         version: 1.0.12(next@14.2.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
+      assemblyai:
+        specifier: ^4.6.1
+        version: 4.6.1
       axios:
         specifier: ^1.7.3
         version: 1.7.3
@@ -2190,6 +2193,10 @@ packages:
 
   asap@2.0.6:
     resolution: {integrity: sha512-BSHWgDSAiKs50o2Re8ppvp3seVHXSRM44cdSsT9FfNEUUZLOGWVCsiWaRPWM1Znn+mqZ1OfVZ3z3DWEzSp7hRA==}
+
+  assemblyai@4.6.1:
+    resolution: {integrity: sha512-9y+f8OII0XrVyLv+Q3yJnTSiNzPPF/JOjh/7uHlvT5pjYBkdUj9Oot3Lkz01enkEXk/0s7kpkBoGvvZjaKruhQ==}
+    engines: {node: '>=18'}
 
   ast-types@0.9.6:
     resolution: {integrity: sha512-qEdtR2UH78yyHX/AUNfXmJTlM48XoFZKBdwi1nzkI1mJL21cmbu0cvjxjpkXJ5NENMq42H+hNs8VLJcqXLerBQ==}
@@ -6675,6 +6682,13 @@ snapshots:
   arrify@2.0.1: {}
 
   asap@2.0.6: {}
+
+  assemblyai@4.6.1:
+    dependencies:
+      ws: 8.18.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
 
   ast-types@0.9.6: {}
 

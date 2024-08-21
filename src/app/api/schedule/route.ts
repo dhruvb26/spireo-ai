@@ -6,13 +6,7 @@ import { and, eq } from "drizzle-orm";
 import { getQueue } from "@/server/bull/queue";
 import { saveJobId, getJobId, deleteJobId } from "@/server/redis";
 import { checkAccess, getUserId } from "@/actions/user";
-import {
-  getDraft,
-  deleteDraft,
-  getDrafts,
-  getDraftDocumentTitle,
-  updateDraft,
-} from "@/actions/draft";
+import { getDraft, getDraftDocumentTitle, updateDraft } from "@/actions/draft";
 import { type Queue } from "bullmq";
 import { type JobsOptions } from "bullmq";
 import { fromZonedTime } from "date-fns-tz";
@@ -76,7 +70,7 @@ export async function POST(req: Request) {
   try {
     // Check if the scheduled time is in the past
     const now = new Date();
-    if (isBefore(scheduledDate.toISOString(), now.toISOString())) {
+    if (isBefore(scheduledDate.toUTCString(), now.toUTCString())) {
       console.log("Scheduled time is in the past");
       return NextResponse.json(
         { error: "Scheduled time must be in the future" },
@@ -124,7 +118,7 @@ export async function POST(req: Request) {
       content,
       name,
       documentUrn,
-      scheduledDate.toISOString(),
+      scheduledDate.toUTCString(),
       timezone,
     );
 
@@ -136,7 +130,7 @@ export async function POST(req: Request) {
         ? "Post rescheduled successfully!"
         : "Post scheduled successfully!",
       jobId: job.id,
-      scheduledFor: scheduledDate.toISOString(),
+      scheduledFor: scheduledDate.toUTCString(),
       timezone: timezone,
     });
   } catch (error) {
@@ -161,7 +155,7 @@ function prepareJobOptions(scheduledDate: Date): JobsOptions {
     delay: delay > 0 ? delay : 0,
   };
 
-  console.log(`Job scheduled for ${scheduledDate.toISOString()}`);
+  console.log(`Job scheduled for ${scheduledDate.toUTCString()}`);
 
   return jobOptions;
 }

@@ -54,6 +54,7 @@
     "@vercel/edge-config": "^1.2.1",
     "@vercel/kv": "^2.0.0",
     "@vercel/speed-insights": "^1.0.12",
+    "assemblyai": "^4.6.1",
     "axios": "^1.7.3",
     "bullmq": "5.10.3",
     "canvas-confetti": "^1.9.3",

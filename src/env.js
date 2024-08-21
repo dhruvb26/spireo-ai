@@ -12,7 +12,7 @@ export const env = createEnv({
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
-
+    ASSEMBLY_API_KEY: z.string(),
     LINKEDIN_CLIENT_ID: z.string(),
     DATABASE_PASSWORD: z.string(),
     CRON_SECRET: z.string(),
@@ -50,6 +50,7 @@ export const env = createEnv({
     MODEL: process.env.MODEL,
     VERCEL_URL: process.env.VERCEL_URL,
     NODE_ENV: process.env.NODE_ENV,
+    ASSEMBLY_API_KEY: process.env.ASSEMBLY_API_KEY,
     SPIREO_SECRET_KEY: process.env.SPIREO_SECRET_KEY,
     LINKEDIN_CLIENT_ID: process.env.LINKEDIN_CLIENT_ID,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
