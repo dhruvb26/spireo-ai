@@ -94,36 +94,12 @@ const ScheduleDialog: React.FC<ScheduleDialogProps> = ({
       const scheduledDate = new Date(scheduleDate);
       scheduledDate.setHours(hours, minutes);
 
-      // Create a date in the specified timezone
-      const scheduledDateInTimezone = new Date(
-        scheduledDate.toLocaleString("en-US", { timeZone: timezone }),
-      );
-
-      // Format the date to ISO 8601 with timezone offset
-      const scheduledTimeISO = scheduledDateInTimezone
-        .toLocaleString("en-US", {
-          timeZone: timezone,
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false,
-          timeZoneName: "short",
-        })
-        .replace(
-          /(\d+)\/(\d+)\/(\d+),\s(\d+):(\d+):(\d+)\s(.+)/,
-          "$3-$1-$2T$4:$5:$6$7",
-        )
-        .replace(/([+-]\d{2})(\d{2})/, "$1:$2");
-
       const scheduleData: ScheduleData = {
         name: postName,
         userId: userId,
         postId: id,
         content: postContent,
-        scheduledTime: scheduledTimeISO,
+        scheduledTime: scheduledDate.toISOString(),
         timezone: timezone,
       };
 

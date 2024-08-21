@@ -15,7 +15,7 @@ import { isBefore } from "date-fns";
 interface ScheduleData {
   userId: string;
   postId: string;
-  scheduledTime: string;
+  scheduledDateTimeISO: string;
   documentUrn: string;
   timezone: string;
   name: string;
@@ -47,14 +47,16 @@ export async function POST(req: Request) {
   const {
     userId,
     postId,
-    scheduledTime,
+    scheduledDateTimeISO,
     timezone,
     documentUrn,
     name,
   }: ScheduleData = await req.json();
 
-  const scheduledDate = fromZonedTime(scheduledTime, timezone);
-  const x = toZonedTime(scheduledDate, "UTC");
+  const scheduledDate = new Date(
+    fromZonedTime(scheduledDateTimeISO, timezone).getTime() -
+      4 * 60 * 60 * 1000,
+  );
 
   const draft = await getDraft(postId);
 
