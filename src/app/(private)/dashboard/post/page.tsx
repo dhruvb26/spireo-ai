@@ -36,7 +36,7 @@ const PostsPage = () => {
                 <Image
                   width={48}
                   height={48}
-                  src="/youtube.svg"
+                  src="/Youtube-Logo--Streamline-Core (1).png"
                   alt="YouTube to LinkedIn"
                   className="h-12 w-12 object-contain"
                 />
@@ -90,7 +90,7 @@ const PostsPage = () => {
                 <Image
                   width={48}
                   height={48}
-                  src="/transcript.svg"
+                  src="/Copy-Paste--Streamline-Core.png"
                   alt="Transcript to LinkedIn"
                   className="h-12 w-12 object-contain"
                 />
@@ -186,7 +186,7 @@ const PostsPage = () => {
                 <Image
                   width={48}
                   height={48}
-                  src="/learnings.svg"
+                  src="/Book-2--Streamline-Core.png"
                   alt="Share some Learnings"
                   className="h-12 w-12 object-contain"
                 />
