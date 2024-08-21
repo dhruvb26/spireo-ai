@@ -10,7 +10,7 @@ import { getDraft, getDraftDocumentTitle, updateDraft } from "@/actions/draft";
 import { type Queue } from "bullmq";
 import { type JobsOptions } from "bullmq";
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
-import { isBefore, subHours } from "date-fns";
+import { isBefore } from "date-fns";
 
 interface ScheduleData {
   userId: string;
@@ -54,7 +54,6 @@ export async function POST(req: Request) {
   }: ScheduleData = await req.json();
 
   const scheduledDate = fromZonedTime(scheduledDateTimeISO, timezone);
-  const adjustedScheduledDate = subHours(scheduledDate, 4);
 
   const draft = await getDraft(postId);
 
@@ -71,7 +70,7 @@ export async function POST(req: Request) {
   try {
     // Check if the scheduled time is in the past
     const now = new Date();
-    if (isBefore(adjustedScheduledDate.toUTCString(), now.toUTCString())) {
+    if (isBefore(scheduledDate.toUTCString(), now.toUTCString())) {
       console.log("Scheduled time is in the past");
       return NextResponse.json(
         { error: "Scheduled time must be in the future" },
@@ -103,7 +102,7 @@ export async function POST(req: Request) {
       documentUrn,
       documentTitle,
     };
-    const jobOptions = prepareJobOptions(adjustedScheduledDate);
+    const jobOptions = prepareJobOptions(scheduledDate);
 
     // Add new job to queue
     const job = await queue.add("post", jobData, jobOptions);
@@ -119,7 +118,7 @@ export async function POST(req: Request) {
       content,
       name,
       documentUrn,
-      adjustedScheduledDate.toUTCString(),
+      scheduledDate.toUTCString(),
       timezone,
     );
 
@@ -131,7 +130,7 @@ export async function POST(req: Request) {
         ? "Post rescheduled successfully!"
         : "Post scheduled successfully!",
       jobId: job.id,
-      scheduledFor: adjustedScheduledDate.toUTCString(),
+      scheduledFor: scheduledDate.toUTCString(),
       timezone: timezone,
     });
   } catch (error) {
