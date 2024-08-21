@@ -53,7 +53,10 @@ export async function POST(req: Request) {
     name,
   }: ScheduleData = await req.json();
 
-  const scheduledDate = fromZonedTime(new Date(scheduledTime), timezone);
+  const scheduledDate = fromZonedTime(
+    new Date(scheduledTime).toISOString(),
+    timezone,
+  );
 
   const draft = await getDraft(postId);
 
@@ -69,8 +72,8 @@ export async function POST(req: Request) {
 
   try {
     // Check if the scheduled time is in the past
-    const now = new Date();
-    if (isBefore(scheduledDate.toUTCString(), now.toUTCString())) {
+    const now = fromZonedTime(new Date(), timezone);
+    if (isBefore(scheduledDate.toISOString(), now.toISOString())) {
       console.log("Scheduled time is in the past");
       return NextResponse.json(
         { error: "Scheduled time must be in the future" },
@@ -102,7 +105,7 @@ export async function POST(req: Request) {
       documentUrn,
       documentTitle,
     };
-    const jobOptions = prepareJobOptions(scheduledDate);
+    const jobOptions = prepareJobOptions(scheduledDate, timezone);
 
     // Add new job to queue
     const job = await queue.add("post", jobData, jobOptions);
@@ -118,7 +121,7 @@ export async function POST(req: Request) {
       content,
       name,
       documentUrn,
-      scheduledDate.toUTCString(),
+      scheduledDate.toISOString(),
       timezone,
     );
 
@@ -130,7 +133,7 @@ export async function POST(req: Request) {
         ? "Post rescheduled successfully!"
         : "Post scheduled successfully!",
       jobId: job.id,
-      scheduledFor: scheduledDate.toUTCString(),
+      scheduledFor: scheduledDate.toISOString(),
       timezone: timezone,
     });
   } catch (error) {
@@ -145,17 +148,21 @@ export async function POST(req: Request) {
   }
 }
 
-function prepareJobOptions(scheduledDate: Date): JobsOptions {
-  const now = new Date();
+function prepareJobOptions(scheduledDate: Date, timezone: string): JobsOptions {
+  const now = fromZonedTime(new Date(), timezone);
   const delay = scheduledDate.getTime() - now.getTime();
+
+  if (delay < 0) {
+    throw new Error("Scheduled time must be in the future");
+  }
 
   const jobOptions: JobsOptions = {
     removeOnComplete: true,
     removeOnFail: true,
-    delay: delay > 0 ? delay : 0,
+    delay: delay,
   };
 
-  console.log(`Job scheduled for ${scheduledDate.toUTCString()}`);
+  console.log(`Job scheduled for ${scheduledDate.toISOString()}`);
 
   return jobOptions;
 }
@@ -307,121 +314,6 @@ export async function DELETE(req: Request) {
     console.error("Error in DELETE method:", error);
     return NextResponse.json(
       { error: "An error occurred while processing the request" },
-      { status: 500 },
-    );
-  }
-}
-
-export async function PUT(req: Request) {
-  console.log("PUT request received for updating scheduled post");
-  // Initialize the queue
-  const queue = getQueue();
-
-  const body = await req.json();
-  const { userId, postId, content, scheduledTime, documentUrn, name } = body;
-
-  if (!userId || !postId) {
-    console.log("Missing required fields for PUT request");
-    return NextResponse.json(
-      { error: "Missing required fields" },
-      { status: 400 },
-    );
-  }
-
-  const jobId = await getJobId(userId, postId);
-
-  if (!jobId) {
-    console.log(`Job not found for user ${userId}, post ${postId}`);
-    return NextResponse.json({ error: "Job not found" }, { status: 404 });
-  }
-
-  if (!queue) {
-    console.log("Queue not found for PUT request");
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Queue not found",
-      },
-      { status: 500 },
-    );
-  }
-
-  const job = await queue.getJob(jobId);
-
-  if (!job) {
-    console.log(`Job ${jobId} not found in queue`);
-    return NextResponse.json(
-      { error: "Job not found in queue" },
-      { status: 404 },
-    );
-  }
-
-  // Update job data
-  let updatedData = { ...job.data, content, documentUrn, name };
-
-  // Update job options
-  let updatedOpts = { ...job.opts };
-  let scheduledDate: Date | null = null;
-
-  if (scheduledTime) {
-    scheduledDate = new Date(scheduledTime);
-    if (isNaN(scheduledDate.getTime())) {
-      console.log(`Invalid scheduledTime: ${scheduledTime}`);
-      return NextResponse.json(
-        { error: "Invalid scheduledTime" },
-        { status: 400 },
-      );
-    }
-
-    const now = new Date();
-    if (scheduledDate <= now) {
-      console.log(`Scheduled time is in the past: ${scheduledTime}`);
-      return NextResponse.json(
-        { error: "Scheduled time must be in the future" },
-        { status: 400 },
-      );
-    }
-    updatedOpts.delay = scheduledDate.getTime() - now.getTime();
-    console.log(`Updated scheduled time to ${scheduledDate.toISOString()}`);
-  }
-
-  try {
-    // Update the draft in the database
-    await db
-      .update(drafts)
-      .set({
-        content,
-        documentUrn,
-        scheduledFor: scheduledDate,
-        name,
-        updatedAt: new Date(),
-      })
-      .where(eq(drafts.id, postId));
-    console.log(`Updated draft in database for post ${postId}`);
-
-    // Remove the existing job
-    await job.remove();
-    console.log(`Removed existing job ${jobId} from queue`);
-
-    // Add a new job with updated data and options
-    const updatedJob = await queue.add("post", updatedData, updatedOpts);
-    console.log(`Added new job ${updatedJob.id} to queue`);
-
-    // Update the job ID in Redis
-    await saveJobId(userId, postId, updatedJob.id || "");
-    console.log(`Updated job ID in Redis for user ${userId}, post ${postId}`);
-
-    await queue.close();
-
-    return NextResponse.json({
-      message: "Job updated successfully",
-      jobId: updatedJob.id,
-      scheduledFor: scheduledDate ? scheduledDate.toISOString() : "immediate",
-    });
-  } catch (error) {
-    console.error("Error updating job:", error);
-    return NextResponse.json(
-      { error: "Failed to update job" },
       { status: 500 },
     );
   }

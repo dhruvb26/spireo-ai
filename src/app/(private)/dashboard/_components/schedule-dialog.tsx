@@ -119,7 +119,7 @@ const ScheduleDialog: React.FC<ScheduleDialogProps> = ({
 
       if (response.ok) {
         toast.success(data.message || "Draft scheduled successfully");
-        router.push("/dashboard/scheduler");
+        // router.push("/dashboard/scheduler");
       } else {
         toast.error(data.error || "Failed to schedule draft");
       }
