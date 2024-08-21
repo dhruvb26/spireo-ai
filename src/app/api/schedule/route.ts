@@ -9,8 +9,7 @@ import { checkAccess, getUserId } from "@/actions/user";
 import { getDraft, getDraftDocumentTitle, updateDraft } from "@/actions/draft";
 import { type Queue } from "bullmq";
 import { type JobsOptions } from "bullmq";
-import { fromZonedTime } from "date-fns-tz";
-import { isBefore } from "date-fns";
+import { DateTime } from "luxon";
 
 interface ScheduleData {
   userId: string;
@@ -55,10 +54,7 @@ export async function POST(req: Request) {
 
   console.log("scheduled time from client: ", scheduledTime);
 
-  const scheduledDate = fromZonedTime(
-    new Date(scheduledTime).toISOString(),
-    timezone,
-  );
+  const scheduledDate = DateTime.fromISO(scheduledTime, { zone: timezone });
 
   const draft = await getDraft(postId);
 
@@ -74,8 +70,8 @@ export async function POST(req: Request) {
 
   try {
     // Check if the scheduled time is in the past
-    const now = fromZonedTime(new Date(), timezone);
-    if (isBefore(scheduledDate.toISOString(), now.toISOString())) {
+    const now = DateTime.now().setZone(timezone);
+    if (scheduledDate < now) {
       console.log("Scheduled time is in the past");
       return NextResponse.json(
         { error: "Scheduled time must be in the future" },
@@ -107,7 +103,7 @@ export async function POST(req: Request) {
       documentUrn,
       documentTitle,
     };
-    const jobOptions = prepareJobOptions(scheduledDate, timezone);
+    const jobOptions = prepareJobOptions(scheduledDate);
 
     // Add new job to queue
     const job = await queue.add("post", jobData, jobOptions);
@@ -123,7 +119,7 @@ export async function POST(req: Request) {
       content,
       name,
       documentUrn,
-      scheduledDate.toISOString(),
+      scheduledDate.toISO() as string,
       timezone,
     );
 
@@ -135,7 +131,7 @@ export async function POST(req: Request) {
         ? "Post rescheduled successfully!"
         : "Post scheduled successfully!",
       jobId: job.id,
-      scheduledFor: scheduledDate.toISOString(),
+      scheduledFor: scheduledDate.toISO(),
       timezone: timezone,
     });
   } catch (error) {
@@ -150,14 +146,11 @@ export async function POST(req: Request) {
   }
 }
 
-function prepareJobOptions(scheduledDate: Date, timezone: string): JobsOptions {
-  // Convert scheduledDate to UTC
-  const scheduledUTC = new Date(scheduledDate.toUTCString());
+function prepareJobOptions(scheduledDate: DateTime): JobsOptions {
+  const now = DateTime.now().toUTC();
+  const scheduledUTC = scheduledDate.toUTC();
 
-  // Get current time in UTC
-  const nowUTC = new Date();
-
-  const delay = scheduledUTC.getTime() - nowUTC.getTime();
+  const delay = scheduledUTC.toMillis() - now.toMillis();
 
   if (delay < 0) {
     throw new Error("Scheduled time must be in the future");
@@ -169,7 +162,7 @@ function prepareJobOptions(scheduledDate: Date, timezone: string): JobsOptions {
     delay: delay,
   };
 
-  console.log(`Job scheduled for ${scheduledUTC.toISOString()} UTC`);
+  console.log(`Job scheduled for ${scheduledUTC.toISO()} UTC`);
 
   return jobOptions;
 }

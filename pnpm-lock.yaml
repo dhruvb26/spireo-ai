@@ -236,6 +236,9 @@ importers:
       lucide-react:
         specifier: ^0.396.0
         version: 0.396.0(react@18.3.1)
+      luxon:
+        specifier: ^3.5.0
+        version: 3.5.0
       m3u8-stream-list:
         specifier: ^1.1.0
         version: 1.1.0
@@ -390,6 +393,9 @@ importers:
       '@types/fluent-ffmpeg':
         specifier: ^2.1.25
         version: 2.1.25
+      '@types/luxon':
+        specifier: ^3.4.2
+        version: 3.4.2
       '@types/node':
         specifier: ^20.14.14
         version: 20.14.14
@@ -1948,6 +1954,9 @@ packages:
 
   '@types/long@4.0.2':
     resolution: {integrity: sha512-MqTGEo5bj5t157U6fA/BiDynNkn0YknVdh48CMPkTSpFTVmvao5UQmm7uEF6xBEo7qIMAlY/JSleYaE6VOdpaA==}
+
+  '@types/luxon@3.4.2':
+    resolution: {integrity: sha512-TifLZlFudklWlMBfhubvgqTXRzLDI5pCbGa4P8a3wPyUQSW+1xQ5eDsreP9DWHX3tjq1ke96uYG/nwundroWcA==}
 
   '@types/node-fetch@2.6.11':
     resolution: {integrity: sha512-24xFj9R5+rfQJLRyM56qh+wnVSYhyXC2tkoBndtY0U+vubqNsYXGjufB2nn8Q6gt0LrARwL6UBtMCSVCwl4B1g==}
@@ -6465,6 +6474,8 @@ snapshots:
   '@types/lodash@4.17.7': {}
 
   '@types/long@4.0.2': {}
+
+  '@types/luxon@3.4.2': {}
 
   '@types/node-fetch@2.6.11':
     dependencies:
