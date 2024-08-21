@@ -3,6 +3,7 @@ import React from "react";
 import Link from "next/link";
 import { ArrowRight, Timer } from "@phosphor-icons/react";
 import { Badge } from "@/components/ui/badge";
+import Image from "next/image";
 
 const PostsPage = () => {
   return (
@@ -31,12 +32,16 @@ const PostsPage = () => {
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           <Link href="/dashboard/post/youtube-linkedin">
             <div className="group h-full overflow-hidden rounded-lg border border-brand-gray-200 transition-all hover:-translate-y-1 hover:shadow-sm ">
-              <img
-                src="/youtube.svg"
-                alt="YouTube to LinkedIn"
-                className="h-32 w-full p-10"
-              />
-              <div className="flex h-[calc(100%-144px)] flex-col bg-card p-4 text-brand-gray-900">
+              <div className="flex items-center justify-center p-6">
+                <Image
+                  width={48}
+                  height={48}
+                  src="/youtube.svg"
+                  alt="YouTube to LinkedIn"
+                  className="h-12 w-12 object-contain"
+                />
+              </div>
+              <div className="flex h-[calc(100%-96px)] flex-col bg-card p-4 text-brand-gray-900">
                 <h3 className="text-md font-semibold tracking-tight">
                   YouTube{" "}
                   <ArrowRight
@@ -54,12 +59,16 @@ const PostsPage = () => {
           </Link>
           <Link href="/dashboard/post/blog-linkedin">
             <div className="group h-full overflow-hidden rounded-lg border border-brand-gray-200 transition-all hover:-translate-y-1 hover:shadow-sm ">
-              <img
-                src="/blogs.svg"
-                alt="Blog to LinkedIn"
-                className="h-32 w-full p-10"
-              />
-              <div className="flex h-[calc(100%-144px)] flex-col bg-card p-4 text-brand-gray-900">
+              <div className="flex items-center justify-center p-6">
+                <Image
+                  width={48}
+                  height={48}
+                  src="/blogs.svg"
+                  alt="Blog to LinkedIn"
+                  className="h-12 w-12 object-contain"
+                />
+              </div>
+              <div className="flex h-[calc(100%-96px)] flex-col bg-card p-4 text-brand-gray-900">
                 <h3 className="text-md font-semibold tracking-tight">
                   Blog{" "}
                   <ArrowRight
@@ -77,12 +86,16 @@ const PostsPage = () => {
           </Link>
           <Link href="">
             <div className="group h-full overflow-hidden rounded-lg border border-brand-gray-200 transition-all hover:-translate-y-1 hover:shadow-sm">
-              <img
-                src="/transcript.svg"
-                alt="Transcript to LinkedIn"
-                className="h-32 w-full p-10"
-              />
-              <div className="flex h-[calc(100%-144px)] flex-col bg-card p-4 text-brand-gray-900">
+              <div className="flex items-center justify-center p-6">
+                <Image
+                  width={48}
+                  height={48}
+                  src="/transcript.svg"
+                  alt="Transcript to LinkedIn"
+                  className="h-12 w-12 object-contain"
+                />
+              </div>
+              <div className="flex h-[calc(100%-96px)] flex-col bg-card p-4 text-brand-gray-900">
                 <h3 className="text-md font-semibold tracking-tight">
                   Transcript{" "}
                   <ArrowRight
@@ -125,12 +138,16 @@ const PostsPage = () => {
             id="tour-2"
           >
             <div className="group h-full overflow-hidden rounded-lg border border-brand-gray-200 transition-all hover:-translate-y-1 hover:shadow-sm">
-              <img
-                src="/scratch.svg"
-                alt="Write from Scratch"
-                className="h-32 w-full p-10"
-              />
-              <div className="flex h-[calc(100%-144px)] flex-col bg-card p-4 text-brand-gray-900">
+              <div className="flex items-center justify-center p-6">
+                <Image
+                  width={48}
+                  height={48}
+                  src="/scratch.svg"
+                  alt="Write from Scratch"
+                  className="h-12 w-12 object-contain"
+                />
+              </div>
+              <div className="flex h-[calc(100%-96px)] flex-col bg-card p-4 text-brand-gray-900">
                 <h3 className="text-md font-semibold tracking-tight">
                   Write from Scratch
                 </h3>
@@ -143,12 +160,16 @@ const PostsPage = () => {
           </Link>
           <Link href={"/dashboard/post/share-story"}>
             <div className="group h-full overflow-hidden rounded-lg border border-brand-gray-200 transition-all hover:-translate-y-1 hover:shadow-sm">
-              <img
-                src="/story.svg"
-                alt="Share a Story"
-                className="h-32 w-full p-10"
-              />
-              <div className="flex h-[calc(100%-144px)] flex-col bg-card p-4 text-brand-gray-900">
+              <div className="flex items-center justify-center p-6">
+                <Image
+                  width={48}
+                  height={48}
+                  src="/story.svg"
+                  alt="Share a Story"
+                  className="h-12 w-12 object-contain"
+                />
+              </div>
+              <div className="flex h-[calc(100%-96px)] flex-col bg-card p-4 text-brand-gray-900">
                 <h3 className="text-md font-semibold tracking-tight">
                   Share a Story
                 </h3>
@@ -161,12 +182,16 @@ const PostsPage = () => {
           </Link>
           <Link href={"/dashboard/post/learnings"}>
             <div className="group h-full overflow-hidden rounded-lg border border-brand-gray-200 transition-all hover:-translate-y-1 hover:shadow-sm">
-              <img
-                src="/learnings.svg"
-                alt="Share some Learnings"
-                className="h-32 w-full p-10"
-              />
-              <div className="flex h-[calc(100%-144px)] flex-col bg-card p-4 text-brand-gray-900">
+              <div className="flex items-center justify-center p-6">
+                <Image
+                  width={48}
+                  height={48}
+                  src="/learnings.svg"
+                  alt="Share some Learnings"
+                  className="h-12 w-12 object-contain"
+                />
+              </div>
+              <div className="flex h-[calc(100%-96px)] flex-col bg-card p-4 text-brand-gray-900">
                 <h3 className="text-md font-semibold tracking-tight">
                   Share some Learnings
                 </h3>
@@ -179,12 +204,16 @@ const PostsPage = () => {
           </Link>
           <Link href={"/dashboard/post/tips"}>
             <div className="group h-full overflow-hidden rounded-lg border border-brand-gray-200 transition-all hover:-translate-y-1 hover:shadow-sm">
-              <img
-                src="/bullet-list.svg"
-                alt="Share a few tips"
-                className="h-32 w-full p-10"
-              />
-              <div className="flex h-[calc(100%-144px)] flex-col bg-card p-4 text-brand-gray-900">
+              <div className="flex items-center justify-center p-6">
+                <Image
+                  width={48}
+                  height={48}
+                  src="/bullet-list.svg"
+                  alt="Share a few tips"
+                  className="h-12 w-12 object-contain"
+                />
+              </div>
+              <div className="flex h-[calc(100%-96px)] flex-col bg-card p-4 text-brand-gray-900">
                 <h3 className="text-md font-semibold tracking-tight">
                   Share a few tips
                 </h3>
