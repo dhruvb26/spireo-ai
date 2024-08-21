@@ -15,11 +15,13 @@ import {
   TooltipContent,
 } from "@/components/ui/tooltip";
 import { Slate, Editable, ReactEditor, useSlate } from "slate-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import {
   TbFishHook,
   TbPencilCog,
   TbPencilPlus,
+  TbRobot,
   TbTextGrammar,
 } from "react-icons/tb";
 import { PiTextIndent, PiTextOutdent } from "react-icons/pi";
@@ -33,6 +35,7 @@ import EmojiPicker, { SkinTonePickerLocation } from "emoji-picker-react";
 import { getUserId } from "@/actions/user";
 import {
   Brain,
+  PaperPlaneRight,
   Smiley,
   TextB,
   TextItalic,
@@ -56,6 +59,7 @@ import { Loader2, Send } from "lucide-react";
 import { HistoryEditor } from "slate-history";
 import { FaWindowMaximize, FaWindowMinimize } from "react-icons/fa";
 import FadeSeparator from "@/components/ui/fade-separator";
+import { Input } from "@/components/ui/input";
 
 export const serializeContent = (nodes: Descendant[]): string => {
   return JSON.stringify(nodes);
@@ -427,7 +431,9 @@ function EditorSection({
     },
     [editor],
   );
+
   const [open, setOpen] = useState(false);
+  const [customPrompt, setCustomPrompt] = useState("");
 
   const handleRewrite = useCallback(
     async (option: string) => {
@@ -452,6 +458,7 @@ function EditorSection({
             selectedText,
             fullContent,
             option,
+            customPrompt,
           }),
         });
 
@@ -484,9 +491,10 @@ function EditorSection({
       } finally {
         setIsRewriting(false);
         setOpen(false);
+        setCustomPrompt("");
       }
     },
-    [editor, value],
+    [editor, value, customPrompt],
   );
 
   const handleOptionClick = (option: string) => {
@@ -560,107 +568,126 @@ function EditorSection({
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Popover open={open} onOpenChange={setOpen}>
-                    <PopoverTrigger asChild>
+
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-600"
+                  disabled={isRewriting}
+                >
+                  <Brain weight="duotone" className="mr-1 h-4 w-4" />
+                  AI
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent side="right" className="w-56 rounded p-1">
+                <ScrollArea className="h-[250px]">
+                  <div className="flex flex-col rounded">
+                    <FadeSeparator
+                      className="mx-0 ml-4 mr-2"
+                      side="left"
+                      text="Rewrite with AI"
+                    />
+                    <Button
+                      variant="ghost"
+                      className="h-8 justify-start rounded text-sm font-normal text-black hover:bg-brand-gray-50 hover:text-blue-600"
+                      onClick={() => handleOptionClick("continue")}
+                    >
+                      <TbPencilPlus className="mr-2 h-5 w-5 stroke-2 text-blue-600" />
+                      Continue writing
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      className="h-8  justify-start rounded text-sm font-normal text-black hover:bg-brand-gray-50 hover:text-blue-600"
+                      onClick={() => handleOptionClick("improve")}
+                    >
+                      <TbPencilCog className="mr-2 h-5 w-5 text-blue-600" />
+                      Improve writing
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      className="h-8  justify-start rounded text-sm font-normal text-black hover:bg-brand-gray-50 hover:text-blue-600"
+                      onClick={() => handleOptionClick("fixGrammar")}
+                    >
+                      <TbTextGrammar className="mr-2 h-5 w-5 text-blue-600" />
+                      Fix grammar
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      className="h-8  justify-start rounded text-sm font-normal text-black hover:bg-brand-gray-50 hover:text-blue-600"
+                      onClick={() => handleOptionClick("makeShorter")}
+                    >
+                      <PiTextOutdent className="mr-2 h-5 w-5 text-blue-600" />
+                      Make shorter
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      className="h-8  justify-start rounded text-sm font-normal text-black hover:bg-brand-gray-50 hover:text-blue-600"
+                      onClick={() => handleOptionClick("makeLonger")}
+                    >
+                      <PiTextIndent className="mr-2 h-5 w-5 text-blue-600" />
+                      Make longer
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      className="h-8 justify-start rounded text-sm font-normal text-black hover:bg-brand-gray-50 hover:text-blue-600"
+                      onClick={() => handleOptionClick("simplify")}
+                    >
+                      <HiOutlineSparkles className="mr-2 h-5 w-5 text-blue-600" />
+                      Simplify text
+                    </Button>
+
+                    <FadeSeparator
+                      className="mx-0 ml-4 mr-2"
+                      side="left"
+                      text="Add content with AI"
+                    />
+
+                    <Button
+                      variant="ghost"
+                      className="h-8 justify-start rounded text-sm font-normal text-black hover:bg-brand-gray-50 hover:text-blue-600"
+                      onClick={() => handleOptionClick("hook")}
+                    >
+                      <TbFishHook className="mr-2 h-5 w-5 text-blue-600" />
+                      Add a hook
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      className="h-8 justify-start rounded text-sm font-normal text-black hover:bg-brand-gray-50 hover:text-blue-600"
+                      onClick={() => handleOptionClick("cta")}
+                    >
+                      <HiOutlineCursorClick className="mr-2 h-5 w-5 text-blue-600" />
+                      Add a CTA
+                    </Button>
+
+                    <FadeSeparator
+                      className="mx-0 ml-4 mr-2"
+                      side="left"
+                      text="Custom Prompt"
+                    />
+
+                    <div className="flex flex-row space-x-1 px-2 py-1">
+                      <Input
+                        type="text"
+                        value={customPrompt}
+                        onChange={(e) => setCustomPrompt(e.target.value)}
+                        placeholder="Enter custom prompt"
+                        className="h-8 w-full rounded border border-gray-300 px-2 py-1 text-xs"
+                      />
                       <Button
-                        variant="ghost"
                         size="icon"
-                        className="rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-600"
-                        disabled={isRewriting}
+                        variant="ghost"
+                        className="h-8 items-center justify-center rounded text-sm font-normal text-black hover:bg-brand-gray-50 hover:text-blue-600"
+                        onClick={() => handleOptionClick("custom")}
+                        disabled={!customPrompt.trim()}
                       >
-                        <Brain weight="duotone" className="h-4 w-4" />
+                        <PaperPlaneRight className="h-5 w-5 text-blue-600" />
                       </Button>
-                    </PopoverTrigger>
-                    <PopoverContent side="right" className="w-56 rounded p-1">
-                      <div className="flex flex-col rounded">
-                        <FadeSeparator
-                          className="mx-0 ml-4 mr-2"
-                          side="left"
-                          text="Rewrite with AI"
-                        />
-                        <Button
-                          variant="ghost"
-                          className="h-8 justify-start rounded text-sm font-normal text-black hover:bg-brand-gray-50 hover:text-blue-600"
-                          onClick={() => handleOptionClick("continue")}
-                        >
-                          <TbPencilPlus className="mr-2 h-5 w-5 stroke-2 text-blue-600" />
-                          Continue writing
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          className="h-8  justify-start rounded text-sm font-normal text-black hover:bg-brand-gray-50 hover:text-blue-600"
-                          onClick={() => handleOptionClick("improve")}
-                        >
-                          <TbPencilCog className="mr-2 h-5 w-5 text-blue-600" />
-                          Improve writing
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          className="h-8  justify-start rounded text-sm font-normal text-black hover:bg-brand-gray-50 hover:text-blue-600"
-                          onClick={() => handleOptionClick("fixGrammar")}
-                        >
-                          <TbTextGrammar className="mr-2 h-5 w-5 text-blue-600" />
-                          Fix grammar
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          className="h-8  justify-start rounded text-sm font-normal text-black hover:bg-brand-gray-50 hover:text-blue-600"
-                          onClick={() => handleOptionClick("makeShorter")}
-                        >
-                          <PiTextOutdent className="mr-2 h-5 w-5 text-blue-600" />
-                          Make shorter
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          className="h-8  justify-start rounded text-sm font-normal text-black hover:bg-brand-gray-50 hover:text-blue-600"
-                          onClick={() => handleOptionClick("makeLonger")}
-                        >
-                          <PiTextIndent className="mr-2 h-5 w-5 text-blue-600" />
-                          Make longer
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          className="h-8 justify-start rounded text-sm font-normal text-black hover:bg-brand-gray-50 hover:text-blue-600"
-                          onClick={() => handleOptionClick("simplify")}
-                        >
-                          <HiOutlineSparkles className="mr-2 h-5 w-5 text-blue-600" />
-                          Simplify text
-                        </Button>
-
-                        <FadeSeparator
-                          className="mx-0 ml-4 mr-2"
-                          side="left"
-                          text="Add content with AI"
-                        />
-
-                        <Button
-                          variant="ghost"
-                          className="h-8 justify-start rounded text-sm font-normal text-black hover:bg-brand-gray-50 hover:text-blue-600"
-                          onClick={() => handleOptionClick("hook")}
-                        >
-                          <TbFishHook className="mr-2 h-5 w-5 text-blue-600" />
-                          Add a hook
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          className="h-8 justify-start rounded text-sm font-normal text-black hover:bg-brand-gray-50 hover:text-blue-600"
-                          onClick={() => handleOptionClick("cta")}
-                        >
-                          <HiOutlineCursorClick className="mr-2 h-5 w-5 text-blue-600" />
-                          Add a CTA
-                        </Button>
-                      </div>
-                    </PopoverContent>
-                  </Popover>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>{isRewriting ? "Rewriting" : "Rewrite w/ AI"}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+                    </div>
+                  </div>
+                </ScrollArea>
+              </PopoverContent>
+            </Popover>
           </div>
 
           {showEmojiPicker && (

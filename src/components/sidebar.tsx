@@ -209,7 +209,7 @@ const Sidebar = ({ children, user }: any) => {
         <div className="flex w-full items-center justify-center px-4">
           <button
             onClick={handleCreateDraft}
-            className="group relative mb-2 inline-flex h-10 w-full animate-shimmer items-center justify-center overflow-hidden rounded-lg bg-blue-600 bg-[linear-gradient(110deg,#2563eb,45%,#3b82f6,55%,#2563eb)] bg-[length:200%_100%] p-4 px-4 py-0.5 text-sm text-white shadow-sm hover:bg-blue-700"
+            className="group relative mb-2 inline-flex h-10 w-full animate-shimmer items-center justify-center overflow-hidden rounded-lg bg-blue-700 bg-[linear-gradient(110deg,#1d4ed8,45%,#3b82f6,55%,#1d4ed8)] bg-[length:200%_100%] p-4 px-4 py-0.5 text-sm text-white shadow-sm hover:bg-blue-700"
           >
             <span className="relative flex items-center font-normal">
               Write Post

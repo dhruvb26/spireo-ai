@@ -16,8 +16,8 @@ export async function POST(req: Request) {
     const anthropic = new Anthropic({
       apiKey: env.SPIREO_SECRET_KEY,
     });
-
-    const { selectedText, fullContent, option } = await req.json();
+    const { selectedText, fullContent, option, customPrompt } =
+      await req.json();
 
     const msg = await anthropic.messages.create({
       model: env.MODEL,
@@ -40,7 +40,9 @@ export async function POST(req: Request) {
 
             Rewriting option: ${option}
 
-            Please rewrite the selected text or add new content based on the given option, keeping the following in mind:
+            ${option === "custom" ? `Custom prompt: ${customPrompt}` : ""}
+
+            Please rewrite the selected text or add new content based on the given option${option === "custom" ? " and custom prompt" : ""}, keeping the following in mind:
             1. Maintain the core message and key points of the selected text (if rewriting)
             2. Ensure the rewritten or new text fits well within the context of the full content
             3. Improve clarity, engagement, and professionalism
@@ -49,6 +51,7 @@ export async function POST(req: Request) {
             6. If user asks for bolded or italic text use unicode text instead of markdown format
             7. If the option is "hook", write an engaging hook that captures the reader's attention and relates to the full content
             8. If the option is "cta", write a compelling call-to-action that encourages the reader to take a specific action based on the full content
+            ${option === "custom" ? "9. Follow the instructions in the custom prompt" : ""}
 
             Provide the rewritten or new text within <rewritten_text> tags. Do not include any additional comments or explanations.
           `,
