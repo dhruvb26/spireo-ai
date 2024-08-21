@@ -53,7 +53,7 @@ export async function POST(req: Request) {
     name,
   }: ScheduleData = await req.json();
 
-  const scheduledDate = toZonedTime(new Date(scheduledTime), timezone);
+  const scheduledDate = fromZonedTime(scheduledTime, timezone);
 
   const draft = await getDraft(postId);
 

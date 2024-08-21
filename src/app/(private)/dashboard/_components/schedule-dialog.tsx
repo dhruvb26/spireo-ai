@@ -99,7 +99,7 @@ const ScheduleDialog: React.FC<ScheduleDialogProps> = ({
         userId: userId,
         postId: id,
         content: postContent,
-        scheduledTime: scheduledDate.toUTCString(),
+        scheduledTime: scheduledDate.toISOString(),
         timezone: timezone,
       };
 
