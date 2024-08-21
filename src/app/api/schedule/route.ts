@@ -9,13 +9,13 @@ import { checkAccess, getUserId } from "@/actions/user";
 import { getDraft, getDraftDocumentTitle, updateDraft } from "@/actions/draft";
 import { type Queue } from "bullmq";
 import { type JobsOptions } from "bullmq";
-import { fromZonedTime, toZonedTime } from "date-fns-tz";
+import { fromZonedTime } from "date-fns-tz";
 import { isBefore } from "date-fns";
 
 interface ScheduleData {
   userId: string;
   postId: string;
-  scheduledDateTimeISO: string;
+  scheduledTime: string;
   documentUrn: string;
   timezone: string;
   name: string;
@@ -47,13 +47,13 @@ export async function POST(req: Request) {
   const {
     userId,
     postId,
-    scheduledDateTimeISO,
+    scheduledTime,
     timezone,
     documentUrn,
     name,
   }: ScheduleData = await req.json();
 
-  const scheduledDate = fromZonedTime(scheduledDateTimeISO, timezone);
+  const scheduledDate = fromZonedTime(new Date(scheduledTime), timezone);
 
   const draft = await getDraft(postId);
 
