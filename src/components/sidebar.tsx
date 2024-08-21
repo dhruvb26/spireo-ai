@@ -48,6 +48,11 @@ import {
   UserCircleCheck,
   CalendarBlank,
   Slideshow,
+  House,
+  CurrencyDollarSimple,
+  Notebook,
+  Money,
+  MonitorPlay,
 } from "@phosphor-icons/react";
 import { Tour } from "@frigade/react";
 
@@ -137,7 +142,12 @@ const Sidebar = ({ children, user }: any) => {
       const linkContent = (
         <Link
           href={href}
-          className={`relative flex items-center gap-3 rounded px-6 py-2 text-sm transition-all hover:text-blue-700 ${
+          target={href.startsWith("https") ? "_blank" : ""}
+          className={`relative flex items-center ${
+            href.startsWith("https")
+              ? "gap-1 font-normal "
+              : "gap-3 font-normal"
+          } rounded px-6 py-2 text-sm transition-all hover:text-blue-700 ${
             isLinkActive(href, exact) ? "text-blue-700" : "text-brand-gray-500"
           } ${isSidebarCollapsed ? "justify-center" : ""}`}
           id={text === "Post Generator" ? "tour-1" : undefined}
@@ -199,16 +209,11 @@ const Sidebar = ({ children, user }: any) => {
         <div className="flex w-full items-center justify-center px-4">
           <button
             onClick={handleCreateDraft}
-            className="group relative inline-flex h-10 w-full items-center justify-center overflow-hidden rounded-lg p-4 px-4 py-0.5 text-sm text-white shadow-sm"
+            className="group relative mb-2 inline-flex h-10 w-full animate-shimmer items-center justify-center overflow-hidden rounded-lg bg-blue-600 bg-[linear-gradient(110deg,#2563eb,45%,#3b82f6,55%,#2563eb)] bg-[length:200%_100%] p-4 px-4 py-0.5 text-sm text-white shadow-sm hover:bg-blue-700"
           >
-            <span className="ease absolute left-0 top-0 -ml-3 -mt-10 h-40 w-40 rounded-full bg-blue-700 blur-md transition-all duration-100"></span>
-            <span className="ease absolute inset-0 h-full w-full transition duration-100 group-hover:rotate-180">
-              <span className="absolute bottom-0 left-0 -ml-10 h-40 w-40 rounded-full bg-blue-700 blur-md"></span>
-              <span className="absolute bottom-0 right-0 -mr-10 h-40 w-40 rounded-full bg-blue-600 blur-md"></span>
-            </span>
-            <span className="relative flex items-center">
+            <span className="relative flex items-center font-normal">
               Write Post
-              <PencilSimpleLine weight="duotone" className="ml-2" size={20} />
+              <PencilSimpleLine weight="regular" className="ml-2" size={20} />
             </span>
           </button>
         </div>
@@ -387,18 +392,33 @@ const Sidebar = ({ children, user }: any) => {
         <div className="flex w-full items-center justify-between md:w-auto">
           <Button
             onClick={handleCreateDraft}
-            className="flex items-center justify-center bg-white font-semibold text-brand-gray-900 hover:bg-white md:ml-0"
+            className="flex items-center justify-center bg-white font-semibold text-brand-gray-900 hover:bg-white md:ml-7"
           >
-            <Image
-              src="/Spireo Logo Symbol Custom.png"
-              width={30}
-              height={30}
-              alt=""
-            />
+            <Image src="/spireo-icon.png" width={30} height={30} alt="" />
             <span className="text-2xl font-black tracking-tighter text-black">
               Spireo
             </span>
           </Button>
+        </div>
+        <div className="flex w-full items-center justify-between md:w-auto">
+          {renderNavLink(
+            "https://spireo.ai/blogs",
+            <Notebook size={20} weight="duotone" />,
+            <Notebook size={20} weight="duotone" />,
+            "Blogs",
+          )}
+          {renderNavLink(
+            "https://spireo.ai/pricing",
+            <Money size={20} weight="duotone" />,
+            <Money size={20} weight="duotone" />,
+            "Pricing",
+          )}
+          {renderNavLink(
+            "https://spireo.ai/tutorials",
+            <MonitorPlay size={20} />,
+            <MonitorPlay size={20} />,
+            " Tutorials",
+          )}
         </div>
         <div className="flex flex-row items-center justify-center space-x-4">
           {userImage && (

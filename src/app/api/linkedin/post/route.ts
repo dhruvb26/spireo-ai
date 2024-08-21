@@ -408,7 +408,10 @@ export async function POST(request: Request) {
       );
 
     console.log("Draft published successfully");
-    return NextResponse.json({ message: "Draft published successfully" });
+    return NextResponse.json({
+      message: "Draft published successfully",
+      urn: linkedInPostId,
+    });
   } catch (error) {
     console.error("Failed to post:", error);
     return NextResponse.json({ error: "Failed to post" }, { status: 500 });

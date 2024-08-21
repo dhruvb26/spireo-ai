@@ -23,7 +23,7 @@ export function GridCards() {
             </p>
           </div>
           <Image
-            src="/Blogging-Vlogging--Streamline-London.png"
+            src="/features.png"
             width={350}
             height={350}
             alt="AI-powered growth tools"
@@ -44,7 +44,7 @@ export function GridCards() {
             improve Spireo and tailor it to your needs.
           </p>
           <Image
-            src="/Virtual-Meeting--Streamline-London.png"
+            src="/feedback.png"
             width={225}
             height={225}
             alt="Feedback and feature requests"
@@ -76,7 +76,7 @@ export function GridCards() {
             </p>
           </div>
           <Image
-            src="/Education-Online-Learning--Streamline-London.png"
+            src="/tutorials.png"
             width={350}
             height={350}
             alt="Blogs and tutorials"

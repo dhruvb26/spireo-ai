@@ -171,12 +171,7 @@ export function OnboardingForm() {
     <div className="flex min-h-screen items-center justify-center ">
       <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-xl">
         <div className="mb-4 flex flex-row items-center justify-center space-x-2">
-          <Image
-            src="/Spireo Logo Symbol Custom.png"
-            width={35}
-            height={35}
-            alt=""
-          />
+          <Image src="/spireo-icon.png" width={35} height={35} alt="" />
           <span className="text-4xl font-bold tracking-tighter">Spireo</span>
         </div>
         <p className="mb-6 text-center text-sm">

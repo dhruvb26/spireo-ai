@@ -8,7 +8,7 @@ export default function Loading() {
     >
       <div className="relative h-24 w-24 animate-pulse">
         <Image
-          src="/Spireo Logo Symbol Custom.png"
+          src="/spireo-icon.png"
           alt="Loading"
           width={96}
           height={96}

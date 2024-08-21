@@ -360,8 +360,24 @@ function EditorSection({
       }
 
       const result = await response.json();
+
       await updateDraft(id, "published");
-      toast.success("Post published successfully");
+
+      const link = `https://www.linkedin.com/feed/update/${result.urn}/`;
+
+      toast.success(
+        <span>
+          Post published successfully.{" "}
+          <a
+            href={link}
+            className="font-semibold text-green-900"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Click here
+          </a>
+        </span>,
+      );
     } catch (error: any) {
       if (error.name === "AbortError") {
         toast.info("Publishing cancelled");

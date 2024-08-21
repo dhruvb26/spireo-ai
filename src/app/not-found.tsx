@@ -5,12 +5,7 @@ export default function NotFound() {
   return (
     <div className="flex min-h-screen bg-white">
       <div className="m-auto flex flex-col items-center justify-center space-y-8 text-black">
-        <Image
-          src="/Spireo Logo Symbol Custom.png"
-          width={60}
-          height={60}
-          alt="Logo"
-        />
+        <Image src="/spireo-icon.png" width={60} height={60} alt="Logo" />
         <div className="text-center">
           <h1 className="mb-2 text-4xl font-bold">404</h1>
 

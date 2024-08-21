@@ -212,7 +212,7 @@ const LinkedInPostPreview: React.FC<LinkedInPostPreviewProps> = ({
             <Image
               height={48}
               width={48}
-              src={user?.image || "/Spireo Logo Symbol Custom.png"}
+              src={user?.image || "/spireo-icon.png"}
               alt="Profile"
               className="h-full w-full rounded-full object-cover"
               quality={100}

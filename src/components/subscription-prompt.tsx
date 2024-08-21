@@ -11,7 +11,7 @@ const SubscriptionPrompt: React.FC = () => {
       <div className="w-full max-w-md rounded-lg bg-white p-8 text-center shadow-lg">
         <div className="mb-6 flex w-full flex-row items-center justify-center space-x-2">
           <Image
-            src="/Spireo Logo Symbol Custom.png"
+            src="/spireo-icon.png"
             height={50}
             width={50}
             alt="Spireo Logo"

@@ -10,7 +10,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 export const metadata = {
   title: "Spireo - LinkedIn Growth Made Easy",
   description: "Growing on LinkedIn made easy.",
-  icons: [{ rel: "icon", url: "/Spireo Logo Symbol Custom.png" }],
+  icons: [{ rel: "icon", url: "/spireo-icon.png" }],
 };
 
 const inter = Inter({

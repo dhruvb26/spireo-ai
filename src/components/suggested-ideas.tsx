@@ -1,4 +1,3 @@
-"use client";
 import { Lightning } from "@phosphor-icons/react/dist/ssr";
 import React from "react";
 import Link from "next/link";
@@ -10,6 +9,7 @@ interface SuggestedIdeasProps {
   ideas: string[];
   isLoading: boolean;
   error: string | null;
+  onIdeaClick: (idea: string) => void; // Add this prop
 }
 
 const SuggestedIdeas: React.FC<SuggestedIdeasProps> = ({
@@ -17,6 +17,7 @@ const SuggestedIdeas: React.FC<SuggestedIdeasProps> = ({
   ideas,
   isLoading,
   error,
+  onIdeaClick, // Add this prop
 }) => {
   return (
     <div
@@ -49,7 +50,10 @@ const SuggestedIdeas: React.FC<SuggestedIdeasProps> = ({
         <ul className="space-y-2 px-2">
           {ideas.map((idea, index) => (
             <li key={index}>
-              <p className="text-sm text-blue-600 hover:text-blue-700">
+              <p
+                className="cursor-pointer text-sm text-blue-600 hover:text-blue-700"
+                onClick={() => onIdeaClick(idea)} // Add onClick handler
+              >
                 {idea}
               </p>
             </li>

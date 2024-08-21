@@ -55,7 +55,6 @@ export const ideas = createTable("idea", {
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
-
   updatedAt: timestamp("updated_at", {
     mode: "date",
     precision: 3,
@@ -83,6 +82,7 @@ export const users = createTable("user", {
 export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
   contentStyles: many(contentStyles),
+  postFormats: many(postFormats),
 }));
 
 export const accounts = createTable(
@@ -133,6 +133,24 @@ export const contentStyles = createTable("content_style", {
 
 export const contentStyleRelations = relations(contentStyles, ({ one }) => ({
   user: one(users, { fields: [contentStyles.userId], references: [users.id] }),
+}));
+
+export const postFormats = createTable("post_format", {
+  id: varchar("id", { length: 256 }).primaryKey().notNull(),
+  userId: varchar("user_id", { length: 256 }).references(() => users.id),
+  templates: jsonb("templates").notNull().$type<string[]>(),
+  category: varchar("category", { length: 256 }).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at", {
+    mode: "date",
+    precision: 3,
+  }).$onUpdate(() => new Date()),
+});
+
+export const postFormatRelations = relations(postFormats, ({ one }) => ({
+  user: one(users, { fields: [postFormats.userId], references: [users.id] }),
 }));
 
 export const sessions = createTable("session", {

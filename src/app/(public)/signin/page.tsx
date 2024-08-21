@@ -50,7 +50,7 @@ export default async function SignUp() {
         <div className="flex flex-1 flex-col items-center justify-center bg-white px-8 py-12">
           <div className="my-8 flex items-center">
             <Image
-              src="/Spireo Logo Symbol Custom.png"
+              src="/spireo-icon.png"
               width={55}
               height={55}
               alt="Spireo Logo"

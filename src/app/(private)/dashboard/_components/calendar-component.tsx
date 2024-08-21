@@ -182,7 +182,13 @@ const Calendar: React.FC<CalendarProps> = ({ drafts }) => {
                 <div className="text-xs">{formatDayOfMonth(date)}</div>
               </div>
             </div>
-            <div className="relative flex-grow space-y-2 overflow-hidden p-2">
+            <div
+              className={`relative flex-grow space-y-2 p-2 ${
+                currentView === "2weeks" || currentView === "month"
+                  ? "overflow-y-auto"
+                  : "overflow-hidden"
+              }`}
+            >
               {getDraftsForDate(date).map((draft) => (
                 <DraftCard key={draft.id} draft={draft} view={currentView} />
               ))}

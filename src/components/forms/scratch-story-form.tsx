@@ -172,6 +172,12 @@ export function ScratchStoryForm({
     setSelectedFormat(null);
     form.setValue("formatTemplate", "");
   };
+  const handleIdeaClick = useCallback(
+    (idea: string) => {
+      form.setValue("postContent", idea);
+    },
+    [form],
+  );
 
   return (
     <>
@@ -247,6 +253,7 @@ export function ScratchStoryForm({
             ideas={ideas}
             isLoading={isLoadingIdeas}
             error={ideasError}
+            onIdeaClick={handleIdeaClick} // Add this prop
           />
 
           <FormField
