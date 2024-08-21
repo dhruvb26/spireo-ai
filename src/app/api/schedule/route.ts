@@ -151,8 +151,13 @@ export async function POST(req: Request) {
 }
 
 function prepareJobOptions(scheduledDate: Date, timezone: string): JobsOptions {
-  const now = fromZonedTime(new Date(), timezone);
-  const delay = scheduledDate.getTime() - now.getTime();
+  // Convert scheduledDate to UTC
+  const scheduledUTC = new Date(scheduledDate.toUTCString());
+
+  // Get current time in UTC
+  const nowUTC = new Date();
+
+  const delay = scheduledUTC.getTime() - nowUTC.getTime();
 
   if (delay < 0) {
     throw new Error("Scheduled time must be in the future");
@@ -164,7 +169,7 @@ function prepareJobOptions(scheduledDate: Date, timezone: string): JobsOptions {
     delay: delay,
   };
 
-  console.log(`Job scheduled for ${scheduledDate.toISOString()}`);
+  console.log(`Job scheduled for ${scheduledUTC.toISOString()} UTC`);
 
   return jobOptions;
 }

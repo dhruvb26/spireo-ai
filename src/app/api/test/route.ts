@@ -71,7 +71,7 @@ export async function POST(req: Request) {
     fromZonedTime(scheduledTime, timezone).toUTCString(),
   );
 
-  //   console.log("To zoned time: ", toZonedTime(scheduledTime, timezone));
+  console.log("To zoned time: ", toZonedTime(scheduledTime, timezone));
 
   return NextResponse.json({ message: "sucess" });
 }
