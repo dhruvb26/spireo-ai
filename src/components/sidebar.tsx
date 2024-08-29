@@ -400,26 +400,7 @@ const Sidebar = ({ children, user }: any) => {
             </span>
           </Button>
         </div>
-        <div className="flex w-full items-center justify-between md:w-auto">
-          {renderNavLink(
-            "https://spireo.ai/blogs",
-            <Notebook size={20} weight="duotone" />,
-            <Notebook size={20} weight="duotone" />,
-            "Blogs",
-          )}
-          {renderNavLink(
-            "https://spireo.ai/pricing",
-            <Money size={20} weight="duotone" />,
-            <Money size={20} weight="duotone" />,
-            "Pricing",
-          )}
-          {renderNavLink(
-            "https://spireo.ai/tutorials",
-            <MonitorPlay size={20} />,
-            <MonitorPlay size={20} />,
-            " Tutorials",
-          )}
-        </div>
+
         <div className="flex flex-row items-center justify-center space-x-4">
           {userImage && (
             <div className="hidden md:block">

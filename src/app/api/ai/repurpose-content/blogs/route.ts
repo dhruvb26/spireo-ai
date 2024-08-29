@@ -32,8 +32,6 @@ export async function POST(req: Request) {
       .replace(/\n+/g, "\n") // Replace multiple newlines with a single newline
       .trim(); // Remove leading and trailing whitespace
 
-    // console.log("Clean content: ", cleanContent);
-
     const stream = await anthropic.messages.create({
       model: env.MODEL,
       max_tokens: 1024,

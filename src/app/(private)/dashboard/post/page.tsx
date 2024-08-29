@@ -84,7 +84,7 @@ const PostsPage = () => {
               </div>
             </div>
           </Link>
-          <Link href="">
+          <Link href="/dashboard/post/video-linkedin">
             <div className="group h-full overflow-hidden rounded-lg border border-brand-gray-200 transition-all hover:-translate-y-1 hover:shadow-sm">
               <div className="flex items-center justify-center p-6">
                 <Image
@@ -108,12 +108,12 @@ const PostsPage = () => {
                   Our platform helps you distill key points and create
                   compelling content from any transcript.
                 </p>
-                <Badge
+                {/* <Badge
                   className={`mr-auto mt-1 space-x-1 bg-blue-50 font-normal text-blue-600 hover:bg-blue-100`}
                 >
                   <span>Soon</span>
                   <Timer weight="duotone" size={16} />
-                </Badge>
+                </Badge> */}
               </div>
             </div>
           </Link>

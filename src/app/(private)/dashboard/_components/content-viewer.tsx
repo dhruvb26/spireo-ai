@@ -74,11 +74,11 @@ const ContentViewer: React.FC<ContentViewerProps> = ({ value, postId }) => {
   };
 
   return (
-    <div className="mb-4">
+    <div className="mb-2">
       <div
         ref={contentRef}
         className={`whitespace-pre-wrap break-words py-2 text-sm text-black ${
-          isExpanded ? "" : "max-h-[100px] overflow-hidden"
+          isExpanded ? "" : "max-h-[90px] overflow-hidden"
         }`}
       >
         {value.map((node, index) => (
@@ -88,15 +88,15 @@ const ContentViewer: React.FC<ContentViewerProps> = ({ value, postId }) => {
       {isOverflowing && !isExpanded && (
         <button
           onClick={toggleExpand}
-          className="mt-2 text-sm font-medium text-gray-500 hover:text-gray-700"
+          className=" text-sm font-medium text-gray-500 hover:text-gray-700"
         >
-          ...see more
+          ...more
         </button>
       )}
       {isExpanded && (
         <button
           onClick={toggleExpand}
-          className="mt-2 text-sm font-medium text-gray-500 hover:text-gray-700"
+          className=" text-sm font-medium text-gray-500 hover:text-gray-700"
         >
           See less
         </button>

@@ -1,4 +1,5 @@
 import "@/styles/globals.css";
+import "@uploadthing/react/styles.css";
 import { Toaster } from "sonner";
 import Script from "next/script";
 import { Inter } from "next/font/google";

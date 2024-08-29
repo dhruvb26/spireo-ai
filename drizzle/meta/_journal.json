@@ -36,6 +36,20 @@
       "when": 1724206690055,
       "tag": "0004_black_rocket_racer",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1724447057302,
+      "tag": "0005_legal_bug",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1724448413721,
+      "tag": "0006_mighty_ink",
+      "breakpoints": true
     }
   ]
 }

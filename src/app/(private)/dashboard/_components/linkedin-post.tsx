@@ -16,6 +16,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
+import LikeIcon from "./like-icon";
+import CommentIcon from "./comment-icon";
+import RepostIcon from "./repost-icon";
+import SendIcon from "./send-icon";
 
 const PdfViewerComponent = dynamic(() => import("./PdfViewer"), {
   ssr: false,
@@ -251,22 +255,16 @@ const LinkedInPostPreview: React.FC<LinkedInPostPreviewProps> = ({
             {[
               {
                 name: "Like",
-                icon: (
-                  <ThumbsUp
-                    className="scale-x-[-1] transform"
-                    weight="fill"
-                    size={20}
-                  />
-                ),
+                icon: <LikeIcon width={20} height={20} />,
               },
               {
                 name: "Comment",
-                icon: <ChatCircleText weight="fill" size={20} />,
+                icon: <CommentIcon width={20} height={20} />,
               },
-              { name: "Repost", icon: <Repeat weight="bold" size={20} /> },
+              { name: "Repost", icon: <RepostIcon width={14} height={14} /> },
               {
                 name: "Send",
-                icon: <PaperPlaneTilt weight="fill" size={20} />,
+                icon: <SendIcon width={20} height={20} />,
               },
             ].map((action) => (
               <Button

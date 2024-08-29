@@ -3,7 +3,7 @@
 import { db } from "@/server/db";
 import { postFormats } from "@/server/db/schema";
 import { getUserId } from "./user";
-import { eq, is, isNull } from "drizzle-orm";
+import { eq, and, is, isNull } from "drizzle-orm";
 
 // Define the PostFormat type
 export type PostFormat = {
@@ -28,7 +28,7 @@ type SavePostFormatResult = Result<PostFormat>;
 type DeletePostFormatResult = Result;
 
 export async function savePostFormat(
-  templates: string[],
+  template: string,
   category: string,
   isPublic: boolean,
 ): Promise<SavePostFormatResult> {
@@ -43,17 +43,42 @@ export async function savePostFormat(
     }
 
     const id = crypto.randomUUID();
-    const newPostFormat = await db
-      .insert(postFormats)
-      .values({
-        id,
-        userId: isPublic ? null : userId,
-        templates,
-        category,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      })
-      .returning();
+
+    // Fetch existing templates for the user and category
+    const existingFormat = await db
+      .select()
+      .from(postFormats)
+      .where(
+        and(isNull(postFormats.userId), eq(postFormats.category, category)),
+      )
+      .execute()
+      .then((results) => results[0] || null);
+
+    let newPostFormat;
+    if (existingFormat) {
+      // If format exists, append the new template
+      newPostFormat = await db
+        .update(postFormats)
+        .set({
+          templates: [...existingFormat.templates, template],
+          updatedAt: new Date(),
+        })
+        .where(eq(postFormats.id, existingFormat.id))
+        .returning();
+    } else {
+      // If no existing format, create a new one
+      newPostFormat = await db
+        .insert(postFormats)
+        .values({
+          id,
+          userId: isPublic ? null : userId,
+          templates: [template],
+          category,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        })
+        .returning();
+    }
 
     return {
       success: true,

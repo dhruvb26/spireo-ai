@@ -1,6 +1,15 @@
 import { create } from "zustand";
 import { v4 as uuidv4 } from "uuid";
-import { Descendant } from "slate";
+
+interface UploadState {
+  url: string;
+  setUrl: (url: string) => void;
+}
+
+export const useUploadStore = create<UploadState>((set) => ({
+  url: "",
+  setUrl: (url) => set({ url }),
+}));
 
 type Post = {
   id: string;

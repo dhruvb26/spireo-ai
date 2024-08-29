@@ -4,7 +4,6 @@
 import { sql, relations } from "drizzle-orm";
 
 import {
-  index,
   boolean,
   integer,
   pgTableCreator,
@@ -83,6 +82,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
   contentStyles: many(contentStyles),
   postFormats: many(postFormats),
+  drafts: many(drafts),
 }));
 
 export const accounts = createTable(
@@ -195,3 +195,50 @@ export const authenticators = createTable(
     }),
   }),
 );
+
+export const creators = createTable("creator", {
+  id: varchar("id", { length: 256 }).primaryKey().notNull(),
+  profile_url: varchar("profile_url", { length: 256 }),
+  full_name: varchar("full_name", { length: 128 }),
+  profile_image_url: varchar("profile_image_url", { length: 256 }),
+  headline: varchar("headline", { length: 128 }),
+});
+
+export const posts = createTable("post", {
+  id: varchar("id", { length: 256 }).primaryKey().notNull(),
+  creatorId: varchar("creator_id", { length: 256 })
+    .notNull()
+    .references(() => creators.id),
+  images: jsonb("images").$type<string[]>(),
+  document: jsonb("document").$type<Record<string, any>>(),
+  video: jsonb("video").$type<Record<string, any>>(),
+  numAppreciations: integer("num_appreciations").default(0),
+  numComments: integer("num_comments").default(0),
+  numEmpathy: integer("num_empathy").default(0),
+  numInterests: integer("num_interests").default(0),
+  numLikes: integer("num_likes").default(0),
+  numReposts: integer("num_reposts").default(0),
+  postUrl: varchar("post_url", { length: 256 }),
+  reshared: boolean("reshared").default(false),
+  text: text("text"),
+  time: varchar("time", { length: 64 }),
+  urn: varchar("urn", { length: 64 }),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at", {
+    mode: "date",
+    precision: 3,
+  }).$onUpdate(() => new Date()),
+});
+
+export const creatorRelations = relations(creators, ({ many }) => ({
+  posts: many(posts),
+}));
+
+export const postRelations = relations(posts, ({ one }) => ({
+  creator: one(creators, {
+    fields: [posts.creatorId],
+    references: [creators.id],
+  }),
+}));

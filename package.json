@@ -9,6 +9,7 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
+    "db:drop": "drizzle-kit drop",
     "dev": "next dev",
     "start": "next start"
   },

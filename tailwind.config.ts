@@ -1,9 +1,11 @@
 import type { Config } from "tailwindcss";
+import { withUt } from "uploadthing/tw";
 
 const {
   default: flattenColorPalette,
 } = require("tailwindcss/lib/util/flattenColorPalette");
-const config = {
+
+export default withUt({
   darkMode: ["class"],
   content: [
     "./pages/**/*.{ts,tsx}",
@@ -93,7 +95,6 @@ const config = {
         sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
-        // Add this new keyframe for the gradient animation
         "gradient-animation": {
           "0%, 100%": { backgroundPosition: "0% 50%" },
           "50%": { backgroundPosition: "100% 50%" },
@@ -148,9 +149,8 @@ const config = {
     },
   },
   plugins: [require("tailwindcss-animate"), addVariablesForColors],
-} satisfies Config;
+} satisfies Config);
 
-export default config;
 // This plugin adds each Tailwind color as a global CSS variable, e.g. var(--gray-200).
 function addVariablesForColors({ addBase, theme }: any) {
   let allColors = flattenColorPalette(theme("colors"));
