@@ -4,6 +4,7 @@ import { db } from "@/server/db";
 import { postFormats } from "@/server/db/schema";
 import { getUserId } from "./user";
 import { eq, and, is, isNull } from "drizzle-orm";
+import { v4 as uuid } from "uuid";
 
 // Define the PostFormat type
 export type PostFormat = {
@@ -42,7 +43,7 @@ export async function savePostFormat(
       };
     }
 
-    const id = crypto.randomUUID();
+    const id = uuid();
 
     // Fetch existing templates for the user and category
     const existingFormat = await db

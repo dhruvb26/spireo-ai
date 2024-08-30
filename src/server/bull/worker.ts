@@ -1,3 +1,4 @@
+"use server";
 import { env } from "@/env";
 import { Job } from "bullmq";
 

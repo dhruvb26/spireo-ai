@@ -1,9 +1,11 @@
+"use server";
+
 import { Queue } from "bullmq";
-import { redisConnection } from "../redisConnection";
+import { getRedisConnection } from "../../utils/redis";
 
 let queue: Queue | null = null;
 
-export function initializeQueue() {
+export async function initializeQueue() {
   if (queue) {
     console.log("Reusing existing queue");
     return queue;
@@ -11,6 +13,7 @@ export function initializeQueue() {
 
   console.log("Creating new queue");
 
+  const redisConnection = await getRedisConnection();
   queue = new Queue("linkedin-posts", {
     connection: redisConnection,
   });
@@ -20,10 +23,10 @@ export function initializeQueue() {
   return queue;
 }
 
-export function getQueue() {
+export async function getQueue() {
   if (!queue) {
     console.log("Queue not initialized, initializing now");
-    return initializeQueue();
+    return await initializeQueue();
   }
   console.log("Returning existing queue");
   return queue;
@@ -34,20 +37,8 @@ export async function closeConnections() {
     await queue.close();
     console.log("Queue closed");
   }
+  const redisConnection = await getRedisConnection();
+  await redisConnection.quit();
+  console.log("Redis connection closed");
   console.log("All connections closed");
 }
-
-// Make sure to call closeConnections() when your application is shutting down
-process.on("SIGTERM", async () => {
-  console.log("SIGTERM received. Closing connections...");
-  await closeConnections();
-  await redisConnection.quit();
-  process.exit(0);
-});
-
-process.on("SIGINT", async () => {
-  console.log("SIGINT received. Closing connections...");
-  await closeConnections();
-  await redisConnection.quit();
-  process.exit(0);
-});
