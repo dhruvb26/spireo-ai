@@ -3,6 +3,7 @@ import { db } from "@/server/db";
 import { users } from "@/server/db/schema";
 import { and, eq, lt } from "drizzle-orm";
 import { env } from "@/env";
+export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
   try {

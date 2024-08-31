@@ -29,71 +29,82 @@ interface JobData {
 }
 
 export async function POST(req: Request) {
-  if (!(await checkAccess())) {
-    console.log("Access denied for scheduling request");
-    return NextResponse.json({ error: "Not authorized" }, { status: 401 });
-  }
-
-  const queue = getQueue();
-  if (!queue) {
-    console.log("Queue not initialized");
-    return NextResponse.json(
-      { error: "Queue not initialized" },
-      { status: 500 },
-    );
-  }
-
-  const {
-    userId,
-    postId,
-    scheduledTime,
-    timezone,
-    documentUrn,
-    name,
-  }: ScheduleData = await req.json();
-
-  console.log("scheduled time from client: ", scheduledTime);
-
-  const scheduledDate = DateTime.fromISO(scheduledTime, { zone: timezone });
-
-  const draft = await getDraft(postId);
-
-  const content = draft?.data?.content;
-
-  if (!userId || !postId || !content) {
-    console.log("Missing required fields for scheduling");
-    return NextResponse.json(
-      { error: "Missing required fields" },
-      { status: 400 },
-    );
-  }
-
   try {
-    // Check if the scheduled time is in the past
+    // Check access permissions
+    if (!(await checkAccess())) {
+      console.error("Access denied for scheduling request");
+      return NextResponse.json({ error: "Not authorized" }, { status: 401 });
+    }
+
+    // Initialize queue
+    const queue = await getQueue(); // Await here to get the actual Queue object
+
+    if (!queue) {
+      console.error("Queue not initialized");
+      return NextResponse.json(
+        { error: "Queue not initialized" },
+        { status: 500 },
+      );
+    }
+
+    // Parse request data
+    const {
+      userId,
+      postId,
+      scheduledTime,
+      timezone,
+      documentUrn,
+      name,
+    }: ScheduleData = await req.json();
+
+    console.log("Scheduled time from client:", scheduledTime);
+
+    // Validate request data
+    if (!userId || !postId) {
+      console.error("Missing required fields: userId or postId");
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 },
+      );
+    }
+
+    // Convert scheduled time to DateTime object
+    const scheduledDate = DateTime.fromISO(scheduledTime, { zone: timezone });
+
+    // Retrieve the draft content
+    const draft = await getDraft(postId);
+    if (!draft || !draft.data || !draft.data.content) {
+      console.error("Draft content not found");
+      return NextResponse.json(
+        { error: "Draft content not found" },
+        { status: 400 },
+      );
+    }
+
+    const content = draft.data.content;
+
+    // Validate scheduled time
     const now = DateTime.now().setZone(timezone);
     if (scheduledDate < now) {
-      console.log("Scheduled time is in the past");
+      console.error("Scheduled time is in the past");
       return NextResponse.json(
         { error: "Scheduled time must be in the future" },
         { status: 400 },
       );
     }
 
-    // Handle existing job
+    // Handle existing job if it exists
     const existingJobId = await getJobId(userId, postId);
     if (existingJobId) {
       await handleExistingJob(queue, existingJobId, userId, postId);
     }
 
-    // Ensure draft exists
+    // Ensure draft exists in the database
     await ensureDraftExists(db, userId, postId, name, content);
 
+    // Get the document title
     const result = await getDraftDocumentTitle(postId);
-    let documentTitle;
-    if (result.success) {
-      documentTitle = result.data;
-    }
-    documentTitle = "PDF Document";
+    const documentTitle = result.success ? (result.data as string) : "";
 
     // Prepare job data and options
     const jobData: JobData = {
@@ -103,16 +114,17 @@ export async function POST(req: Request) {
       documentUrn,
       documentTitle,
     };
+
     const jobOptions = prepareJobOptions(scheduledDate);
 
     // Add new job to queue
-    const job = await queue.add("post", jobData, jobOptions);
+    const job = await queue.add("post", jobData, jobOptions); // Now queue is the actual Queue object
     console.log(`New job added to queue with ID: ${job.id}`);
 
-    // Save job ID in Redis
+    // Save job ID in Redis or your preferred storage
     await saveJobId(userId, postId, job.id || "");
 
-    // Update draft in database
+    // Update the draft in the database
     await updateThisDraft(
       db,
       postId,
@@ -123,8 +135,10 @@ export async function POST(req: Request) {
       timezone,
     );
 
+    // Close the queue
     await queue.close();
 
+    // Respond with success
     return NextResponse.json({
       success: true,
       message: existingJobId
@@ -257,7 +271,7 @@ export async function DELETE(req: Request) {
   }
 
   try {
-    const queue = getQueue();
+    const queue = await getQueue();
     if (!queue) {
       console.log("Queue not initialized for DELETE request");
       return NextResponse.json(

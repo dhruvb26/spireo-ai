@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import { getJobId, deleteJobId } from "@/server/redis";
 
 export async function GET(req: Request) {
-  const queue = getQueue();
+  const queue = await getQueue();
 
   if (!queue) {
     return NextResponse.json(
@@ -36,7 +36,7 @@ export async function DELETE(req: Request) {
   const body = await req.json();
   const { action, userId, postId } = body;
 
-  const queue = getQueue();
+  const queue = await getQueue();
 
   if (!queue) {
     return NextResponse.json(

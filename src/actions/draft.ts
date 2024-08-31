@@ -155,7 +155,7 @@ export async function deleteDraft(draftId: string): Promise<Result> {
 
     // If the draft is scheduled, remove it from the queue
     if (draftStatus === "scheduled") {
-      const queue = getQueue();
+      const queue = await getQueue();
       if (!queue) {
         return {
           success: false,
