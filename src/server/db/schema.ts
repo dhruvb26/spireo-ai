@@ -121,7 +121,7 @@ export const contentStyles = createTable("content_style", {
     .notNull()
     .references(() => users.id),
   name: varchar("name", { length: 256 }).notNull(),
-  examples: text("examples").notNull(),
+  examples: jsonb("examples").notNull().$type<string[]>(),
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),

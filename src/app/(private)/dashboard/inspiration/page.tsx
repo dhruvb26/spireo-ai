@@ -14,7 +14,9 @@ export default function Home() {
       try {
         const result = await getAllPosts();
         if (result.success) {
-          setPosts(result.posts);
+          // Shuffle the posts array
+          const shuffledPosts = result.posts?.sort(() => 0.5 - Math.random());
+          setPosts(shuffledPosts);
         } else {
           console.error("Failed to fetch posts:", result.error);
         }
@@ -29,7 +31,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main>
+    <main className="container mx-auto px-4">
       <div className="mb-8">
         <h1 className="text-xl font-semibold tracking-tight text-brand-gray-900">
           Inspiration
@@ -44,7 +46,7 @@ export default function Home() {
           <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
         </div>
       ) : (
-        <div className="space-y-8">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {posts.map((post: any) => (
             <PostCard key={post.id} post={post} />
           ))}

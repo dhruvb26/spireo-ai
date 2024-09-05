@@ -30,12 +30,13 @@ import {
 import { Textarea } from "./ui/textarea";
 import { Input } from "./ui/input";
 
-interface PostFormat {
+export interface PostFormat {
   templates: string[];
   category: string;
 }
 
 import { getPostFormats, savePostFormat } from "@/actions/formats";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 
 export function PostFormatSelector({
   onSelectFormat,
@@ -51,9 +52,6 @@ export function PostFormatSelector({
   const [customCategory, setCustomCategory] = useState("");
   const [publicFormats, setPublicFormats] = useState<PostFormat[]>([]);
   const [privateFormats, setPrivateFormats] = useState<PostFormat[]>([]);
-  const [showCustomCategories, setShowCustomCategories] = useState(false);
-  const [isCustomCategorySelected, setIsCustomCategorySelected] =
-    useState(false);
 
   useEffect(() => {
     if (triggerDialog) {
@@ -114,21 +112,6 @@ export function PostFormatSelector({
   const publicCategories = Array.from(
     new Set(publicFormats.map((format) => format.category)),
   );
-  const privateCategories = Array.from(
-    new Set(privateFormats.map((format) => format.category)),
-  );
-  const categories = ["Custom", ...publicCategories, ...privateCategories];
-
-  const handleCategoryChange = (value: string) => {
-    setSelectedCategory(value);
-    if (value === "Custom") {
-      setIsCustomCategorySelected(true);
-      setShowCustomCategories(false);
-    } else {
-      setIsCustomCategorySelected(false);
-      setShowCustomCategories(false);
-    }
-  };
 
   return (
     <>
@@ -185,50 +168,23 @@ export function PostFormatSelector({
               and use it to structure your content.
             </DialogDescription>
           </DialogHeader>
-          <div className="flex h-[500px] w-full">
-            <div className="w-1/2 pr-4">
-              <Select onValueChange={handleCategoryChange}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select a category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((category) => (
-                    <SelectItem key={category} value={category}>
-                      {category}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {isCustomCategorySelected && (
-                <Input
-                  className="mt-2"
-                  placeholder="Enter custom category name"
-                  value={customCategory}
-                  onChange={(e) => setCustomCategory(e.target.value)}
-                />
-              )}
-
-              <div className="mt-4 h-[450px] w-full">
-                <ScrollArea className="h-full">
-                  <div className="pr-4 text-sm">
-                    {showCustomCategories
-                      ? privateCategories.map((category, index) => (
-                          <div
-                            key={index}
-                            className="mb-4 cursor-pointer rounded-lg bg-gray-50 p-4 hover:bg-gray-100"
-                            onClick={() => {
-                              setSelectedCategory(category);
-                              setShowCustomCategories(false);
-                            }}
-                          >
-                            {category}
-                          </div>
-                        ))
-                      : selectedCategory !== "Custom" &&
-                        [...publicFormats, ...privateFormats]
-                          .filter(
-                            (format) => format.category === selectedCategory,
-                          )
+          <Tabs defaultValue={publicCategories[0]} className="w-full">
+            <TabsList className="mb-4">
+              {publicCategories.map((category) => (
+                <TabsTrigger key={category} value={category}>
+                  {category}
+                </TabsTrigger>
+              ))}
+              <TabsTrigger value="Custom">Custom</TabsTrigger>
+            </TabsList>
+            {publicCategories.map((category) => (
+              <TabsContent key={category} value={category}>
+                <div className="flex h-[500px] w-full">
+                  <div className="w-1/2 pr-4">
+                    <ScrollArea className="h-full">
+                      <div className="pr-4 text-sm">
+                        {publicFormats
+                          .filter((format) => format.category === category)
                           .flatMap((format) =>
                             format.templates.map((template, index) => (
                               <div
@@ -252,26 +208,68 @@ export function PostFormatSelector({
                               </div>
                             )),
                           )}
+                      </div>
+                    </ScrollArea>
                   </div>
-                </ScrollArea>
+                  <div className="w-1/2 pl-4">
+                    <div className="h-full">
+                      <Textarea
+                        id="editFormat"
+                        className="mt-1 h-full w-full rounded-lg border-brand-gray-200 text-sm "
+                        value={editedFormat || ""}
+                        onChange={handleFormatChange}
+                        placeholder="Select a format on the left to edit"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </TabsContent>
+            ))}
+            <TabsContent value="Custom">
+              <div className="flex h-[500px] w-full">
+                <div className="w-1/2 pr-4">
+                  <ScrollArea className="h-full">
+                    <div className="pr-4 text-sm">
+                      {privateFormats.flatMap((format) =>
+                        format.templates.map((template, index) => (
+                          <div
+                            key={`${format.category}-${index}`}
+                            className={`mb-4 rounded-lg p-4 transition-all duration-200 ${
+                              selectedFormat === template
+                                ? " bg-blue-100"
+                                : " bg-gray-50 hover:bg-gray-100"
+                            }`}
+                            onClick={() => {
+                              setSelectedFormat(template);
+                              setEditedFormat(template);
+                            }}
+                          >
+                            <div className="mb-2 text-sm font-semibold text-blue-600">
+                              #{index + 1}
+                            </div>
+                            <pre className="whitespace-pre-wrap font-sans ">
+                              {template}
+                            </pre>
+                          </div>
+                        )),
+                      )}
+                    </div>
+                  </ScrollArea>
+                </div>
+                <div className="w-1/2 pl-4">
+                  <div className="h-full">
+                    <Textarea
+                      id="editFormat"
+                      className="mt-1 h-full w-full rounded-lg border-brand-gray-200 text-sm "
+                      value={editedFormat || ""}
+                      onChange={handleFormatChange}
+                      placeholder="Enter your custom format"
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className="w-1/2 pl-4">
-              <div className="h-full">
-                <Textarea
-                  id="editFormat"
-                  className="mt-1 h-full w-full rounded-lg border-brand-gray-200 text-sm "
-                  value={editedFormat || ""}
-                  onChange={handleFormatChange}
-                  placeholder={
-                    selectedCategory === "Custom"
-                      ? "Enter your custom format"
-                      : "Select a format on the left to edit"
-                  }
-                />
-              </div>
-            </div>
-          </div>
+            </TabsContent>
+          </Tabs>
           <div className="flex justify-end space-x-2 py-0">
             {selectedCategory === "Custom" && (
               <Button

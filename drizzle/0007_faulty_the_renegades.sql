@@ -1,0 +1,1 @@
+DROP TABLE "spireo.ai_content_style";

@@ -1,13 +1,8 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { env } from "@/env";
 import { NextResponse } from "next/server";
-import {
-  checkAccess,
-  getUserId,
-  updateGeneratedWords,
-} from "@/actions/user";
+import { checkAccess, getUserId, updateGeneratedWords } from "@/actions/user";
 export const maxDuration = 60;
-
 
 export async function POST(req: Request) {
   // Get the user session
@@ -22,7 +17,7 @@ export async function POST(req: Request) {
   const anthropic = new Anthropic({
     apiKey: env.SPIREO_SECRET_KEY,
   });
-  const { postContent, tone, instructions, formatTemplate, linkedInPostUrl } =
+  const { postContent, tone, instructions, formatTemplate, contentStyle } =
     body;
 
   const userId = await getUserId();

@@ -21,13 +21,9 @@ const PostsPage = () => {
 
       <div className="mb-8">
         <>
-          <h2 className=" text-lg font-semibold tracking-tight text-brand-gray-900">
+          <h2 className="mb-4 text-lg font-semibold tracking-tight text-brand-gray-900">
             Repurpose Content
           </h2>
-          <p className="mb-4 text-sm text-brand-gray-500">
-            Our AI-powered tools help you repurpose content from various
-            sources, saving time and maximizing your content's reach.
-          </p>
         </>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           <Link href="/dashboard/post/youtube-linkedin">
@@ -97,7 +93,7 @@ const PostsPage = () => {
               </div>
               <div className="flex h-[calc(100%-96px)] flex-col bg-card p-4 text-brand-gray-900">
                 <h3 className="text-md font-semibold tracking-tight">
-                  Transcript{" "}
+                  Audio{" "}
                   <ArrowRight
                     size={12}
                     className="inline text-brand-gray-900"
@@ -106,7 +102,7 @@ const PostsPage = () => {
                 </h3>
                 <p className="mt-2 flex-grow text-sm text-brand-gray-500">
                   Our platform helps you distill key points and create
-                  compelling content from any transcript.
+                  compelling content from any audio file.
                 </p>
                 {/* <Badge
                   className={`mr-auto mt-1 space-x-1 bg-blue-50 font-normal text-blue-600 hover:bg-blue-100`}
@@ -122,14 +118,9 @@ const PostsPage = () => {
 
       <div>
         <>
-          <h2 className="text-lg font-semibold tracking-tight text-brand-gray-900">
-            Use Our Templates
+          <h2 className="mb-4 text-lg font-semibold tracking-tight text-brand-gray-900">
+            Templates
           </h2>
-          <p className="mb-4 text-sm text-brand-gray-500">
-            Craft engaging LinkedIn posts with our AI-powered templates,
-            designed to boost your professional presence and maximize
-            engagement.
-          </p>
         </>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           <Link

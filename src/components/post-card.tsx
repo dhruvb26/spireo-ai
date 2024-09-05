@@ -3,14 +3,16 @@
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import dynamic from "next/dynamic";
-import { GlobeHemisphereWest, DotsThree } from "@phosphor-icons/react";
+import {
+  GlobeHemisphereWest,
+  DotsThree,
+  CaretDown,
+  CaretUp,
+} from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import ReactionGrid from "./reaction-grid";
-import RepostIcon from "@/app/(private)/dashboard/_components/repost-icon";
-import LikeIcon from "@/app/(private)/dashboard/_components/like-icon";
-import CommentIcon from "@/app/(private)/dashboard/_components/comment-icon";
-import SendIcon from "@/app/(private)/dashboard/_components/send-icon";
+import { v4 as uuid } from "uuid";
 import ContentViewer from "@/app/(private)/dashboard/_components/content-viewer";
 import {
   DropdownMenu,
@@ -18,6 +20,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { saveDraft } from "@/actions/draft";
 
 const PdfViewerComponent = dynamic(
   () => import("../app/(private)/dashboard/_components/PdfViewer"),
@@ -65,6 +68,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
   const [device, setDevice] = useState<"mobile" | "tablet" | "desktop">(
     "desktop",
   );
+  const [showContent, setShowContent] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -116,18 +120,23 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
     return null;
   };
 
+  const handleClick = async () => {
+    const id = uuid();
+    try {
+      const result = await saveDraft(id, post.text);
+      if (result.success) {
+        window.location.href = `/dashboard/draft/${id}`;
+      } else {
+        console.error("Failed to save draft:", result.message);
+      }
+    } catch (error) {
+      console.error("Error saving draft:", error);
+    }
+  };
+
   return (
     <div className="flex w-full flex-col items-center justify-center">
-      <div
-        ref={containerRef}
-        className={`w-full rounded bg-white shadow ${
-          device === "mobile"
-            ? "max-w-[320px]"
-            : device === "tablet"
-              ? "max-w-[480px]"
-              : "max-w-[560px]"
-        }`}
-      >
+      <div ref={containerRef} className="w-full rounded bg-white shadow">
         <div className="flex items-center justify-between p-4 py-2">
           <div className="flex items-center">
             <div className="relative mr-2 h-12 w-12 flex-shrink-0">
@@ -141,11 +150,11 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
               />
             </div>
             <div className="min-w-0 flex-grow">
-              <p className="text-sm font-semibold text-black">
+              <p className="truncate text-sm font-semibold text-black">
                 {post.creator.full_name}
               </p>
               {post.creator.headline && (
-                <p className="w-full overflow-hidden text-ellipsis whitespace-nowrap text-xs font-normal text-brand-gray-500">
+                <p className="line-clamp-2 w-full overflow-hidden text-ellipsis text-xs font-normal text-brand-gray-500">
                   {post.creator.headline}
                 </p>
               )}
@@ -193,7 +202,24 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
           />
         </div>
 
-        {renderContent()}
+        {(post.images || post.document || post.video) && (
+          <div className="mt-2 px-4">
+            <Button
+              variant="ghost"
+              onClick={() => setShowContent(!showContent)}
+              className="flex items-center text-blue-600"
+            >
+              {showContent ? "See less" : "See more"}
+              {showContent ? (
+                <CaretUp className="ml-1" />
+              ) : (
+                <CaretDown className="ml-1" />
+              )}
+            </Button>
+          </div>
+        )}
+
+        {showContent && renderContent()}
         <ReactionGrid
           numLikes={post.numLikes}
           numEmpathy={post.numEmpathy}
@@ -204,37 +230,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
         />
         <div className="mx-4 border-t border-gray-200 py-4">
           <div className="flex items-center justify-between">
-            {[
-              {
-                name: "Like",
-                icon: <LikeIcon />,
-              },
-              {
-                name: "Comment",
-                icon: <CommentIcon />,
-              },
-              {
-                name: "Repost",
-                icon: <RepostIcon />,
-              },
-              {
-                name: "Send",
-                icon: <SendIcon />,
-              },
-            ].map((action) => (
-              <Button
-                size={"sm"}
-                key={action.name}
-                className="flex flex-1 flex-row items-center justify-center space-x-1 rounded-lg bg-white px-1 py-2 transition-colors duration-200 ease-in-out hover:bg-white"
-              >
-                <span className="text-sm text-brand-gray-500">
-                  {action.icon}
-                </span>
-                <span className="text-sm font-medium text-brand-gray-500">
-                  {action.name}
-                </span>
-              </Button>
-            ))}
+            <Button onClick={handleClick}>Edit this Post</Button>
           </div>
         </div>
       </div>

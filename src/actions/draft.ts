@@ -126,6 +126,7 @@ export async function getDrafts(status?: string): Promise<Result<Draft[]>> {
     };
   }
 }
+
 export async function deleteDraft(draftId: string): Promise<Result> {
   try {
     const userId = await getUserId();

@@ -9,12 +9,8 @@ const RAPIDAPI_KEY = env.RAPIDAPI_KEY;
 const RAPIDAPI_HOST = "fresh-linkedin-profile-data.p.rapidapi.com";
 
 export async function GET() {
-  // const access = await checkAccess();
-  // if (!access) {
-  //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  // }
-
   if (!RAPIDAPI_KEY) {
+    console.error("API key not configured");
     return NextResponse.json(
       { error: "API key not configured" },
       { status: 500 },
@@ -36,7 +32,10 @@ export async function GET() {
 async function fetchLinkedInData(url: string) {
   try {
     const creatorData = await fetchCreatorProfile(url);
-    await db.insert(creators).values(creatorData);
+    await db.insert(creators).values(creatorData).onConflictDoUpdate({
+      target: creators.id,
+      set: creatorData,
+    });
 
     const posts = await fetchCreatorPosts(url);
     await Promise.all(
@@ -114,8 +113,15 @@ async function fetchCreatorPosts(url: string) {
   }));
 }
 
-export async function POST(req: Request) {
-  const posts = await getAllPosts();
-
-  return NextResponse.json({ posts: posts });
+export async function POST() {
+  try {
+    const posts = await getAllPosts();
+    return NextResponse.json({ posts });
+  } catch (error) {
+    console.error("Error in POST function:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 },
+    );
+  }
 }

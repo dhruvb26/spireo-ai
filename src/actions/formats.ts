@@ -3,7 +3,7 @@
 import { db } from "@/server/db";
 import { postFormats } from "@/server/db/schema";
 import { getUserId } from "./user";
-import { eq, and, is, isNull } from "drizzle-orm";
+import { eq, and, isNull } from "drizzle-orm";
 import { v4 as uuid } from "uuid";
 
 // Define the PostFormat type

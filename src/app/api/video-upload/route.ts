@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAccessToken, getLinkedInId, checkAccess } from "@/actions/user";
 import { getServerAuthSession } from "@/server/auth";
-import { ConsoleLogWriter } from "drizzle-orm";
 import { updateDownloadUrl } from "@/actions/draft";
 
 export async function POST(req: Request) {

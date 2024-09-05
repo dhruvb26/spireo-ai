@@ -3,7 +3,7 @@
 import { getServerAuthSession } from "@/server/auth";
 import { accounts, drafts, users } from "@/server/db/schema";
 import { db } from "@/server/db";
-import { eq, sql } from "drizzle-orm";
+import { and, eq, lt, sql } from "drizzle-orm";
 import { env } from "@/env";
 import { ideas, verificationTokens, sessions } from "@/server/db/schema";
 
@@ -79,7 +79,7 @@ export async function checkAccess() {
   const user = await db
     .select({ hasAccess: users.hasAccess })
     .from(users)
-    .where(eq(users.id, userId))
+    .where(and(eq(users.id, userId), lt(users.generatedWords, 10000)))
     .limit(1);
 
   return user[0]?.hasAccess ?? false;
@@ -281,6 +281,7 @@ export async function getUserOnboardingData() {
     throw new Error("Failed to fetch user onboarding data");
   }
 }
+
 export async function getAccessToken(userId: string) {
   const account = await db.query.accounts.findFirst({
     where: eq(accounts.userId, userId),
