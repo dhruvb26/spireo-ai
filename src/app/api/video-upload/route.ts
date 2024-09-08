@@ -1,46 +1,54 @@
 import { NextResponse } from "next/server";
-import { getAccessToken, getLinkedInId, checkAccess } from "@/actions/user";
-import { getServerAuthSession } from "@/server/auth";
+import {
+  getAccessToken,
+  getLinkedInId,
+  checkAccess,
+  getUserId,
+} from "@/actions/user";
 import { updateDownloadUrl } from "@/actions/draft";
+export const maxDuration = 60;
 
-export async function POST(req: Request) {
+export type RouteHandlerResponse<T> =
+  | { success: true; data: T }
+  | { success: false; error: string };
+
+interface UploadInstruction {
+  uploadUrl: string;
+  firstByte: number;
+  lastByte: number;
+}
+
+interface InitializeUploadResponse {
+  value: {
+    uploadInstructions: UploadInstruction[];
+    video: string;
+  };
+}
+
+interface VideoDetails {
+  status: string;
+  downloadUrl: string;
+}
+
+export async function POST(
+  req: Request,
+): Promise<
+  NextResponse<RouteHandlerResponse<{ videoUrn: string; downloadUrl: string }>>
+> {
   try {
-    const hasAccess = await checkAccess();
-    if (!hasAccess) {
-      console.error("Access check failed");
-      return NextResponse.json({ error: "Not authorized!" }, { status: 401 });
-    }
-
-    const session = await getServerAuthSession();
-    if (!session) {
-      console.error("No server auth session found");
-      return NextResponse.json({ error: "Not authorized!" }, { status: 401 });
-    }
-
-    const userId = session.user.id;
-    const accessToken = await getAccessToken(userId);
-    const linkedInId = await getLinkedInId(userId);
-
-    if (!accessToken || !linkedInId) {
-      console.error("Missing access token or LinkedIn ID");
-      return NextResponse.json(
-        { error: "Missing access token or LinkedIn ID" },
-        { status: 400 },
-      );
-    }
+    console.log("Starting video upload process");
+    await checkAccess();
+    const userId = await getUserId();
+    const accessToken = await getAccessToken(userId || "");
+    const linkedInId = await getLinkedInId(userId || "");
+    console.log("User authentication and access token retrieved");
 
     const formData = await req.formData();
     const file = formData.get("file") as File;
     const postId = formData.get("postId") as string;
+    console.log(`Received file upload request for postId: ${postId}`);
 
-    console.log("Post ID:", postId);
-
-    if (!file) {
-      console.error("No file provided in form data");
-      return NextResponse.json({ error: "No file provided" }, { status: 400 });
-    }
-
-    // 1. Initialize Upload for Video
+    console.log("Initializing upload with LinkedIn API");
     const initResponse = await fetch(
       "https://api.linkedin.com/rest/videos?action=initializeUpload",
       {
@@ -63,27 +71,22 @@ export async function POST(req: Request) {
     );
 
     if (!initResponse.ok) {
-      const errorData = await initResponse.text();
-      console.error("Initialize upload error:", errorData);
-      throw new Error(`LinkedIn API error: ${errorData}`);
+      console.error("LinkedIn API initialization failed");
+      throw new Error(`LinkedIn API error: ${await initResponse.text()}`);
     }
 
-    const initData = await initResponse.json();
     const {
       value: { uploadInstructions, video: videoUrn },
-    } = initData;
+    } = (await initResponse.json()) as InitializeUploadResponse;
+    console.log(`Upload initialized. Video URN: ${videoUrn}`);
 
-    console.log("Video URN:", videoUrn);
-    console.log("Upload Instructions:", uploadInstructions);
-
-    // 2 & 3. Split the file into chunks and Upload the Video
     const fileBuffer = await file.arrayBuffer();
     const uploadedPartIds: string[] = [];
 
-    for (const instruction of uploadInstructions) {
-      const { uploadUrl, firstByte, lastByte } = instruction;
+    console.log("Starting file chunk uploads");
+    for (const { uploadUrl, firstByte, lastByte } of uploadInstructions) {
       const chunk = fileBuffer.slice(firstByte, lastByte + 1);
-
+      console.log(`Uploading chunk: ${firstByte}-${lastByte}`);
       const uploadResponse = await fetch(uploadUrl, {
         method: "PUT",
         headers: {
@@ -95,34 +98,20 @@ export async function POST(req: Request) {
       });
 
       if (!uploadResponse.ok) {
-        const errorText = await uploadResponse.text();
-        console.error(`Chunk upload failed:`, errorText);
-        throw new Error(
-          `Upload failed with status: ${uploadResponse.status}. Error: ${errorText}`,
-        );
+        console.error(`Chunk upload failed: ${firstByte}-${lastByte}`);
+        throw new Error(`Upload failed with status: ${uploadResponse.status}`);
       }
 
-      // Extract the ETag from the response headers
       const eTag = uploadResponse.headers.get("ETag");
-      if (!eTag) {
-        console.error("ETag not found in upload response");
-        throw new Error("ETag not found in upload response");
-      }
-
-      // Remove quotes from ETag if present
-      const cleanETag = eTag.replace(/"/g, "");
-      uploadedPartIds.push(cleanETag);
-
-      console.log(
-        `Chunk ${uploadedPartIds.length}/${uploadInstructions.length} uploaded successfully`,
-      );
-      console.log(`ETag: ${cleanETag}`);
+      if (!eTag) throw new Error("ETag not found in upload response");
+      uploadedPartIds.push(eTag.replace(/"/g, ""));
+      console.log(`Chunk uploaded successfully: ${firstByte}-${lastByte}`);
     }
 
-    // Add a delay before finalizing
+    console.log("All chunks uploaded. Waiting before finalizing...");
     await new Promise((resolve) => setTimeout(resolve, 5000));
 
-    // 4. Finalize Video Upload
+    console.log("Finalizing upload");
     const finalizeResponse = await fetch(
       "https://api.linkedin.com/rest/videos?action=finalizeUpload",
       {
@@ -144,21 +133,18 @@ export async function POST(req: Request) {
     );
 
     if (!finalizeResponse.ok) {
-      const errorBody = await finalizeResponse.text();
-      console.error("Finalize upload error response:", errorBody);
+      console.error("Failed to finalize upload");
       throw new Error(
-        `Finalize upload failed with status: ${finalizeResponse.status}. Response: ${errorBody}`,
+        `Finalize upload failed with status: ${finalizeResponse.status}`,
       );
     }
-
-    console.log("Finalize upload successful. Status:", finalizeResponse.status);
-    // Poll for video status until it's AVAILABLE
+    console.log("Upload finalized. Checking video status...");
     let videoDetails;
-    let retries = 0;
-    const maxRetries = 30;
-    const retryInterval = 2000; // 2 seconds
+    let retryCount = 0;
+    const maxRetries = 50;
+    const retryDelay = 5000; // 5 seconds
 
-    while (retries < maxRetries) {
+    while (retryCount < maxRetries) {
       const videoDetailsResponse = await fetch(
         `https://api.linkedin.com/rest/videos/${encodeURIComponent(videoUrn)}`,
         {
@@ -172,94 +158,53 @@ export async function POST(req: Request) {
         },
       );
 
-      console.log(
-        `Video details response status: ${videoDetailsResponse.status}`,
-      );
-
       if (!videoDetailsResponse.ok) {
-        const errorBody = await videoDetailsResponse.text();
-        console.error("Video details error response:", errorBody);
-
-        let errorMessage = `Failed to get video details: ${videoDetailsResponse.status}`;
-
-        if (videoDetailsResponse.status === 400) {
-          if (errorBody.includes("INVALID_VIDEO_ID")) {
-            errorMessage = "This Video ID is invalid";
-          } else if (errorBody.includes("INVALID_CALL_TO_ACTION")) {
-            errorMessage = "Invalid Call To Action";
-          } else if (errorBody.includes("INVALID_URL")) {
-            errorMessage = "Invalid URL";
-          } else if (errorBody.includes("INVALID_URN_TYPE")) {
-            errorMessage = "Invalid URN Type";
-          } else if (errorBody.includes("EXPIRED_UPLOAD_URL")) {
-            errorMessage = "The Video upload Url is expired";
-          } else if (errorBody.includes("INVALID_URN_ID")) {
-            errorMessage = "This URN Id is invalid";
-          } else if (errorBody.includes("MEDIA_ASSET_PROCESSING_FAILED")) {
-            errorMessage = "Media asset failed processing";
-          } else if (errorBody.includes("MEDIA_ASSET_WAITING_UPLOAD")) {
-            errorMessage = "Media asset is waiting upload";
-          } else if (errorBody.includes("UPDATING_ASSET_FAILED")) {
-            errorMessage =
-              "Failed to update asset. Please recreate the asset and try again.";
-          }
-        } else if (videoDetailsResponse.status === 404) {
-          errorMessage = "Could not find entity";
-        }
-
-        console.error("Video details error:", errorMessage);
-        throw new Error(errorMessage);
+        console.error(`Failed to get video details. Attempt ${retryCount + 1}`);
+        throw new Error(
+          `Failed to get video details: ${videoDetailsResponse.status}`,
+        );
       }
 
       videoDetails = await videoDetailsResponse.json();
+      console.log(
+        `Video details response (Attempt ${retryCount + 1}):`,
+        JSON.stringify(videoDetails, null, 2),
+      );
 
-      if (videoDetails.status === "AVAILABLE") {
+      if (videoDetails && videoDetails.status === "AVAILABLE") {
         break;
       }
 
-      console.log(
-        `Video not yet available. Retry ${retries + 1}/${maxRetries}`,
-      );
-      await new Promise((resolve) => setTimeout(resolve, retryInterval));
-      retries++;
+      retryCount++;
+      if (retryCount < maxRetries) {
+        console.log(`Retrying in ${retryDelay / 1000} seconds...`);
+        await new Promise((resolve) => setTimeout(resolve, retryDelay));
+      }
     }
 
     if (!videoDetails || videoDetails.status !== "AVAILABLE") {
-      console.error("Video processing timed out or failed");
-      throw new Error("Video processing timed out or failed");
+      console.error("Video processing not completed after maximum retries");
+      throw new Error("Video processing not completed after maximum retries");
     }
 
-    const {
-      downloadUrl,
-      status,
-      duration,
-      aspectRatioWidth,
-      aspectRatioHeight,
-    } = videoDetails;
+    const { downloadUrl } = videoDetails;
+    console.log(`Video available. Download URL: ${downloadUrl}`);
 
     if (postId) {
+      console.log(`Updating download URL for postId: ${postId}`);
       await updateDownloadUrl(postId, downloadUrl);
     }
-    console.log("Video upload and processing completed successfully");
-    return NextResponse.json(
-      {
-        success: true,
-        message: "Video uploaded and processed successfully",
-        videoUrn: videoUrn,
-        downloadUrl: downloadUrl,
-        // status: status,
-        // duration: duration,
-        // aspectRatio: `${aspectRatioWidth}:${aspectRatioHeight}`,
-      },
-      { status: 200 },
-    );
+
+    console.log("Video upload process completed successfully");
+    return NextResponse.json({
+      success: true,
+      data: { videoUrn, downloadUrl },
+    });
   } catch (error) {
     console.error("Error in POST handler:", error);
-    return NextResponse.json(
-      {
-        error: error instanceof Error ? error.message : "Internal server error",
-      },
-      { status: 500 },
-    );
+    return NextResponse.json({
+      success: false,
+      error: error instanceof Error ? error.message : "Internal server error",
+    });
   }
 }
