@@ -7,11 +7,13 @@ export async function POST(req: Request) {
   try {
     const hasAccess = await checkAccess();
     if (!hasAccess) {
+      console.error("Access check failed");
       return NextResponse.json({ error: "Not authorized!" }, { status: 401 });
     }
 
     const session = await getServerAuthSession();
     if (!session) {
+      console.error("No server auth session found");
       return NextResponse.json({ error: "Not authorized!" }, { status: 401 });
     }
 
@@ -20,6 +22,7 @@ export async function POST(req: Request) {
     const linkedInId = await getLinkedInId(userId);
 
     if (!accessToken || !linkedInId) {
+      console.error("Missing access token or LinkedIn ID");
       return NextResponse.json(
         { error: "Missing access token or LinkedIn ID" },
         { status: 400 },
@@ -33,6 +36,7 @@ export async function POST(req: Request) {
     console.log("Post ID:", postId);
 
     if (!file) {
+      console.error("No file provided in form data");
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
@@ -101,6 +105,7 @@ export async function POST(req: Request) {
       // Extract the ETag from the response headers
       const eTag = uploadResponse.headers.get("ETag");
       if (!eTag) {
+        console.error("ETag not found in upload response");
         throw new Error("ETag not found in upload response");
       }
 
@@ -202,6 +207,7 @@ export async function POST(req: Request) {
           errorMessage = "Could not find entity";
         }
 
+        console.error("Video details error:", errorMessage);
         throw new Error(errorMessage);
       }
 
@@ -211,11 +217,15 @@ export async function POST(req: Request) {
         break;
       }
 
+      console.log(
+        `Video not yet available. Retry ${retries + 1}/${maxRetries}`,
+      );
       await new Promise((resolve) => setTimeout(resolve, retryInterval));
       retries++;
     }
 
     if (!videoDetails || videoDetails.status !== "AVAILABLE") {
+      console.error("Video processing timed out or failed");
       throw new Error("Video processing timed out or failed");
     }
 
@@ -230,6 +240,7 @@ export async function POST(req: Request) {
     if (postId) {
       await updateDownloadUrl(postId, downloadUrl);
     }
+    console.log("Video upload and processing completed successfully");
     return NextResponse.json(
       {
         success: true,

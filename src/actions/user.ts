@@ -79,7 +79,7 @@ export async function checkAccess() {
   const user = await db
     .select({ hasAccess: users.hasAccess })
     .from(users)
-    .where(and(eq(users.id, userId), lt(users.generatedWords, 10000)))
+    .where(and(eq(users.id, userId)))
     .limit(1);
 
   return user[0]?.hasAccess ?? false;
