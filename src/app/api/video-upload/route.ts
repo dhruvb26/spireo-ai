@@ -6,7 +6,6 @@ import {
   getUserId,
 } from "@/actions/user";
 import { updateDownloadUrl } from "@/actions/draft";
-export const maxDuration = 60;
 
 export type RouteHandlerResponse<T> =
   | { success: true; data: T }
