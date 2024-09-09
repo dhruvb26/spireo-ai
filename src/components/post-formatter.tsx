@@ -136,7 +136,7 @@ export function PostFormatSelector({
               Post Format
             </Button>
           </DialogTrigger>
-          <TooltipProvider>
+          {/* <TooltipProvider>
             <Tooltip>
               <TooltipTrigger disabled>
                 <CircleAlert className={`animate-bounce text-blue-600 `} />
@@ -152,7 +152,7 @@ export function PostFormatSelector({
                 </div>
               </TooltipContent>
             </Tooltip>
-          </TooltipProvider>
+          </TooltipProvider> */}
         </div>
 
         <DialogContent
