@@ -21,6 +21,7 @@ declare module "next-auth" {
       trialEndsAt?: Date;
     } & DefaultSession["user"];
     error?: "RefreshAccessTokenError";
+    accessToken?: string;
   }
 
   interface User {
@@ -52,8 +53,8 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
           "Content-Type": "application/x-www-form-urlencoded",
         },
         body: new URLSearchParams({
-          grant_type: "authorization_code",
-          code: token.refreshToken!,
+          grant_type: "refresh_token",
+          refresh_token: token.refreshToken!,
           client_id: env.LINKEDIN_CLIENT_ID,
           client_secret: env.LINKEDIN_CLIENT_SECRET,
         }),
@@ -82,7 +83,7 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
 }
 
 export const authOptions: NextAuthOptions = {
-  debug: false,
+  debug: true,
   secret: env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
@@ -107,16 +108,20 @@ export const authOptions: NextAuthOptions = {
       // Access token has expired, try to update it
       return refreshAccessToken(token);
     },
-    session: ({ session, token }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: token.id,
-        hasAccess: token.hasAccess,
-        trialEndsAt: token.trialEndsAt,
-      },
-      error: token.error,
-    }),
+    async session({ session, token }) {
+      if (token) {
+        session.user = {
+          ...session.user,
+          id: token.id,
+          hasAccess: token.hasAccess,
+          trialEndsAt: token.trialEndsAt,
+        };
+        session.accessToken = token.accessToken;
+        session.error = token.error;
+      }
+
+      return session;
+    },
     redirect: async ({ url, baseUrl }) => {
       // If the user is already logged in and tries to access the signin page, redirect to the dashboard
       if (url.startsWith(baseUrl + "/signin")) {

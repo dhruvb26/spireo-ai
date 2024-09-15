@@ -5,7 +5,6 @@ import {
   BaseEditor,
   Element as SlateElement,
   Editor,
-  Text,
   Transforms,
 } from "slate";
 import {

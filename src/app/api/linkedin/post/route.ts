@@ -239,9 +239,19 @@ function extractText(content: Node | Node[]): string {
 
   let result = "";
 
-  nodes.forEach((node) => {
+  nodes.forEach((node, index) => {
     if (node.type === "paragraph") {
-      result += extractText(node.children || []) + "\n\n";
+      const paragraphText = extractText(node.children || []);
+      if (paragraphText.trim() === "") {
+        // If the paragraph is empty, add a new line
+        result += "\n";
+      } else {
+        // If it's not the first paragraph and not empty, add a new line before it
+        if (index > 0) {
+          result += "\n";
+        }
+        result += paragraphText;
+      }
     } else {
       let text = node.text || "";
 
